@@ -43,6 +43,22 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+// Debug route to test authentication
+Route::get('/test-auth', function () {
+    return response()->json([
+        'message' => 'Public endpoint - No auth required',
+        'timestamp' => now(),
+    ]);
+});
+
+Route::middleware('auth:sanctum')->get('/test-auth-protected', function () {
+    return response()->json([
+        'message' => 'Protected endpoint - Auth successful!',
+        'user' => auth()->user(),
+        'timestamp' => now(),
+    ]);
+});
+
 // Authenticated user routes
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     // Dashboard
@@ -55,7 +71,7 @@ Route::middleware('auth:sanctum')->prefix('user')->group(function () {
 });
 
 // Admin routes
-Route::middleware(['auth:sanctum', 'ability:admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     // Plots
     Route::apiResource('plots', AdminPlotController::class);
     Route::post('/plots/{id}/restore', [AdminPlotController::class, 'restore']);

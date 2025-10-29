@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
+import React from "react";
 
 export default function UserDashboard() {
     const user = useAuthStore(state => state.user);
