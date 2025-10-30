@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\AnalyticsController;
-use App\Http\Controllers\Api\Admin\LeadController as AdminLeadController;
-use App\Http\Controllers\Api\Admin\MediaController;
-use App\Http\Controllers\Api\Admin\PlotController as AdminPlotController;
-use App\Http\Controllers\Api\Admin\SettingController;
-use App\Http\Controllers\Api\Admin\UserController;
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Public\LeadController as PublicLeadController;
-use App\Http\Controllers\Api\Public\PlotController as PublicPlotController;
-use App\Http\Controllers\Api\User\DashboardController;
-use App\Http\Controllers\Api\User\SavedPlotController;
+use App\Http\Controllers\Api\Admin\AnalyticsBaseController;
+use App\Http\Controllers\Api\Admin\LeadBaseController as AdminLeadController;
+use App\Http\Controllers\Api\Admin\MediaBaseController;
+use App\Http\Controllers\Api\Admin\PlotBaseController as AdminPlotController;
+use App\Http\Controllers\Api\Admin\SettingBaseController;
+use App\Http\Controllers\Api\Admin\UserBaseController;
+use App\Http\Controllers\Api\Auth\AuthBaseController;
+use App\Http\Controllers\Api\Public\LeadBaseController as PublicLeadController;
+use App\Http\Controllers\Api\Public\PlotBaseController as PublicPlotController;
+use App\Http\Controllers\Api\User\DashboardBaseController;
+use App\Http\Controllers\Api\User\SavedPlotBaseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,12 +34,12 @@ Route::prefix('public')->group(function () {
 
 // Auth routes
 Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthBaseController::class, 'register']);
+    Route::post('/login', [AuthBaseController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/logout', [AuthBaseController::class, 'logout']);
+        Route::get('/me', [AuthBaseController::class, 'me']);
     });
 });
 
@@ -62,12 +62,12 @@ Route::middleware('auth:sanctum')->get('/test-auth-protected', function () {
 // Authenticated user routes
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [DashboardBaseController::class, 'index']);
 
     // Saved plots
-    Route::get('/saved-plots', [SavedPlotController::class, 'index']);
-    Route::post('/saved-plots/{plot}', [SavedPlotController::class, 'store']);
-    Route::delete('/saved-plots/{plot}', [SavedPlotController::class, 'destroy']);
+    Route::get('/saved-plots', [SavedPlotBaseController::class, 'index']);
+    Route::post('/saved-plots/{plot}', [SavedPlotBaseController::class, 'store']);
+    Route::delete('/saved-plots/{plot}', [SavedPlotBaseController::class, 'destroy']);
 });
 
 // Admin routes
@@ -86,20 +86,20 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // Analytics
     Route::prefix('analytics')->group(function () {
-        Route::get('/dashboard', [AnalyticsController::class, 'dashboard']);
-        Route::get('/monthly-trends', [AnalyticsController::class, 'monthlyTrends']);
-        Route::get('/admin-performance', [AnalyticsController::class, 'adminPerformance']);
-        Route::get('/plot-distribution', [AnalyticsController::class, 'plotDistribution']);
+        Route::get('/dashboard', [AnalyticsBaseController::class, 'dashboard']);
+        Route::get('/monthly-trends', [AnalyticsBaseController::class, 'monthlyTrends']);
+        Route::get('/admin-performance', [AnalyticsBaseController::class, 'adminPerformance']);
+        Route::get('/plot-distribution', [AnalyticsBaseController::class, 'plotDistribution']);
     });
 
     // Media
-    Route::apiResource('media', MediaController::class)->except(['update']);
+    Route::apiResource('media', MediaBaseController::class)->except(['update']);
 
     // Settings
-    Route::apiResource('settings', SettingController::class);
-    Route::get('/settings/group/{group}', [SettingController::class, 'byGroup']);
-    Route::post('/settings/bulk-update', [SettingController::class, 'bulkUpdate']);
+    Route::apiResource('settings', SettingBaseController::class);
+    Route::get('/settings/group/{group}', [SettingBaseController::class, 'byGroup']);
+    Route::post('/settings/bulk-update', [SettingBaseController::class, 'bulkUpdate']);
 
     // Users
-    Route::apiResource('users', UserController::class);
+    Route::apiResource('users', UserBaseController::class);
 });

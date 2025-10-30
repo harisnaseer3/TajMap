@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Resources\PlotResource;
 use App\Models\Plot;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class SavedPlotController extends Controller
+class SavedPlotBaseController extends BaseController
 {
     /**
      * Get user's saved plots
@@ -33,14 +33,14 @@ class SavedPlotController extends Controller
         $user = $request->user();
 
         if ($user->savedPlots()->where('plot_id', $plot->id)->exists()) {
-            return response()->json([
+            return $this->successResponse([
                 'message' => 'Plot already saved',
             ], 400);
         }
 
         $user->savedPlots()->attach($plot->id);
 
-        return response()->json([
+        return $this->successResponse([
             'message' => 'Plot saved successfully',
         ]);
     }
@@ -52,7 +52,7 @@ class SavedPlotController extends Controller
     {
         $request->user()->savedPlots()->detach($plot->id);
 
-        return response()->json([
+        return $this->successResponse([
             'message' => 'Plot removed from saved',
         ]);
     }

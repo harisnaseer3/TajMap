@@ -28,7 +28,20 @@ api.interceptors.request.use(
 
 // Response interceptor
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // If the response has a structured format with success and data properties,
+        // automatically unwrap the data for convenience
+        if (response.data && typeof response.data === 'object' && 'success' in response.data && 'data' in response.data) {
+            // Keep the message available if needed
+            response.message = response.data.message;
+            response.success = response.data.success;
+
+            // Unwrap the data
+            response.data = response.data.data;
+        }
+
+        return response;
+    },
     (error) => {
         if (error.response) {
             // Handle 401 Unauthorized

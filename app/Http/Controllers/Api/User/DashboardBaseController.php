@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class DashboardBaseController extends BaseController
 {
     /**
      * Get user dashboard data
@@ -23,7 +23,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return response()->json([
+        return $this->successResponse([
             'stats' => [
                 'saved_plots' => $savedPlotsCount,
             ],

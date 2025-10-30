@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Models\Lead;
 use App\Models\Plot;
 use App\Models\User;
@@ -10,18 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class AnalyticsController extends Controller
+class AnalyticsBaseController extends BaseController
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!$request->user() || !$request->user()->isAdmin()) {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Get dashboard analytics
      */
@@ -59,7 +49,7 @@ class AnalyticsController extends Controller
             ->limit(5)
             ->get();
 
-        return response()->json([
+        return $this->successResponse([
             'plots' => [
                 'total' => $totalPlots,
                 'available' => $availablePlots,
@@ -76,7 +66,7 @@ class AnalyticsController extends Controller
                 'by_status' => $leadsByStatus,
                 'recent' => $recentLeads,
             ],
-        ]);
+        ], 'Dashboard analytics retrieved successfully');
     }
 
     /**
@@ -117,10 +107,10 @@ class AnalyticsController extends Controller
             ->orderBy('month')
             ->get();
 
-        return response()->json([
+        return $this->successResponse([
             'plot_trends' => $plotTrends,
             'lead_trends' => $leadTrends,
-        ]);
+        ], 'Monthly trends retrieved successfully');
     }
 
     /**
@@ -161,7 +151,9 @@ class AnalyticsController extends Controller
                 ];
             });
 
-        return response()->json(['admins' => $admins]);
+        return $this->successResponse([
+            'admins' => $admins,
+        ], 'Admin performance statistics retrieved successfully');
     }
 
     /**
@@ -180,9 +172,9 @@ class AnalyticsController extends Controller
             ->limit(10)
             ->get();
 
-        return response()->json([
+        return $this->successResponse([
             'by_sector' => $bySector,
             'by_block' => $byBlock,
-        ]);
+        ], 'Plot distribution retrieved successfully');
     }
 }

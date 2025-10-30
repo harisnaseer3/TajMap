@@ -19,7 +19,9 @@ class PlotResource extends JsonResource
             'area' => $this->area,
             'price' => $this->price,
             'base_image_id' => $this->base_image_id,
-            'base_image' => new MediaResource($this->whenLoaded('baseImage')),
+            'base_image' => $this->whenLoaded('baseImage', function() {
+                return $this->baseImage ? new MediaResource($this->baseImage) : null;
+            }),
             'base_image_transform' => $this->base_image_transform,
             'description' => $this->description,
             'features' => $this->features,
@@ -28,6 +30,7 @@ class PlotResource extends JsonResource
                 $request->user(),
                 fn() => $this->savedByUsers()->where('users.id', $request->user()->id)->exists()
             ),
+            'deleted_at' => $this->deleted_at?->toISOString(),
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];

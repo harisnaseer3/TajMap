@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\Public;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Resources\PlotResource;
 use App\Models\Plot;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class PlotController extends Controller
+class PlotBaseController extends BaseController
 {
     /**
      * Display a listing of plots
@@ -86,7 +86,7 @@ class PlotController extends Controller
             ->filter()
             ->values();
 
-        return response()->json(['sectors' => $sectors]);
+        return $this->successResponse(['sectors' => $sectors]);
     }
 
     /**
@@ -102,6 +102,6 @@ class PlotController extends Controller
 
         $blocks = $query->pluck('block')->filter()->values();
 
-        return response()->json(['blocks' => $blocks]);
+        return $this->successResponse(['blocks' => $blocks]);
     }
 }

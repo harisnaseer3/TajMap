@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\Media\UploadMediaRequest;
 use App\Http\Resources\MediaResource;
 use App\Models\Media;
@@ -12,7 +12,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class MediaController extends Controller
+class MediaBaseController extends BaseController
 {
     public function __construct()
     {

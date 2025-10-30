@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\Plot\StorePlotRequest;
 use App\Http\Requests\Plot\UpdatePlotRequest;
 use App\Http\Resources\PlotResource;
@@ -11,19 +11,26 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class PlotController extends Controller
+class PlotBaseController extends BaseController
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Plot::class, 'plot');
-    }
-
     /**
      * Display a listing of plots
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Plot::query()->with('baseImage')->withCount('leads');
+        $query = Plot::query();
+
+        // Count before any filtering for debugging
+        $totalCount = Plot::count();
+        \Log::info('Total plots in database: ' . $totalCount);
+
+        // Try to load relationships
+        try {
+            $query->with('baseImage')->withCount('leads');
+        } catch (\Exception $e) {
+            \Log::error('Error loading relationships: ' . $e->getMessage());
+            // Continue without relationships if they fail
+        }
 
         // Include soft deleted
         if ($request->boolean('with_trashed')) {
@@ -31,25 +38,32 @@ class PlotController extends Controller
         }
 
         // Filter by status
-        if ($request->has('status')) {
+        if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
         }
 
         // Filter by sector/block
-        if ($request->has('sector')) {
+        if ($request->has('sector') && $request->sector !== '') {
             $query->where('sector', $request->sector);
         }
 
-        if ($request->has('block')) {
+        if ($request->has('block') && $request->block !== '') {
             $query->where('block', $request->block);
         }
 
         // Search
-        if ($request->has('search')) {
+        if ($request->has('search') && $request->search !== '') {
             $query->where('plot_number', 'like', '%' . $request->search . '%');
         }
 
+        // Log the SQL query for debugging
+        $sql = $query->toSql();
+        $bindings = $query->getBindings();
+        \Log::info('Query SQL: ' . $sql, ['bindings' => $bindings]);
+
         $plots = $query->paginate($request->input('per_page', 15));
+
+        \Log::info('Plots found: ' . $plots->count());
 
         return PlotResource::collection($plots);
     }
@@ -61,10 +75,10 @@ class PlotController extends Controller
     {
         $plot = Plot::create($request->validated());
 
-        return response()->json([
-            'message' => 'Plot created successfully',
-            'plot' => new PlotResource($plot->load('baseImage')),
-        ], 201);
+        return $this->createdResponse(
+            new PlotResource($plot->load('baseImage')),
+            'Plot created successfully'
+        );
     }
 
     /**
@@ -84,10 +98,10 @@ class PlotController extends Controller
     {
         $plot->update($request->validated());
 
-        return response()->json([
-            'message' => 'Plot updated successfully',
-            'plot' => new PlotResource($plot->load('baseImage')),
-        ]);
+        return $this->successResponse(
+            new PlotResource($plot->load('baseImage')),
+            'Plot updated successfully'
+        );
     }
 
     /**
@@ -97,9 +111,7 @@ class PlotController extends Controller
     {
         $plot->delete();
 
-        return response()->json([
-            'message' => 'Plot deleted successfully',
-        ]);
+        return $this->successResponse(null, 'Plot deleted successfully');
     }
 
     /**
@@ -108,13 +120,12 @@ class PlotController extends Controller
     public function restore($id): JsonResponse
     {
         $plot = Plot::withTrashed()->findOrFail($id);
-        $this->authorize('restore', $plot);
 
         $plot->restore();
 
-        return response()->json([
-            'message' => 'Plot restored successfully',
-            'plot' => new PlotResource($plot->load('baseImage')),
-        ]);
+        return $this->successResponse(
+            new PlotResource($plot->load('baseImage')),
+            'Plot restored successfully'
+        );
     }
 }

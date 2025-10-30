@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\Setting\StoreSettingRequest;
 use App\Http\Requests\Setting\UpdateSettingRequest;
 use App\Http\Resources\SettingResource;
@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class SettingController extends Controller
+class SettingBaseController extends BaseController
 {
     public function __construct()
     {

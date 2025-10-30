@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\Lead\UpdateLeadRequest;
 use App\Http\Resources\LeadResource;
 use App\Models\Lead;
@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 
-class LeadController extends Controller
+class LeadBaseController extends BaseController
 {
     public function __construct()
     {
