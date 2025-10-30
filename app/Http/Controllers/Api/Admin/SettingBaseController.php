@@ -13,16 +13,6 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SettingBaseController extends BaseController
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!$request->user() || !$request->user()->isAdmin()) {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Display a listing of settings
      */
@@ -30,11 +20,11 @@ class SettingBaseController extends BaseController
     {
         $query = Setting::query();
 
-        if ($request->has('group')) {
+        if ($request->has('group') && $request->group !== '') {
             $query->where('group', $request->group);
         }
 
-        $settings = $query->latest()->paginate($request->input('per_page', 50));
+        $settings = $query->orderBy('group')->orderBy('key')->paginate($request->input('per_page', 50));
 
         return SettingResource::collection($settings);
     }
@@ -46,18 +36,21 @@ class SettingBaseController extends BaseController
     {
         $setting = Setting::create($request->validated());
 
-        return response()->json([
-            'message' => 'Setting created successfully',
-            'setting' => new SettingResource($setting),
-        ], 201);
+        return $this->createdResponse(
+            new SettingResource($setting),
+            'Setting created successfully'
+        );
     }
 
     /**
      * Display the specified setting
      */
-    public function show(Setting $setting)
+    public function show(Setting $setting): JsonResponse
     {
-        return new SettingResource($setting);
+        return $this->successResponse(
+            new SettingResource($setting),
+            'Setting retrieved successfully'
+        );
     }
 
     /**
@@ -67,10 +60,10 @@ class SettingBaseController extends BaseController
     {
         $setting->update($request->validated());
 
-        return response()->json([
-            'message' => 'Setting updated successfully',
-            'setting' => new SettingResource($setting),
-        ]);
+        return $this->successResponse(
+            new SettingResource($setting),
+            'Setting updated successfully'
+        );
     }
 
     /**
@@ -78,13 +71,9 @@ class SettingBaseController extends BaseController
      */
     public function destroy(Setting $setting): JsonResponse
     {
-        $this->authorize('delete', $setting);
-
         $setting->delete();
 
-        return response()->json([
-            'message' => 'Setting deleted successfully',
-        ]);
+        return $this->successResponse(null, 'Setting deleted successfully');
     }
 
     /**
@@ -92,9 +81,12 @@ class SettingBaseController extends BaseController
      */
     public function byGroup(Request $request, string $group): JsonResponse
     {
-        $settings = Setting::getByGroup($group);
+        $settings = Setting::where('group', $group)->get();
 
-        return response()->json(['settings' => $settings]);
+        return $this->successResponse(
+            SettingResource::collection($settings),
+            'Settings retrieved successfully'
+        );
     }
 
     /**
@@ -109,11 +101,12 @@ class SettingBaseController extends BaseController
         ]);
 
         foreach ($request->settings as $settingData) {
-            Setting::set($settingData['key'], $settingData['value']);
+            $setting = Setting::where('key', $settingData['key'])->first();
+            if ($setting) {
+                Setting::set($settingData['key'], $settingData['value'], $setting->type);
+            }
         }
 
-        return response()->json([
-            'message' => 'Settings updated successfully',
-        ]);
+        return $this->successResponse(null, 'Settings updated successfully');
     }
 }

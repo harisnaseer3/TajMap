@@ -13,16 +13,6 @@ use Illuminate\Validation\Rules\Password;
 
 class UserBaseController extends BaseController
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!$request->user() || !$request->user()->isAdmin()) {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Display a listing of users
      */
@@ -31,15 +21,16 @@ class UserBaseController extends BaseController
         $query = User::query();
 
         // Filter by role
-        if ($request->has('role')) {
+        if ($request->has('role') && $request->role !== '') {
             $query->where('role', $request->role);
         }
 
         // Search
-        if ($request->has('search')) {
+        if ($request->has('search') && $request->search !== '') {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
+                  ->orWhere('email', 'like', '%' . $request->search . '%')
+                  ->orWhere('phone', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -72,20 +63,23 @@ class UserBaseController extends BaseController
             'role' => $validated['role'],
         ]);
 
-        return response()->json([
-            'message' => 'User created successfully',
-            'user' => new UserResource($user),
-        ], 201);
+        return $this->createdResponse(
+            new UserResource($user),
+            'User created successfully'
+        );
     }
 
     /**
      * Display the specified user
      */
-    public function show(User $user)
+    public function show(User $user): JsonResponse
     {
         $user->loadCount(['assignedLeads', 'savedPlots', 'uploadedMedia']);
 
-        return new UserResource($user);
+        return $this->successResponse(
+            new UserResource($user),
+            'User retrieved successfully'
+        );
     }
 
     /**
@@ -107,10 +101,10 @@ class UserBaseController extends BaseController
 
         $user->update($validated);
 
-        return response()->json([
-            'message' => 'User updated successfully',
-            'user' => new UserResource($user),
-        ]);
+        return $this->successResponse(
+            new UserResource($user),
+            'User updated successfully'
+        );
     }
 
     /**
@@ -120,15 +114,11 @@ class UserBaseController extends BaseController
     {
         // Prevent deleting yourself
         if ($user->id === request()->user()->id) {
-            return response()->json([
-                'message' => 'You cannot delete yourself',
-            ], 400);
+            return $this->errorResponse('You cannot delete yourself', 400);
         }
 
         $user->delete();
 
-        return response()->json([
-            'message' => 'User deleted successfully',
-        ]);
+        return $this->successResponse(null, 'User deleted successfully');
     }
 }

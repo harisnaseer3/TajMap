@@ -14,16 +14,6 @@ use Illuminate\Support\Str;
 
 class MediaBaseController extends BaseController
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!$request->user() || !$request->user()->isAdmin()) {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Display a listing of media
      */
@@ -31,7 +21,7 @@ class MediaBaseController extends BaseController
     {
         $query = Media::query()->with('uploader');
 
-        if ($request->has('type')) {
+        if ($request->has('type') && $request->type !== '') {
             $query->where('type', $request->type);
         }
 
@@ -65,33 +55,40 @@ class MediaBaseController extends BaseController
             'uploaded_by' => $request->user()->id,
         ]);
 
-        return response()->json([
-            'message' => 'File uploaded successfully',
-            'media' => new MediaResource($media),
-        ], 201);
+        return $this->createdResponse(
+            new MediaResource($media),
+            'File uploaded successfully'
+        );
     }
 
     /**
      * Display the specified media
      */
-    public function show(Media $media)
+    public function show(Media $media): JsonResponse
     {
         $media->load('uploader');
 
-        return new MediaResource($media);
+        return $this->successResponse(
+            new MediaResource($media),
+            'Media retrieved successfully'
+        );
     }
 
     /**
      * Delete the specified media
      */
-    public function destroy(Media $media): JsonResponse
+    public function destroy(Request $request, Media $media): JsonResponse
     {
-        $this->authorize('delete', $media);
+        // Check if user can delete (owner or admin)
+        if ($media->uploaded_by !== $request->user()->id && !$request->user()->isAdmin()) {
+            return $this->errorResponse('You do not have permission to delete this media', 403);
+        }
+
+        // Delete physical file
+        Storage::disk($media->disk)->delete($media->path);
 
         $media->delete();
 
-        return response()->json([
-            'message' => 'Media deleted successfully',
-        ]);
+        return $this->successResponse(null, 'Media deleted successfully');
     }
 }

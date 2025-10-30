@@ -13,16 +13,6 @@ use Illuminate\Support\Facades\Gate;
 
 class LeadBaseController extends BaseController
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!$request->user() || !$request->user()->isAdmin()) {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Display a listing of leads
      */
@@ -31,17 +21,17 @@ class LeadBaseController extends BaseController
         $query = Lead::query()->with(['plot', 'adminUser']);
 
         // Filter by status
-        if ($request->has('status')) {
+        if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
         }
 
         // Filter by assigned admin
-        if ($request->has('admin_user_id')) {
+        if ($request->has('admin_user_id') && $request->admin_user_id !== '') {
             $query->where('admin_user_id', $request->admin_user_id);
         }
 
         // Search
-        if ($request->has('search')) {
+        if ($request->has('search') && $request->search !== '') {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
                   ->orWhere('phone', 'like', '%' . $request->search . '%')
@@ -62,11 +52,14 @@ class LeadBaseController extends BaseController
     /**
      * Display the specified lead
      */
-    public function show(Lead $lead)
+    public function show(Lead $lead): JsonResponse
     {
         $lead->load(['plot', 'adminUser', 'histories.user']);
 
-        return new LeadResource($lead);
+        return $this->successResponse(
+            new LeadResource($lead),
+            'Lead retrieved successfully'
+        );
     }
 
     /**
@@ -76,10 +69,10 @@ class LeadBaseController extends BaseController
     {
         $lead->update($request->validated());
 
-        return response()->json([
-            'message' => 'Lead updated successfully',
-            'lead' => new LeadResource($lead->load(['plot', 'adminUser'])),
-        ]);
+        return $this->successResponse(
+            new LeadResource($lead->load(['plot', 'adminUser'])),
+            'Lead updated successfully'
+        );
     }
 
     /**
@@ -87,13 +80,9 @@ class LeadBaseController extends BaseController
      */
     public function destroy(Lead $lead): JsonResponse
     {
-        Gate::authorize('delete', $lead);
-
         $lead->delete();
 
-        return response()->json([
-            'message' => 'Lead deleted successfully',
-        ]);
+        return $this->successResponse(null, 'Lead deleted successfully');
     }
 
     /**
@@ -101,18 +90,16 @@ class LeadBaseController extends BaseController
      */
     public function assign(Request $request, Lead $lead): JsonResponse
     {
-        Gate::authorize('assign', $lead);
-
         $request->validate([
             'admin_user_id' => ['required', 'exists:users,id'],
         ]);
 
         $lead->update(['admin_user_id' => $request->admin_user_id]);
 
-        return response()->json([
-            'message' => 'Lead assigned successfully',
-            'lead' => new LeadResource($lead->load(['plot', 'adminUser'])),
-        ]);
+        return $this->successResponse(
+            new LeadResource($lead->load(['plot', 'adminUser'])),
+            'Lead assigned successfully'
+        );
     }
 
     /**
@@ -120,18 +107,16 @@ class LeadBaseController extends BaseController
      */
     public function updateStatus(Request $request, Lead $lead): JsonResponse
     {
-        Gate::authorize('update', $lead);
-
         $request->validate([
             'status' => ['required', 'in:new,contacted,interested,closed'],
         ]);
 
         $lead->update(['status' => $request->status]);
 
-        return response()->json([
-            'message' => 'Lead status updated successfully',
-            'lead' => new LeadResource($lead->load(['plot', 'adminUser'])),
-        ]);
+        return $this->successResponse(
+            new LeadResource($lead->load(['plot', 'adminUser'])),
+            'Lead status updated successfully'
+        );
     }
 
     /**
@@ -139,18 +124,16 @@ class LeadBaseController extends BaseController
      */
     public function addNote(Request $request, Lead $lead): JsonResponse
     {
-        Gate::authorize('update', $lead);
-
         $request->validate([
             'note' => ['required', 'string'],
         ]);
 
         $lead->logHistory('note_added', $request->note);
 
-        return response()->json([
-            'message' => 'Note added successfully',
-            'lead' => new LeadResource($lead->load(['histories.user'])),
-        ]);
+        return $this->successResponse(
+            new LeadResource($lead->load(['histories.user'])),
+            'Note added successfully'
+        );
     }
 
     /**
@@ -176,8 +159,11 @@ class LeadBaseController extends BaseController
         $callback = function () use ($leads) {
             $file = fopen('php://output', 'w');
 
+            // Add BOM for Excel UTF-8 compatibility
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
             // Headers
-            fputcsv($file, ['ID', 'Name', 'Phone', 'Email', 'Plot', 'Status', 'Score', 'Assigned To', 'Created At']);
+            fputcsv($file, ['ID', 'Name', 'Phone', 'Email', 'Plot', 'Status', 'Score', 'Assigned To', 'Created Date', 'Created Time']);
 
             // Data
             foreach ($leads as $lead) {
@@ -190,7 +176,8 @@ class LeadBaseController extends BaseController
                     $lead->status,
                     $lead->score,
                     $lead->adminUser?->name ?? 'Unassigned',
-                    $lead->created_at->format('Y-m-d H:i:s'),
+                    $lead->created_at->format('Y-m-d'),
+                    $lead->created_at->format('H:i:s'),
                 ]);
             }
 
