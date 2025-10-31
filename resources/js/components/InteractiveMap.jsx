@@ -9,6 +9,7 @@ export default function InteractiveMap({ onPlotClick }) {
     const [selectedPlot, setSelectedPlot] = useState(null);
     const [hoveredPlot, setHoveredPlot] = useState(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
     const containerRef = useRef(null);
     const imageRef = useRef(null);
@@ -110,6 +111,16 @@ export default function InteractiveMap({ onPlotClick }) {
         }
     };
 
+    const handleMouseMove = (e) => {
+        if (hoveredPlot && containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            setTooltipPosition({
+                x: e.clientX - rect.left + 15,
+                y: e.clientY - rect.top + 15
+            });
+        }
+    };
+
     const convertCoordinates = (coords) => {
         return coords.map(coord => ({
             x: coord.x * dimensions.width,
@@ -163,7 +174,11 @@ export default function InteractiveMap({ onPlotClick }) {
             </div>
 
             {/* Interactive Map */}
-            <div ref={containerRef} className="relative bg-white p-4 rounded-lg shadow overflow-auto">
+            <div
+                ref={containerRef}
+                className="relative bg-white p-4 rounded-lg shadow overflow-auto"
+                onMouseMove={handleMouseMove}
+            >
                 <div className="relative inline-block">
                     <img
                         ref={imageRef}
@@ -219,6 +234,37 @@ export default function InteractiveMap({ onPlotClick }) {
                         </svg>
                     )}
                 </div>
+
+                {/* Tooltip */}
+                {hoveredPlot && (
+                    <div
+                        className="absolute z-10 bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg text-sm pointer-events-none"
+                        style={{
+                            left: `${tooltipPosition.x}px`,
+                            top: `${tooltipPosition.y}px`,
+                            maxWidth: '250px'
+                        }}
+                    >
+                        <div className="font-bold mb-1">{hoveredPlot.plot_number}</div>
+                        <div className="text-xs space-y-1">
+                            <div>Sector: {hoveredPlot.sector} | Block: {hoveredPlot.block}</div>
+                            <div>Area: {hoveredPlot.area} sq. units</div>
+                            <div>Price: ${parseFloat(hoveredPlot.price).toLocaleString()}</div>
+                            <div className="mt-1">
+                                <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                                    hoveredPlot.status.toLowerCase() === 'available' ? 'bg-green-500' :
+                                    hoveredPlot.status.toLowerCase() === 'reserved' ? 'bg-yellow-500' :
+                                    'bg-red-500'
+                                }`}>
+                                    {hoveredPlot.status}
+                                </span>
+                            </div>
+                            <div className="text-gray-300 text-xs mt-2 italic">
+                                {hoveredPlot.status.toLowerCase() === 'available' ? 'Click to inquire' : 'Click for details'}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Hovered Plot Info */}

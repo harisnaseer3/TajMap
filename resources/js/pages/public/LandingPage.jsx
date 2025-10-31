@@ -56,9 +56,7 @@ export default function LandingPage() {
 
     const handlePlotClick = (plot) => {
         setSelectedPlot(plot);
-        if (plot.status.toLowerCase() === 'available') {
-            setShowInquiryModal(true);
-        }
+        setShowInquiryModal(true);
     };
 
     const handleInquirySubmit = async (e) => {
@@ -68,7 +66,7 @@ export default function LandingPage() {
 
         try {
             setSubmitting(true);
-            await leadService.create({
+            await leadService.submit({
                 ...inquiryData,
                 plot_id: selectedPlot.id
             });
@@ -274,8 +272,19 @@ export default function LandingPage() {
                         <div className="p-6">
                             <div className="flex justify-between items-start mb-4">
                                 <div>
-                                    <h2 className="text-2xl font-bold text-gray-900">Inquire About Plot</h2>
-                                    <p className="text-gray-600 mt-1">{selectedPlot.plot_number}</p>
+                                    <h2 className="text-2xl font-bold text-gray-900">
+                                        {selectedPlot.status.toLowerCase() === 'available' ? 'Inquire About Plot' : 'Plot Details'}
+                                    </h2>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <p className="text-gray-600">{selectedPlot.plot_number}</p>
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                            selectedPlot.status.toLowerCase() === 'available' ? 'bg-green-100 text-green-800' :
+                                            selectedPlot.status.toLowerCase() === 'reserved' ? 'bg-yellow-100 text-yellow-800' :
+                                            'bg-red-100 text-red-800'
+                                        }`}>
+                                            {selectedPlot.status}
+                                        </span>
+                                    </div>
                                 </div>
                                 <button
                                     onClick={() => {
@@ -316,8 +325,17 @@ export default function LandingPage() {
                                 )}
                             </div>
 
-                            {/* Inquiry Form */}
-                            <form onSubmit={handleInquirySubmit} className="space-y-4">
+                            {/* Not Available Message */}
+                            {selectedPlot.status.toLowerCase() !== 'available' && (
+                                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                                    <p className="text-yellow-800 font-semibold">This plot is currently {selectedPlot.status.toLowerCase()}</p>
+                                    <p className="text-yellow-700 text-sm mt-1">Please check back later or contact us for more information.</p>
+                                </div>
+                            )}
+
+                            {/* Inquiry Form - Only for Available Plots */}
+                            {selectedPlot.status.toLowerCase() === 'available' && (
+                                <form onSubmit={handleInquirySubmit} className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Your Name <span className="text-red-500">*</span>
@@ -395,6 +413,22 @@ export default function LandingPage() {
                                     </button>
                                 </div>
                             </form>
+                            )}
+
+                            {/* Close button for non-available plots */}
+                            {selectedPlot.status.toLowerCase() !== 'available' && (
+                                <div className="flex justify-end pt-4">
+                                    <button
+                                        onClick={() => {
+                                            setShowInquiryModal(false);
+                                            setSelectedPlot(null);
+                                        }}
+                                        className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
