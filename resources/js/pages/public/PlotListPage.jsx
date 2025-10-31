@@ -31,7 +31,7 @@ export default function PlotListPage() {
     const fetchPlots = async () => {
         setLoading(true);
         try {
-            const { data } = await plotService.getAll(filters);
+            const { data } = await plotService.getAll({ ...filters, per_page: 1000 });
             setPlots(data.data);
         } catch (error) {
             console.error('Error fetching plots:', error);
