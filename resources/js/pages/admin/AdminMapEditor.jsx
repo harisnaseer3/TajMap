@@ -53,10 +53,15 @@ export default function AdminMapEditor() {
             setUploading(true);
             const response = await mediaService.upload(file, 'base_map');
 
-            const uploadedImage = response.data;
-            setBaseImage(uploadedImage.url);
+            // Handle both wrapped and unwrapped responses
+            const uploadedImage = response.data?.data || response.data;
 
-            toast.success('Base map uploaded successfully');
+            if (uploadedImage && uploadedImage.url) {
+                setBaseImage(uploadedImage.url);
+                toast.success('Base map uploaded successfully');
+            } else {
+                toast.error('Upload succeeded but no URL returned');
+            }
         } catch (error) {
             console.error('Error uploading image:', error);
             toast.error('Failed to upload image');
@@ -291,6 +296,9 @@ export default function AdminMapEditor() {
                                                 height: imageRef.current.clientHeight
                                             });
                                         }
+                                    }}
+                                    onError={() => {
+                                        toast.error('Failed to load image. Please check the file.');
                                     }}
                                 />
 

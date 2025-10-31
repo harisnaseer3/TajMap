@@ -43,6 +43,19 @@ class MediaBaseController extends BaseController
         // Store file
         $path = $file->storeAs('media', $filename, 'public');
 
+        // Copy to public/storage for direct access (Windows symlink workaround)
+        $sourcePath = storage_path('app/public/' . $path);
+        $destPath = public_path('storage/' . $path);
+
+        // Ensure destination directory exists
+        $destDir = dirname($destPath);
+        if (!file_exists($destDir)) {
+            mkdir($destDir, 0755, true);
+        }
+
+        // Copy file
+        copy($sourcePath, $destPath);
+
         // Create media record
         $media = Media::create([
             'name' => $file->getClientOriginalName(),
@@ -84,8 +97,14 @@ class MediaBaseController extends BaseController
             return $this->errorResponse('You do not have permission to delete this media', 403);
         }
 
-        // Delete physical file
+        // Delete from storage/app/public
         Storage::disk($media->disk)->delete($media->path);
+
+        // Delete from public/storage (Windows workaround)
+        $publicPath = public_path('storage/' . $media->path);
+        if (file_exists($publicPath)) {
+            unlink($publicPath);
+        }
 
         $media->delete();
 
