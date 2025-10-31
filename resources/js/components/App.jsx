@@ -5,6 +5,7 @@ import React from "react";
 // Public Pages
 import LandingPage from '../pages/public/LandingPage';
 import PlotListPage from '../pages/public/PlotListPage';
+import MapView from '../pages/MapView';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 
@@ -20,6 +21,7 @@ import AdminLeads from '../pages/admin/AdminLeads';
 import AdminAnalytics from '../pages/admin/AdminAnalytics';
 import AdminSettings from '../pages/admin/AdminSettings';
 import AdminUsers from '../pages/admin/AdminUsers';
+import AdminMapEditor from '../pages/admin/AdminMapEditor';
 
 // Components
 import ProtectedRoute from './ProtectedRoute';
@@ -33,6 +35,7 @@ export default function App() {
                 {/* Public Routes */}
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/plots" element={<PlotListPage />} />
+                <Route path="/map" element={<MapView />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
 
@@ -50,6 +53,7 @@ export default function App() {
                         <Route path="plots" element={<AdminPlots />} />
                         <Route path="leads" element={<AdminLeads />} />
                         <Route path="analytics" element={<AdminAnalytics />} />
+                        <Route path="map-editor" element={<AdminMapEditor />} />
                         <Route path="settings" element={<AdminSettings />} />
                         <Route path="users" element={<AdminUsers />} />
                     </Route>

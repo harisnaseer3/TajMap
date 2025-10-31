@@ -95,7 +95,16 @@ export const plotService = {
     getBlocks: (params) => api.get('/public/plots/meta/blocks', { params }),
 
     // Admin
-    adminGetAll: (params) => api.get('/admin/plots', { params }),
+    adminGetAll: (params) => {
+        // Remove empty string parameters to avoid filtering issues
+        const cleanParams = Object.entries(params).reduce((acc, [key, value]) => {
+            if (value !== '' && value !== null && value !== undefined) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+        return api.get('/admin/plots', { params: cleanParams });
+    },
     adminCreate: (data) => api.post('/admin/plots', data),
     adminUpdate: (id, data) => api.put(`/admin/plots/${id}`, data),
     adminDelete: (id) => api.delete(`/admin/plots/${id}`),
@@ -106,7 +115,16 @@ export const leadService = {
     submit: (data) => api.post('/public/leads', data),
 
     // Admin
-    adminGetAll: (params) => api.get('/admin/leads', { params }),
+    adminGetAll: (params) => {
+        // Remove empty string parameters to avoid filtering issues
+        const cleanParams = Object.entries(params).reduce((acc, [key, value]) => {
+            if (value !== '' && value !== null && value !== undefined) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+        return api.get('/admin/leads', { params: cleanParams });
+    },
     adminGetOne: (id) => api.get(`/admin/leads/${id}`),
     adminUpdate: (id, data) => api.put(`/admin/leads/${id}`, data),
     adminDelete: (id) => api.delete(`/admin/leads/${id}`),
@@ -158,7 +176,16 @@ export const settingService = {
 };
 
 export const userService = {
-    getAll: (params) => api.get('/admin/users', { params }),
+    getAll: (params) => {
+        // Remove empty string parameters to avoid filtering issues
+        const cleanParams = Object.entries(params).reduce((acc, [key, value]) => {
+            if (value !== '' && value !== null && value !== undefined) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+        return api.get('/admin/users', { params: cleanParams });
+    },
     getOne: (id) => api.get(`/admin/users/${id}`),
     create: (data) => api.post('/admin/users', data),
     update: (id, data) => api.put(`/admin/users/${id}`, data),

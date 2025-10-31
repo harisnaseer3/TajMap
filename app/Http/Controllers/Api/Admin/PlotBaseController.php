@@ -18,19 +18,7 @@ class PlotBaseController extends BaseController
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Plot::query();
-
-        // Count before any filtering for debugging
-        $totalCount = Plot::count();
-        \Log::info('Total plots in database: ' . $totalCount);
-
-        // Try to load relationships
-        try {
-            $query->with('baseImage')->withCount('leads');
-        } catch (\Exception $e) {
-            \Log::error('Error loading relationships: ' . $e->getMessage());
-            // Continue without relationships if they fail
-        }
+        $query = Plot::query()->with('baseImage')->withCount('leads');
 
         // Include soft deleted
         if ($request->boolean('with_trashed')) {
@@ -56,14 +44,7 @@ class PlotBaseController extends BaseController
             $query->where('plot_number', 'like', '%' . $request->search . '%');
         }
 
-        // Log the SQL query for debugging
-        $sql = $query->toSql();
-        $bindings = $query->getBindings();
-        \Log::info('Query SQL: ' . $sql, ['bindings' => $bindings]);
-
         $plots = $query->paginate($request->input('per_page', 15));
-
-        \Log::info('Plots found: ' . $plots->count());
 
         return PlotResource::collection($plots);
     }

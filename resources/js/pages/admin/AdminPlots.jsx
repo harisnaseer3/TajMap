@@ -26,13 +26,10 @@ export default function AdminPlots() {
         try {
             setLoading(true);
             const response = await plotService.adminGetAll(filters);
-            console.log('API Response:', response.data); // Debug log
-
-            // Handle Laravel Resource Collection format
             const responseData = response.data;
 
-            // Check if it's a paginated resource collection
-            if (responseData.data && responseData.meta) {
+            // Handle Laravel Resource Collection format
+            if (responseData && responseData.data && responseData.meta) {
                 // Laravel Resource Collection format
                 setPlots(responseData.data);
                 setPagination({
