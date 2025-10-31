@@ -168,7 +168,7 @@ export const mediaService = {
 
 export const settingService = {
     getAll: (params) => api.get('/admin/settings', { params }),
-    getByGroup: (group) => api.get(`/admin/settings/group/${group}`),
+    getByGroup: (group) => api.get(`/public/settings/group/${group}`),
     create: (data) => api.post('/admin/settings', data),
     update: (id, data) => api.put(`/admin/settings/${id}`, data),
     delete: (id) => api.delete(`/admin/settings/${id}`),

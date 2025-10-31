@@ -1,15 +1,29 @@
 import { Link } from 'react-router-dom';
-import React from "react";
+import React, { useState } from "react";
 import {
     MapIcon,
     ChartBarIcon,
     UserGroupIcon,
     ShieldCheckIcon,
     ArrowRightIcon,
-    CheckCircleIcon
+    CheckCircleIcon,
+    XMarkIcon
 } from '@heroicons/react/24/outline';
+import InteractiveMap from '../../components/InteractiveMap';
+import toast from 'react-hot-toast';
+import { leadService } from '../../services/api';
 
 export default function LandingPage() {
+    const [selectedPlot, setSelectedPlot] = useState(null);
+    const [showInquiryModal, setShowInquiryModal] = useState(false);
+    const [inquiryData, setInquiryData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        message: ''
+    });
+    const [submitting, setSubmitting] = useState(false);
+
     const features = [
         {
             icon: MapIcon,
@@ -40,6 +54,37 @@ export default function LandingPage() {
         { value: '24/7', label: 'Support' }
     ];
 
+    const handlePlotClick = (plot) => {
+        setSelectedPlot(plot);
+        if (plot.status.toLowerCase() === 'available') {
+            setShowInquiryModal(true);
+        }
+    };
+
+    const handleInquirySubmit = async (e) => {
+        e.preventDefault();
+
+        if (!selectedPlot) return;
+
+        try {
+            setSubmitting(true);
+            await leadService.create({
+                ...inquiryData,
+                plot_id: selectedPlot.id
+            });
+
+            toast.success('Inquiry submitted successfully! We will contact you soon.');
+            setShowInquiryModal(false);
+            setInquiryData({ name: '', email: '', phone: '', message: '' });
+            setSelectedPlot(null);
+        } catch (error) {
+            console.error('Error submitting inquiry:', error);
+            toast.error(error.response?.data?.message || 'Failed to submit inquiry');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-white">
             {/* Navigation */}
@@ -51,6 +96,9 @@ export default function LandingPage() {
                             <span className="ml-2 text-xl font-bold text-gray-900">TajMap</span>
                         </div>
                         <div className="hidden md:flex items-center space-x-8">
+                            <a href="#map" className="text-gray-600 hover:text-gray-900 transition">
+                                View Map
+                            </a>
                             <Link to="/plots" className="text-gray-600 hover:text-gray-900 transition">
                                 Browse Plots
                             </Link>
@@ -81,18 +129,18 @@ export default function LandingPage() {
                             From browsing available properties to managing leads, we've got you covered.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Link
-                                to="/plots"
+                            <a
+                                href="#map"
                                 className="inline-flex items-center justify-center px-8 py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition shadow-lg"
                             >
-                                Browse Plots
+                                View Interactive Map
                                 <ArrowRightIcon className="ml-2 h-5 w-5" />
-                            </Link>
+                            </a>
                             <Link
-                                to="/register"
+                                to="/plots"
                                 className="inline-flex items-center justify-center px-8 py-3 bg-white text-blue-600 text-lg font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition"
                             >
-                                Sign Up Free
+                                Browse All Plots
                             </Link>
                         </div>
                     </div>
@@ -110,6 +158,21 @@ export default function LandingPage() {
                             </div>
                         ))}
                     </div>
+                </div>
+            </section>
+
+            {/* Interactive Map Section */}
+            <section id="map" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-12">
+                        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                            Explore Our Interactive Map
+                        </h2>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                            Click on any plot to view details and submit an inquiry. Available plots are highlighted in green.
+                        </p>
+                    </div>
+                    <InteractiveMap onPlotClick={handlePlotClick} />
                 </div>
             </section>
 
@@ -174,12 +237,12 @@ export default function LandingPage() {
                             <p className="mb-6 text-blue-100">
                                 Join thousands of satisfied customers who found their dream property with us.
                             </p>
-                            <Link
-                                to="/register"
+                            <a
+                                href="#map"
                                 className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
                             >
-                                Create Free Account
-                            </Link>
+                                View Available Plots
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -204,6 +267,139 @@ export default function LandingPage() {
                 </div>
             </section>
 
+            {/* Inquiry Modal */}
+            {showInquiryModal && selectedPlot && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6">
+                            <div className="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-gray-900">Inquire About Plot</h2>
+                                    <p className="text-gray-600 mt-1">{selectedPlot.plot_number}</p>
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        setShowInquiryModal(false);
+                                        setSelectedPlot(null);
+                                    }}
+                                    className="text-gray-400 hover:text-gray-600"
+                                >
+                                    <XMarkIcon className="h-6 w-6" />
+                                </button>
+                            </div>
+
+                            {/* Plot Details */}
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p className="text-sm text-gray-600">Sector</p>
+                                        <p className="font-semibold">{selectedPlot.sector}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-600">Block</p>
+                                        <p className="font-semibold">{selectedPlot.block}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-600">Area</p>
+                                        <p className="font-semibold">{selectedPlot.area} sq. units</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-600">Price</p>
+                                        <p className="font-semibold">${parseFloat(selectedPlot.price).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                                {selectedPlot.description && (
+                                    <div className="mt-4">
+                                        <p className="text-sm text-gray-600">Description</p>
+                                        <p className="text-sm mt-1">{selectedPlot.description}</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Inquiry Form */}
+                            <form onSubmit={handleInquirySubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Your Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={inquiryData.name}
+                                        onChange={(e) => setInquiryData({ ...inquiryData, name: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="John Doe"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Email <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="email"
+                                            required
+                                            value={inquiryData.email}
+                                            onChange={(e) => setInquiryData({ ...inquiryData, email: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="john@example.com"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Phone <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="tel"
+                                            required
+                                            value={inquiryData.phone}
+                                            onChange={(e) => setInquiryData({ ...inquiryData, phone: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="+1 (555) 000-0000"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Message
+                                    </label>
+                                    <textarea
+                                        value={inquiryData.message}
+                                        onChange={(e) => setInquiryData({ ...inquiryData, message: e.target.value })}
+                                        rows="4"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="I'm interested in this plot..."
+                                    />
+                                </div>
+
+                                <div className="flex gap-3 justify-end pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowInquiryModal(false);
+                                            setSelectedPlot(null);
+                                        }}
+                                        className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                                        disabled={submitting}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={submitting}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
+                                    >
+                                        {submitting ? 'Submitting...' : 'Submit Inquiry'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Footer */}
             <footer className="bg-gray-900 text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
@@ -220,6 +416,7 @@ export default function LandingPage() {
                         <div>
                             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
                             <ul className="space-y-2 text-sm">
+                                <li><a href="#map" className="hover:text-white transition">View Map</a></li>
                                 <li><Link to="/plots" className="hover:text-white transition">Browse Plots</Link></li>
                                 <li><Link to="/login" className="hover:text-white transition">Login</Link></li>
                                 <li><Link to="/register" className="hover:text-white transition">Register</Link></li>

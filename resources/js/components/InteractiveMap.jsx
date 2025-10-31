@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { plotService } from '../services/api';
+import { plotService, settingService } from '../services/api';
 import toast from 'react-hot-toast';
 
 export default function InteractiveMap({ onPlotClick }) {
@@ -35,22 +35,39 @@ export default function InteractiveMap({ onPlotClick }) {
     const fetchMapData = async () => {
         try {
             setLoading(true);
-            const response = await plotService.getAll({ per_page: 1000 });
 
-            const plotsData = response.data?.data || response.data || [];
+            // Fetch plots
+            const plotsResponse = await plotService.getAll({ per_page: 1000 });
+            const plotsData = plotsResponse.data?.data || plotsResponse.data || [];
 
-            // Filter plots that have coordinates and base image
+            // Filter plots that have coordinates
             const mappedPlots = plotsData.filter(plot =>
                 plot.coordinates &&
-                plot.coordinates.length > 0 &&
-                plot.base_image
+                plot.coordinates.length > 0
             );
 
-            if (mappedPlots.length > 0 && mappedPlots[0].base_image) {
-                setBaseImage(mappedPlots[0].base_image.url);
-                setPlots(mappedPlots);
-            } else {
-                toast.error('No interactive map configured yet');
+            // Fetch base map from settings
+            try {
+                const settingsResponse = await settingService.getByGroup('map');
+                const settings = settingsResponse.data?.data || settingsResponse.data || {};
+
+                if (settings.base_map_url && mappedPlots.length > 0) {
+                    setBaseImage(settings.base_map_url);
+                    setPlots(mappedPlots);
+                } else if (!settings.base_map_url) {
+                    toast.error('No base map configured. Admin needs to upload a base map.');
+                } else if (mappedPlots.length === 0) {
+                    toast.error('No plots configured yet. Admin needs to add plot coordinates.');
+                }
+            } catch (settingsError) {
+                console.error('Error fetching settings:', settingsError);
+                // Fallback: try to get base image from plots
+                if (mappedPlots.length > 0 && mappedPlots[0].base_image) {
+                    setBaseImage(mappedPlots[0].base_image.url);
+                    setPlots(mappedPlots);
+                } else {
+                    toast.error('No interactive map configured yet');
+                }
             }
         } catch (error) {
             console.error('Error fetching map data:', error);
