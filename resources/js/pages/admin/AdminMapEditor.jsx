@@ -21,8 +21,24 @@ export default function AdminMapEditor() {
     const [selectedPointIndex, setSelectedPointIndex] = useState(null);
     const [isDraggingPoint, setIsDraggingPoint] = useState(false);
     const [rectangleStart, setRectangleStart] = useState(null);
+    const [rectangleEnd, setRectangleEnd] = useState(null);
+    const [currentMousePos, setCurrentMousePos] = useState(null);
     const [history, setHistory] = useState([]);
     const [historyIndex, setHistoryIndex] = useState(-1);
+
+    // New plot creation state
+    const [isCreatingNewPlot, setIsCreatingNewPlot] = useState(false);
+    const [showPlotDataModal, setShowPlotDataModal] = useState(false);
+    const [newPlotData, setNewPlotData] = useState({
+        plot_number: '',
+        sector: '',
+        block: '',
+        area: '',
+        price: '',
+        status: 'available',
+        description: ''
+    });
+    const [isSavingPlot, setIsSavingPlot] = useState(false);
 
     const containerRef = useRef(null);
     const imageRef = useRef(null);
@@ -137,7 +153,7 @@ export default function AdminMapEditor() {
     };
 
     const handleImageClick = (e) => {
-        if (!selectedPlot) return;
+        if (!isDrawing && !isCreatingNewPlot) return;
 
         const rect = imageRef.current.getBoundingClientRect();
         const x = (e.clientX - rect.left - panOffset.x) / (rect.width * zoom);
@@ -153,7 +169,7 @@ export default function AdminMapEditor() {
     };
 
     const handleMouseDown = (e) => {
-        if (!selectedPlot) return;
+        if (!isDrawing && !isCreatingNewPlot) return;
 
         const rect = imageRef.current.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -177,11 +193,17 @@ export default function AdminMapEditor() {
     };
 
     const handleMouseMove = (e) => {
-        if (!selectedPlot || !imageRef.current) return;
+        if (!isDrawing && !isCreatingNewPlot) return;
+        if (!imageRef.current) return;
 
         const rect = imageRef.current.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
+
+        // Update current mouse position for preview
+        const x = (mouseX - panOffset.x) / (rect.width * zoom);
+        const y = (mouseY - panOffset.y) / (rect.height * zoom);
+        setCurrentMousePos({ x, y });
 
         if (isPanning && currentTool === 'pan') {
             setPanOffset({
@@ -189,12 +211,12 @@ export default function AdminMapEditor() {
                 y: mouseY - panStart.y
             });
         } else if (isDraggingPoint && currentTool === 'edit' && selectedPointIndex !== null) {
-            const x = (mouseX - panOffset.x) / (rect.width * zoom);
-            const y = (mouseY - panOffset.y) / (rect.height * zoom);
-
             const newPoints = [...currentPoints];
             newPoints[selectedPointIndex] = { x, y };
             setCurrentPoints(newPoints);
+        } else if (currentTool === 'rectangle' && rectangleStart) {
+            // Update rectangle end point for live preview
+            setRectangleEnd({ x, y });
         }
     };
 
@@ -204,24 +226,18 @@ export default function AdminMapEditor() {
         } else if (currentTool === 'edit' && isDraggingPoint) {
             setIsDraggingPoint(false);
             addToHistory(currentPoints);
-        } else if (currentTool === 'rectangle' && rectangleStart) {
-            const rect = imageRef.current.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-
-            const x = (mouseX - panOffset.x) / (rect.width * zoom);
-            const y = (mouseY - panOffset.y) / (rect.height * zoom);
-
+        } else if (currentTool === 'rectangle' && rectangleStart && rectangleEnd) {
             // Create rectangle (4 points: top-left, top-right, bottom-right, bottom-left)
             const newPoints = [
                 rectangleStart,
-                { x, y: rectangleStart.y },
-                { x, y },
-                { x: rectangleStart.x, y }
+                { x: rectangleEnd.x, y: rectangleStart.y },
+                rectangleEnd,
+                { x: rectangleStart.x, y: rectangleEnd.y }
             ];
             setCurrentPoints(newPoints);
             addToHistory(newPoints);
             setRectangleStart(null);
+            setRectangleEnd(null);
         }
     };
 
@@ -263,6 +279,7 @@ export default function AdminMapEditor() {
     const handleStartDrawing = (plot) => {
         setSelectedPlot(plot);
         setIsDrawing(true);
+        setIsCreatingNewPlot(false);
         const points = plot.coordinates || [];
         setCurrentPoints(points);
         setHistory([points]);
@@ -270,6 +287,78 @@ export default function AdminMapEditor() {
         setCurrentTool('polygon');
         setZoom(1);
         setPanOffset({ x: 0, y: 0 });
+        setRectangleStart(null);
+        setRectangleEnd(null);
+        setCurrentMousePos(null);
+    };
+
+    const handleStartNewPlot = () => {
+        setIsCreatingNewPlot(true);
+        setIsDrawing(false);
+        setSelectedPlot(null);
+        setCurrentPoints([]);
+        setHistory([[]]);
+        setHistoryIndex(0);
+        setCurrentTool('polygon');
+        setZoom(1);
+        setPanOffset({ x: 0, y: 0 });
+        setRectangleStart(null);
+        setRectangleEnd(null);
+        setCurrentMousePos(null);
+        setNewPlotData({
+            plot_number: '',
+            sector: '',
+            block: '',
+            area: '',
+            price: '',
+            status: 'available',
+            description: ''
+        });
+    };
+
+    const handleNextToPlotData = () => {
+        if (currentPoints.length < 3) {
+            toast.error('Please draw at least 3 points to create a polygon');
+            return;
+        }
+        setShowPlotDataModal(true);
+    };
+
+    const handleSaveNewPlot = async (e) => {
+        e.preventDefault();
+
+        if (currentPoints.length < 3) {
+            toast.error('Please draw at least 3 points to create a polygon');
+            return;
+        }
+
+        try {
+            setIsSavingPlot(true);
+
+            const plotData = {
+                ...newPlotData,
+                coordinates: currentPoints,
+                area: parseFloat(newPlotData.area),
+                price: parseFloat(newPlotData.price)
+            };
+
+            await plotService.adminCreate(plotData);
+
+            toast.success('Plot created successfully');
+            setShowPlotDataModal(false);
+            setIsCreatingNewPlot(false);
+            setCurrentPoints([]);
+            setHistory([]);
+            setHistoryIndex(-1);
+            setZoom(1);
+            setPanOffset({ x: 0, y: 0 });
+            fetchPlots();
+        } catch (error) {
+            console.error('Error creating plot:', error);
+            toast.error('Failed to create plot');
+        } finally {
+            setIsSavingPlot(false);
+        }
     };
 
     const handleSaveCoordinates = async () => {
@@ -302,12 +391,17 @@ export default function AdminMapEditor() {
 
     const handleCancelDrawing = () => {
         setIsDrawing(false);
+        setIsCreatingNewPlot(false);
         setCurrentPoints([]);
         setSelectedPlot(null);
         setHistory([]);
         setHistoryIndex(-1);
         setZoom(1);
         setPanOffset({ x: 0, y: 0 });
+        setShowPlotDataModal(false);
+        setRectangleStart(null);
+        setRectangleEnd(null);
+        setCurrentMousePos(null);
     };
 
     const handleClearCoordinates = async (plot) => {
@@ -365,7 +459,7 @@ export default function AdminMapEditor() {
     // Keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (!isDrawing) return;
+            if (!isDrawing && !isCreatingNewPlot) return;
 
             if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
                 e.preventDefault();
@@ -383,7 +477,7 @@ export default function AdminMapEditor() {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isDrawing, historyIndex, history, selectedPointIndex, currentPoints]);
+    }, [isDrawing, isCreatingNewPlot, historyIndex, history, selectedPointIndex, currentPoints]);
 
     if (loading) {
         return (
@@ -394,7 +488,7 @@ export default function AdminMapEditor() {
     }
 
     const getCursorStyle = () => {
-        if (!isDrawing) return 'default';
+        if (!isDrawing && !isCreatingNewPlot) return 'default';
         if (currentTool === 'pan') return isPanning ? 'grabbing' : 'grab';
         if (currentTool === 'polygon' || currentTool === 'rectangle') return 'crosshair';
         if (currentTool === 'edit') return isDraggingPoint ? 'grabbing' : 'pointer';
@@ -408,13 +502,26 @@ export default function AdminMapEditor() {
                     <h1 className="text-2xl font-bold">Interactive Map Editor</h1>
                     <p className="text-gray-600 mt-1">Upload base map and define plot boundaries</p>
                 </div>
-                <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
-                >
-                    {uploading ? 'Uploading...' : baseImage ? 'Change Base Map' : 'Upload Base Map'}
-                </button>
+                <div className="flex gap-2">
+                    {baseImage && !isDrawing && !isCreatingNewPlot && (
+                        <button
+                            onClick={handleStartNewPlot}
+                            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add New Plot
+                        </button>
+                    )}
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
+                    >
+                        {uploading ? 'Uploading...' : baseImage ? 'Change Base Map' : 'Upload Base Map'}
+                    </button>
+                </div>
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -453,7 +560,7 @@ export default function AdminMapEditor() {
                                             ? 'border-green-200 bg-green-50 hover:border-green-400'
                                             : 'border-gray-200 hover:border-gray-400'
                                     }`}
-                                    onClick={() => !isDrawing && handleStartDrawing(plot)}
+                                    onClick={() => !isDrawing && !isCreatingNewPlot && handleStartDrawing(plot)}
                                 >
                                     <div className="flex justify-between items-start">
                                         <div>
@@ -487,7 +594,7 @@ export default function AdminMapEditor() {
 
                     {/* Map Editor */}
                     <div className="lg:col-span-3 space-y-4">
-                        {isDrawing && (
+                        {(isDrawing || isCreatingNewPlot) && (
                             <>
                                 {/* Toolbar */}
                                 <div className="bg-white border border-gray-200 rounded-lg p-4">
@@ -623,13 +730,13 @@ export default function AdminMapEditor() {
                                 </div>
 
                                 {/* Status Bar */}
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <div className={`border rounded-lg p-4 ${isCreatingNewPlot ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'}`}>
                                     <div className="flex justify-between items-center">
                                         <div>
-                                            <h3 className="font-bold text-blue-900">
-                                                Editing: {selectedPlot.plot_number}
+                                            <h3 className={`font-bold ${isCreatingNewPlot ? 'text-green-900' : 'text-blue-900'}`}>
+                                                {isCreatingNewPlot ? 'Creating New Plot' : `Editing: ${selectedPlot.plot_number}`}
                                             </h3>
-                                            <p className="text-sm text-blue-700 mt-1">
+                                            <p className={`text-sm mt-1 ${isCreatingNewPlot ? 'text-green-700' : 'text-blue-700'}`}>
                                                 {currentTool === 'polygon' && 'Click on the map to add points'}
                                                 {currentTool === 'rectangle' && 'Click and drag to create a rectangle'}
                                                 {currentTool === 'pan' && 'Drag to pan the view'}
@@ -643,13 +750,23 @@ export default function AdminMapEditor() {
                                             >
                                                 Cancel
                                             </button>
-                                            <button
-                                                onClick={handleSaveCoordinates}
-                                                disabled={currentPoints.length < 3}
-                                                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
-                                            >
-                                                Save
-                                            </button>
+                                            {isCreatingNewPlot ? (
+                                                <button
+                                                    onClick={handleNextToPlotData}
+                                                    disabled={currentPoints.length < 3}
+                                                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
+                                                >
+                                                    Next: Enter Details
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={handleSaveCoordinates}
+                                                    disabled={currentPoints.length < 3}
+                                                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
+                                                >
+                                                    Save
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -673,6 +790,7 @@ export default function AdminMapEditor() {
                                 onMouseLeave={() => {
                                     setIsPanning(false);
                                     setIsDraggingPoint(false);
+                                    setCurrentMousePos(null);
                                 }}
                             >
                                 <img
@@ -682,7 +800,7 @@ export default function AdminMapEditor() {
                                     className="max-w-full h-auto select-none"
                                     style={{
                                         width: `${100 * zoom}%`,
-                                        pointerEvents: isDrawing ? 'none' : 'auto'
+                                        pointerEvents: (isDrawing || isCreatingNewPlot) ? 'none' : 'auto'
                                     }}
                                     onClick={handleImageClick}
                                     onLoad={() => {
@@ -727,8 +845,8 @@ export default function AdminMapEditor() {
                                             <>
                                                 <polygon
                                                     points={createPolygonPoints(currentPoints)}
-                                                    fill="rgba(59, 130, 246, 0.3)"
-                                                    stroke="rgba(59, 130, 246, 0.8)"
+                                                    fill={isCreatingNewPlot ? "rgba(34, 197, 94, 0.3)" : "rgba(59, 130, 246, 0.3)"}
+                                                    stroke={isCreatingNewPlot ? "rgba(34, 197, 94, 0.8)" : "rgba(59, 130, 246, 0.8)"}
                                                     strokeWidth="3"
                                                 />
                                                 {convertCoordinates(currentPoints).map((point, index) => (
@@ -737,7 +855,7 @@ export default function AdminMapEditor() {
                                                         cx={point.x}
                                                         cy={point.y}
                                                         r={selectedPointIndex === index ? "8" : "5"}
-                                                        fill={selectedPointIndex === index ? "rgb(239, 68, 68)" : "rgb(59, 130, 246)"}
+                                                        fill={selectedPointIndex === index ? "rgb(239, 68, 68)" : (isCreatingNewPlot ? "rgb(34, 197, 94)" : "rgb(59, 130, 246)")}
                                                         stroke="white"
                                                         strokeWidth="2"
                                                         style={{
@@ -755,15 +873,28 @@ export default function AdminMapEditor() {
                                             </>
                                         )}
 
+                                        {/* Polygon preview line (from last point to cursor) */}
+                                        {currentTool === 'polygon' && currentPoints.length > 0 && currentMousePos && (
+                                            <line
+                                                x1={currentPoints[currentPoints.length - 1].x * dimensions.width * zoom}
+                                                y1={currentPoints[currentPoints.length - 1].y * dimensions.height * zoom}
+                                                x2={currentMousePos.x * dimensions.width * zoom}
+                                                y2={currentMousePos.y * dimensions.height * zoom}
+                                                stroke={isCreatingNewPlot ? "rgba(34, 197, 94, 0.6)" : "rgba(59, 130, 246, 0.6)"}
+                                                strokeWidth="2"
+                                                strokeDasharray="5,5"
+                                            />
+                                        )}
+
                                         {/* Rectangle preview while dragging */}
-                                        {currentTool === 'rectangle' && rectangleStart && (
+                                        {currentTool === 'rectangle' && rectangleStart && rectangleEnd && (
                                             <rect
-                                                x={rectangleStart.x * dimensions.width * zoom}
-                                                y={rectangleStart.y * dimensions.height * zoom}
-                                                width="0"
-                                                height="0"
-                                                fill="rgba(59, 130, 246, 0.2)"
-                                                stroke="rgba(59, 130, 246, 0.8)"
+                                                x={Math.min(rectangleStart.x, rectangleEnd.x) * dimensions.width * zoom}
+                                                y={Math.min(rectangleStart.y, rectangleEnd.y) * dimensions.height * zoom}
+                                                width={Math.abs(rectangleEnd.x - rectangleStart.x) * dimensions.width * zoom}
+                                                height={Math.abs(rectangleEnd.y - rectangleStart.y) * dimensions.height * zoom}
+                                                fill={isCreatingNewPlot ? "rgba(34, 197, 94, 0.2)" : "rgba(59, 130, 246, 0.2)"}
+                                                stroke={isCreatingNewPlot ? "rgba(34, 197, 94, 0.8)" : "rgba(59, 130, 246, 0.8)"}
                                                 strokeWidth="2"
                                                 strokeDasharray="5,5"
                                             />
@@ -771,6 +902,131 @@ export default function AdminMapEditor() {
                                     </svg>
                                 )}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Plot Data Modal */}
+            {showPlotDataModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6">
+                            <h2 className="text-2xl font-bold mb-4">Enter Plot Details</h2>
+                            <form onSubmit={handleSaveNewPlot} className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Plot Number <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={newPlotData.plot_number}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, plot_number: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., P-001"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Status <span className="text-red-500">*</span>
+                                        </label>
+                                        <select
+                                            required
+                                            value={newPlotData.status}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, status: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option value="available">Available</option>
+                                            <option value="reserved">Reserved</option>
+                                            <option value="sold">Sold</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Sector</label>
+                                        <input
+                                            type="text"
+                                            value={newPlotData.sector}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, sector: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., North"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Block</label>
+                                        <input
+                                            type="text"
+                                            value={newPlotData.block}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, block: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., A"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Area (sq m) <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="number"
+                                            required
+                                            step="0.01"
+                                            min="0"
+                                            value={newPlotData.area}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, area: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., 500.00"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Price ($) <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="number"
+                                            required
+                                            step="0.01"
+                                            min="0"
+                                            value={newPlotData.price}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, price: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., 50000.00"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    <textarea
+                                        value={newPlotData.description}
+                                        onChange={(e) => setNewPlotData({ ...newPlotData, description: e.target.value })}
+                                        rows="3"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Additional plot details..."
+                                    />
+                                </div>
+                                <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                    <p className="text-sm text-blue-800">
+                                        <strong>Coordinates:</strong> {currentPoints.length} points drawn on map
+                                    </p>
+                                </div>
+                                <div className="flex gap-3 justify-end pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPlotDataModal(false)}
+                                        className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                                        disabled={isSavingPlot}
+                                    >
+                                        Back to Drawing
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSavingPlot}
+                                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
+                                    >
+                                        {isSavingPlot ? 'Creating...' : 'Create Plot'}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -784,9 +1040,9 @@ export default function AdminMapEditor() {
                         <h4 className="font-semibold mb-1">Basic Steps:</h4>
                         <ol className="list-decimal list-inside space-y-1">
                             <li>Upload a master plan image</li>
-                            <li>Select a plot from the left panel</li>
-                            <li>Use tools to define boundaries</li>
-                            <li>Click "Save" when done</li>
+                            <li>Click "Add New Plot" or select existing plot</li>
+                            <li>Use tools to draw/edit boundaries</li>
+                            <li>Enter plot details and save</li>
                         </ol>
                     </div>
                     <div>
