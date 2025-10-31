@@ -12,7 +12,13 @@ import {
     MagnifyingGlassIcon,
     XMarkIcon,
     HomeIcon,
-    CheckCircleIcon
+    CheckCircleIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    CurrencyDollarIcon,
+    ScaleIcon,
+    MapPinIcon,
+    AdjustmentsHorizontalIcon
 } from '@heroicons/react/24/outline';
 
 export default function PlotListPage() {
@@ -24,15 +30,96 @@ export default function PlotListPage() {
     const [leadForm, setLeadForm] = useState({ name: '', phone: '', email: '', message: '' });
     const [submitting, setSubmitting] = useState(false);
 
+    // Pagination state
+    const [pagination, setPagination] = useState({
+        current_page: 1,
+        last_page: 1,
+        per_page: 12,
+        total: 0,
+    });
+
+    // Sectors and blocks for filters
+    const [sectors, setSectors] = useState([]);
+    const [blocks, setBlocks] = useState([]);
+
+    // All plots for map view (without pagination)
+    const [allPlots, setAllPlots] = useState([]);
+
     useEffect(() => {
-        fetchPlots();
-    }, [filters]);
+        fetchSectors();
+    }, []);
+
+    useEffect(() => {
+        if (filters.sector) {
+            fetchBlocks(filters.sector);
+        }
+    }, [filters.sector]);
+
+    useEffect(() => {
+        if (viewMode === 'list') {
+            fetchPlots();
+        } else {
+            fetchAllPlots();
+        }
+    }, [filters, pagination.current_page, viewMode]);
+
+    const fetchSectors = async () => {
+        try {
+            const response = await plotService.getSectors();
+            setSectors(response.data?.sectors || []);
+        } catch (error) {
+            console.error('Error fetching sectors:', error);
+        }
+    };
+
+    const fetchBlocks = async (sector) => {
+        try {
+            const response = await plotService.getBlocks({ sector });
+            setBlocks(response.data?.blocks || []);
+        } catch (error) {
+            console.error('Error fetching blocks:', error);
+        }
+    };
 
     const fetchPlots = async () => {
         setLoading(true);
         try {
-            const { data } = await plotService.getAll({ ...filters, per_page: 1000 });
-            setPlots(data.data);
+            const response = await plotService.getAll({
+                ...filters,
+                per_page: pagination.per_page,
+                page: pagination.current_page,
+            });
+
+            const data = response.data;
+
+            // Check if pagination data is in meta object (Laravel Resource) or at root level
+            const paginationData = data.meta || data;
+
+            setPlots(data.data || []);
+
+            // Update pagination metadata
+            setPagination({
+                current_page: paginationData.current_page || 1,
+                last_page: paginationData.last_page || 1,
+                per_page: paginationData.per_page || 12,
+                total: paginationData.total || 0,
+                from: paginationData.from || 0,
+                to: paginationData.to || 0,
+            });
+        } catch (error) {
+            console.error('Error fetching plots:', error);
+            toast.error('Failed to load plots');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchAllPlots = async () => {
+        setLoading(true);
+        try {
+            const response = await plotService.getAll({ ...filters, per_page: 1000 });
+            const data = response.data;
+            setAllPlots(data.data || []);
         } catch (error) {
             console.error('Error fetching plots:', error);
             toast.error('Failed to load plots');
@@ -62,12 +149,41 @@ export default function PlotListPage() {
         }
     };
 
-    // Calculate statistics
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+        setPagination(prev => ({ ...prev, current_page: 1 })); // Reset to page 1 when filters change
+    };
+
+    const handleResetFilters = () => {
+        // Explicitly clear all filter fields with null instead of empty strings
+        setFilters({
+            search: null,
+            status: null,
+            sector: null,
+            block: null,
+            min_price: null,
+            max_price: null,
+            min_area: null,
+            max_area: null,
+            sort_by: null,
+            sort_order: null
+        });
+        setBlocks([]);
+        setPagination(prev => ({ ...prev, current_page: 1 }));
+    };
+
+    const handlePageChange = (page) => {
+        setPagination(prev => ({ ...prev, current_page: page }));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Calculate statistics from all plots for map view or paginated data for list view
+    const displayPlots = viewMode === 'map' ? allPlots : plots;
     const stats = {
-        total: plots.length,
-        available: plots.filter(p => p.status === 'available').length,
-        reserved: plots.filter(p => p.status === 'reserved').length,
-        sold: plots.filter(p => p.status === 'sold').length,
+        total: viewMode === 'map' ? allPlots.length : pagination.total,
+        available: displayPlots.filter(p => p.status === 'available').length,
+        reserved: displayPlots.filter(p => p.status === 'reserved').length,
+        sold: displayPlots.filter(p => p.status === 'sold').length,
     };
 
     return (
@@ -133,7 +249,7 @@ export default function PlotListPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col lg:flex-row gap-6">
                     {/* Filters Sidebar */}
-                    <aside className="lg:w-72 space-y-4">
+                    <aside className="lg:w-80 space-y-4">
                         <div className="bg-white rounded-lg shadow p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <FunnelIcon className="h-5 w-5 text-gray-600" />
@@ -141,24 +257,7 @@ export default function PlotListPage() {
                             </div>
 
                             <div className="space-y-4">
-                                {/* Status Filter */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Status
-                                    </label>
-                                    <select
-                                        value={filters.status || ''}
-                                        onChange={(e) => setFilters({ status: e.target.value || null })}
-                                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    >
-                                        <option value="">All Statuses</option>
-                                        <option value="available">Available</option>
-                                        <option value="reserved">Reserved</option>
-                                        <option value="sold">Sold</option>
-                                    </select>
-                                </div>
-
-                                {/* Search Filter */}
+                                {/* Search Filter - Moved to Top */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Search Plot Number
@@ -168,16 +267,143 @@ export default function PlotListPage() {
                                         <input
                                             type="text"
                                             value={filters.search || ''}
-                                            onChange={(e) => setFilters({ search: e.target.value })}
+                                            onChange={(e) => handleFilterChange({ ...filters, search: e.target.value })}
                                             placeholder="e.g., P-001"
                                             className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
                                     </div>
                                 </div>
 
+                                {/* Status Filter */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Status
+                                    </label>
+                                    <select
+                                        value={filters.status || ''}
+                                        onChange={(e) => handleFilterChange({ ...filters, status: e.target.value || null })}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        <option value="">All Statuses</option>
+                                        <option value="available">Available</option>
+                                        <option value="reserved">Reserved</option>
+                                        <option value="sold">Sold</option>
+                                    </select>
+                                </div>
+
+                                {/* Sector Filter */}
+                                <div>
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <MapPinIcon className="h-4 w-4" />
+                                        Sector
+                                    </label>
+                                    <select
+                                        value={filters.sector || ''}
+                                        onChange={(e) => handleFilterChange({ ...filters, sector: e.target.value || null, block: null })}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        <option value="">All Sectors</option>
+                                        {sectors.map(sector => (
+                                            <option key={sector} value={sector}>{sector}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Block Filter */}
+                                <div>
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <Squares2X2Icon className="h-4 w-4" />
+                                        Block
+                                    </label>
+                                    <select
+                                        value={filters.block || ''}
+                                        onChange={(e) => handleFilterChange({ ...filters, block: e.target.value || null })}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        disabled={!filters.sector}
+                                    >
+                                        <option value="">All Blocks</option>
+                                        {blocks.map(block => (
+                                            <option key={block} value={block}>{block}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Price Range */}
+                                <div>
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <CurrencyDollarIcon className="h-4 w-4" />
+                                        Price Range
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <input
+                                            type="number"
+                                            placeholder="Min"
+                                            value={filters.min_price || ''}
+                                            onChange={(e) => handleFilterChange({ ...filters, min_price: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <input
+                                            type="number"
+                                            placeholder="Max"
+                                            value={filters.max_price || ''}
+                                            onChange={(e) => handleFilterChange({ ...filters, max_price: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Area Range */}
+                                <div>
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <ScaleIcon className="h-4 w-4" />
+                                        Area Range (sq. units)
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <input
+                                            type="number"
+                                            placeholder="Min"
+                                            value={filters.min_area || ''}
+                                            onChange={(e) => handleFilterChange({ ...filters, min_area: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <input
+                                            type="number"
+                                            placeholder="Max"
+                                            value={filters.max_area || ''}
+                                            onChange={(e) => handleFilterChange({ ...filters, max_area: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Sort Options */}
+                                <div>
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <AdjustmentsHorizontalIcon className="h-4 w-4" />
+                                        Sort By
+                                    </label>
+                                    <select
+                                        value={`${filters.sort_by || 'created_at'}-${filters.sort_order || 'desc'}`}
+                                        onChange={(e) => {
+                                            const [sort_by, sort_order] = e.target.value.split('-');
+                                            handleFilterChange({ ...filters, sort_by, sort_order });
+                                        }}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        <option value="created_at-desc">Newest First</option>
+                                        <option value="created_at-asc">Oldest First</option>
+                                        <option value="price-asc">Price: Low to High</option>
+                                        <option value="price-desc">Price: High to Low</option>
+                                        <option value="area-asc">Area: Small to Large</option>
+                                        <option value="area-desc">Area: Large to Small</option>
+                                        <option value="plot_number-asc">Plot Number: A-Z</option>
+                                        <option value="plot_number-desc">Plot Number: Z-A</option>
+                                    </select>
+                                </div>
+
                                 {/* Reset Button */}
                                 <button
-                                    onClick={() => setFilters({})}
+                                    onClick={handleResetFilters}
                                     className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition font-medium"
                                 >
                                     Reset Filters
@@ -253,7 +479,18 @@ export default function PlotListPage() {
                                     </button>
                                 </div>
                                 <div className="text-gray-600 font-medium">
-                                    <span className="text-blue-600 font-bold">{plots.length}</span> {plots.length === 1 ? 'plot' : 'plots'} found
+                                    {viewMode === 'list' && pagination.total > 0 ? (
+                                        <span>
+                                            Showing <span className="text-blue-600 font-bold">{pagination.from}</span> to{' '}
+                                            <span className="text-blue-600 font-bold">{pagination.to}</span> of{' '}
+                                            <span className="text-blue-600 font-bold">{pagination.total}</span> plots
+                                        </span>
+                                    ) : (
+                                        <span>
+                                            <span className="text-blue-600 font-bold">{displayPlots.length}</span>{' '}
+                                            {displayPlots.length === 1 ? 'plot' : 'plots'} found
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -264,13 +501,13 @@ export default function PlotListPage() {
                                 <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto"></div>
                                 <p className="mt-6 text-gray-600 text-lg">Loading plots...</p>
                             </div>
-                        ) : plots.length === 0 ? (
+                        ) : displayPlots.length === 0 ? (
                             <div className="bg-white rounded-lg shadow p-20 text-center">
                                 <Squares2X2Icon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                                 <h3 className="text-xl font-bold text-gray-900 mb-2">No plots found</h3>
                                 <p className="text-gray-600 mb-4">Try adjusting your filters to see more results</p>
                                 <button
-                                    onClick={() => setFilters({})}
+                                    onClick={handleResetFilters}
                                     className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
                                 >
                                     Reset Filters
@@ -278,69 +515,134 @@ export default function PlotListPage() {
                             </div>
                         ) : viewMode === 'map' ? (
                             <div>
-                                <InteractiveMap onPlotClick={handlePlotClick} />
+                                <InteractiveMap onPlotClick={handlePlotClick} filters={filters} />
                             </div>
                         ) : (
-                            <div className="grid gap-6">
-                                {plots.map(plot => (
-                                    <div key={plot.id} className="bg-white rounded-lg shadow hover:shadow-lg transition">
-                                        <div className="p-6">
-                                            <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                                                <div className="flex-1">
-                                                    <div className="flex items-start justify-between gap-4">
-                                                        <div>
-                                                            <h3 className="text-2xl font-bold text-gray-900">{plot.plot_number}</h3>
-                                                            <p className="text-gray-600 mt-1">
-                                                                {plot.sector && `Sector ${plot.sector}`}
-                                                                {plot.block && `, Block ${plot.block}`}
-                                                            </p>
+                            <>
+                                <div className="grid gap-6">
+                                    {plots.map(plot => (
+                                        <div key={plot.id} className="bg-white rounded-lg shadow hover:shadow-lg transition">
+                                            <div className="p-6">
+                                                <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                                                    <div className="flex-1">
+                                                        <div className="flex items-start justify-between gap-4">
+                                                            <div>
+                                                                <h3 className="text-2xl font-bold text-gray-900">{plot.plot_number}</h3>
+                                                                <p className="text-gray-600 mt-1">
+                                                                    {plot.sector && `Sector ${plot.sector}`}
+                                                                    {plot.block && `, Block ${plot.block}`}
+                                                                </p>
+                                                            </div>
+                                                            <span className={`px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap ${
+                                                                plot.status === 'available' ? 'bg-green-100 text-green-800' :
+                                                                plot.status === 'reserved' ? 'bg-yellow-100 text-yellow-800' :
+                                                                'bg-red-100 text-red-800'
+                                                            }`}>
+                                                                {plot.status}
+                                                            </span>
                                                         </div>
-                                                        <span className={`px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap ${
-                                                            plot.status === 'available' ? 'bg-green-100 text-green-800' :
-                                                            plot.status === 'reserved' ? 'bg-yellow-100 text-yellow-800' :
-                                                            'bg-red-100 text-red-800'
-                                                        }`}>
-                                                            {plot.status}
-                                                        </span>
+
+                                                        <div className="mt-4 grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <p className="text-sm text-gray-600">Area</p>
+                                                                <p className="text-lg font-semibold text-gray-900">{plot.area} sq. units</p>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm text-gray-600">Price</p>
+                                                                <p className="text-lg font-semibold text-gray-900">PKR {parseFloat(plot.price).toLocaleString()}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        {plot.description && (
+                                                            <div className="mt-4">
+                                                                <p className="text-sm text-gray-600">Description</p>
+                                                                <p className="text-gray-700 mt-1">{plot.description}</p>
+                                                            </div>
+                                                        )}
                                                     </div>
 
-                                                    <div className="mt-4 grid grid-cols-2 gap-4">
-                                                        <div>
-                                                            <p className="text-sm text-gray-600">Area</p>
-                                                            <p className="text-lg font-semibold text-gray-900">{plot.area} sq. units</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-sm text-gray-600">Price</p>
-                                                            <p className="text-lg font-semibold text-gray-900">${parseFloat(plot.price).toLocaleString()}</p>
-                                                        </div>
+                                                    <div className="flex flex-col gap-2 w-full md:w-auto">
+                                                        <button
+                                                            onClick={() => handlePlotClick(plot)}
+                                                            className={`px-6 py-3 rounded-md font-semibold transition whitespace-nowrap ${
+                                                                plot.status === 'available'
+                                                                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                                                    : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                                                            }`}
+                                                            disabled={plot.status !== 'available'}
+                                                        >
+                                                            {plot.status === 'available' ? 'Inquire Now' : 'Not Available'}
+                                                        </button>
                                                     </div>
-
-                                                    {plot.description && (
-                                                        <div className="mt-4">
-                                                            <p className="text-sm text-gray-600">Description</p>
-                                                            <p className="text-gray-700 mt-1">{plot.description}</p>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <div className="flex flex-col gap-2 w-full md:w-auto">
-                                                    <button
-                                                        onClick={() => handlePlotClick(plot)}
-                                                        className={`px-6 py-3 rounded-md font-semibold transition whitespace-nowrap ${
-                                                            plot.status === 'available'
-                                                                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                                                : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                                                        }`}
-                                                        disabled={plot.status !== 'available'}
-                                                    >
-                                                        {plot.status === 'available' ? 'Inquire Now' : 'Not Available'}
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
+                                    ))}
+                                </div>
+
+                                {/* Pagination Controls */}
+                                {pagination.last_page > 1 && (
+                                    <div className="bg-white rounded-lg shadow p-4">
+                                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                            <div className="text-sm text-gray-600">
+                                                Page {pagination.current_page} of {pagination.last_page}
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                {/* Previous Button */}
+                                                <button
+                                                    onClick={() => handlePageChange(pagination.current_page - 1)}
+                                                    disabled={pagination.current_page === 1}
+                                                    className="px-3 py-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                                >
+                                                    <ChevronLeftIcon className="h-5 w-5" />
+                                                </button>
+
+                                                {/* Page Numbers */}
+                                                <div className="flex gap-1">
+                                                    {[...Array(pagination.last_page)].map((_, index) => {
+                                                        const page = index + 1;
+                                                        // Show first, last, current, and adjacent pages
+                                                        if (
+                                                            page === 1 ||
+                                                            page === pagination.last_page ||
+                                                            (page >= pagination.current_page - 1 && page <= pagination.current_page + 1)
+                                                        ) {
+                                                            return (
+                                                                <button
+                                                                    key={page}
+                                                                    onClick={() => handlePageChange(page)}
+                                                                    className={`px-4 py-2 rounded-md transition ${
+                                                                        page === pagination.current_page
+                                                                            ? 'bg-blue-600 text-white font-semibold'
+                                                                            : 'border border-gray-300 hover:bg-gray-50'
+                                                                    }`}
+                                                                >
+                                                                    {page}
+                                                                </button>
+                                                            );
+                                                        } else if (
+                                                            page === pagination.current_page - 2 ||
+                                                            page === pagination.current_page + 2
+                                                        ) {
+                                                            return <span key={page} className="px-2 py-2 text-gray-500">...</span>;
+                                                        }
+                                                        return null;
+                                                    })}
+                                                </div>
+
+                                                {/* Next Button */}
+                                                <button
+                                                    onClick={() => handlePageChange(pagination.current_page + 1)}
+                                                    disabled={pagination.current_page === pagination.last_page}
+                                                    className="px-3 py-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                                >
+                                                    <ChevronRightIcon className="h-5 w-5" />
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                ))}
-                            </div>
+                                )}
+                            </>
                         )}
                     </main>
                 </div>
@@ -392,7 +694,7 @@ export default function PlotListPage() {
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600">Price</p>
-                                        <p className="font-semibold">${parseFloat(selectedPlot.price).toLocaleString()}</p>
+                                        <p className="font-semibold">PKR {parseFloat(selectedPlot.price).toLocaleString()}</p>
                                     </div>
                                 </div>
                                 {selectedPlot.description && (

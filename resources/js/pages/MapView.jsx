@@ -67,7 +67,7 @@ export default function MapView() {
                                     <div>
                                         <label className="text-sm font-semibold text-gray-700">Price</label>
                                         <p className="text-gray-900 mt-1 text-xl font-bold">
-                                            ${parseFloat(selectedPlot.price).toLocaleString()}
+                                            PKR {parseFloat(selectedPlot.price).toLocaleString()}
                                         </p>
                                     </div>
 

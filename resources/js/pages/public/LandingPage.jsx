@@ -314,7 +314,7 @@ export default function LandingPage() {
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600">Price</p>
-                                        <p className="font-semibold">${parseFloat(selectedPlot.price).toLocaleString()}</p>
+                                        <p className="font-semibold">PKR {parseFloat(selectedPlot.price).toLocaleString()}</p>
                                     </div>
                                 </div>
                                 {selectedPlot.description && (

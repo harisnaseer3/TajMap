@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { plotService, settingService } from '../services/api';
 import toast from 'react-hot-toast';
 
-export default function InteractiveMap({ onPlotClick }) {
+export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const [loading, setLoading] = useState(true);
     const [plots, setPlots] = useState([]);
     const [baseImage, setBaseImage] = useState(null);
@@ -16,7 +16,7 @@ export default function InteractiveMap({ onPlotClick }) {
 
     useEffect(() => {
         fetchMapData();
-    }, []);
+    }, [filters]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -37,8 +37,8 @@ export default function InteractiveMap({ onPlotClick }) {
         try {
             setLoading(true);
 
-            // Fetch plots
-            const plotsResponse = await plotService.getAll({ per_page: 1000 });
+            // Fetch plots with filters applied
+            const plotsResponse = await plotService.getAll({ ...filters, per_page: 1000 });
             const plotsData = plotsResponse.data?.data || plotsResponse.data || [];
 
             // Filter plots that have coordinates
@@ -249,7 +249,7 @@ export default function InteractiveMap({ onPlotClick }) {
                         <div className="text-xs space-y-1">
                             <div>Sector: {hoveredPlot.sector} | Block: {hoveredPlot.block}</div>
                             <div>Area: {hoveredPlot.area} sq. units</div>
-                            <div>Price: ${parseFloat(hoveredPlot.price).toLocaleString()}</div>
+                            <div>Price: PKR {parseFloat(hoveredPlot.price).toLocaleString()}</div>
                             <div className="mt-1">
                                 <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
                                     hoveredPlot.status.toLowerCase() === 'available' ? 'bg-green-500' :
@@ -277,7 +277,7 @@ export default function InteractiveMap({ onPlotClick }) {
                                 Sector: {hoveredPlot.sector} | Block: {hoveredPlot.block}
                             </p>
                             <p className="text-sm text-gray-600">
-                                Area: {hoveredPlot.area} sq. units | Price: ${parseFloat(hoveredPlot.price).toLocaleString()}
+                                Area: {hoveredPlot.area} sq. units | Price: PKR {parseFloat(hoveredPlot.price).toLocaleString()}
                             </p>
                         </div>
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${

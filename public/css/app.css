@@ -940,6 +940,9 @@
   .justify-end {
     justify-content: flex-end;
   }
+  .gap-1 {
+    gap: calc(var(--spacing) * 1);
+  }
   .gap-2 {
     gap: calc(var(--spacing) * 2);
   }
@@ -1938,9 +1941,9 @@
       grid-column: span 3 / span 3;
     }
   }
-  .lg\:w-72 {
+  .lg\:w-80 {
     @media (width >= 64rem) {
-      width: calc(var(--spacing) * 72);
+      width: calc(var(--spacing) * 80);
     }
   }
   .lg\:grid-cols-4 {
