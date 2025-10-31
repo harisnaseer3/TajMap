@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { plotService, settingService } from '../services/api';
 import toast from 'react-hot-toast';
 
@@ -14,9 +14,23 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const containerRef = useRef(null);
     const imageRef = useRef(null);
 
+    // Serialize filters to prevent unnecessary re-renders from object reference changes
+    const filtersKey = useMemo(() => JSON.stringify(filters), [
+        filters?.search,
+        filters?.status,
+        filters?.sector,
+        filters?.block,
+        filters?.min_price,
+        filters?.max_price,
+        filters?.min_area,
+        filters?.max_area,
+        filters?.sort_by,
+        filters?.sort_order
+    ]);
+
     useEffect(() => {
         fetchMapData();
-    }, [filters]);
+    }, [filtersKey]);
 
     useEffect(() => {
         const handleResize = () => {
