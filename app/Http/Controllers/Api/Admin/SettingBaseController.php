@@ -81,10 +81,10 @@ class SettingBaseController extends BaseController
      */
     public function byGroup(Request $request, string $group): JsonResponse
     {
-        $settings = Setting::where('group', $group)->get();
+        $settings = Setting::getByGroup($group);
 
         return $this->successResponse(
-            SettingResource::collection($settings),
+            $settings,
             'Settings retrieved successfully'
         );
     }
@@ -98,13 +98,26 @@ class SettingBaseController extends BaseController
             'settings' => ['required', 'array'],
             'settings.*.key' => ['required', 'string'],
             'settings.*.value' => ['required'],
+            'settings.*.type' => ['nullable', 'string', 'in:string,integer,boolean,json'],
+            'settings.*.group' => ['nullable', 'string'],
+            'settings.*.label' => ['nullable', 'string'],
+            'settings.*.description' => ['nullable', 'string'],
         ]);
 
         foreach ($request->settings as $settingData) {
-            $setting = Setting::where('key', $settingData['key'])->first();
-            if ($setting) {
-                Setting::set($settingData['key'], $settingData['value'], $setting->type);
-            }
+            $type = $settingData['type'] ?? 'string';
+            $value = $settingData['value'];
+
+            Setting::updateOrCreate(
+                ['key' => $settingData['key']],
+                [
+                    'value' => is_array($value) ? json_encode($value) : $value,
+                    'type' => $type,
+                    'group' => $settingData['group'] ?? 'general',
+                    'label' => $settingData['label'] ?? null,
+                    'description' => $settingData['description'] ?? null,
+                ]
+            );
         }
 
         return $this->successResponse(null, 'Settings updated successfully');
