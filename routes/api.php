@@ -30,6 +30,9 @@ Route::prefix('public')->group(function () {
     // Leads
     Route::post('/leads', [PublicLeadController::class, 'store'])
         ->middleware('throttle:5,1'); // Rate limit: 5 requests per minute
+
+    // Settings (read-only public access)
+    Route::get('/settings/group/{group}', [SettingBaseController::class, 'byGroup']);
 });
 
 // Auth routes

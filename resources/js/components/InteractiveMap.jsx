@@ -1,21 +1,36 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { plotService } from '../services/api';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { plotService, settingService } from '../services/api';
 import toast from 'react-hot-toast';
 
-export default function InteractiveMap({ onPlotClick }) {
+export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const [loading, setLoading] = useState(true);
     const [plots, setPlots] = useState([]);
     const [baseImage, setBaseImage] = useState(null);
     const [selectedPlot, setSelectedPlot] = useState(null);
     const [hoveredPlot, setHoveredPlot] = useState(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
     const containerRef = useRef(null);
     const imageRef = useRef(null);
 
+    // Serialize filters to prevent unnecessary re-renders from object reference changes
+    const filtersKey = useMemo(() => JSON.stringify(filters), [
+        filters?.search,
+        filters?.status,
+        filters?.sector,
+        filters?.block,
+        filters?.min_price,
+        filters?.max_price,
+        filters?.min_area,
+        filters?.max_area,
+        filters?.sort_by,
+        filters?.sort_order
+    ]);
+
     useEffect(() => {
         fetchMapData();
-    }, []);
+    }, [filtersKey]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -35,22 +50,39 @@ export default function InteractiveMap({ onPlotClick }) {
     const fetchMapData = async () => {
         try {
             setLoading(true);
-            const response = await plotService.getAll({ per_page: 1000 });
 
-            const plotsData = response.data?.data || response.data || [];
+            // Fetch plots with filters applied
+            const plotsResponse = await plotService.getAll({ ...filters, per_page: 1000 });
+            const plotsData = plotsResponse.data?.data || plotsResponse.data || [];
 
-            // Filter plots that have coordinates and base image
+            // Filter plots that have coordinates
             const mappedPlots = plotsData.filter(plot =>
                 plot.coordinates &&
-                plot.coordinates.length > 0 &&
-                plot.base_image
+                plot.coordinates.length > 0
             );
 
-            if (mappedPlots.length > 0 && mappedPlots[0].base_image) {
-                setBaseImage(mappedPlots[0].base_image.url);
-                setPlots(mappedPlots);
-            } else {
-                toast.error('No interactive map configured yet');
+            // Fetch base map from settings
+            try {
+                const settingsResponse = await settingService.getByGroup('map');
+                const settings = settingsResponse.data?.data || settingsResponse.data || {};
+
+                if (settings.base_map_url && mappedPlots.length > 0) {
+                    setBaseImage(settings.base_map_url);
+                    setPlots(mappedPlots);
+                } else if (!settings.base_map_url) {
+                    toast.error('No base map configured. Admin needs to upload a base map.');
+                } else if (mappedPlots.length === 0) {
+                    toast.error('No plots configured yet. Admin needs to add plot coordinates.');
+                }
+            } catch (settingsError) {
+                console.error('Error fetching settings:', settingsError);
+                // Fallback: try to get base image from plots
+                if (mappedPlots.length > 0 && mappedPlots[0].base_image) {
+                    setBaseImage(mappedPlots[0].base_image.url);
+                    setPlots(mappedPlots);
+                } else {
+                    toast.error('No interactive map configured yet');
+                }
             }
         } catch (error) {
             console.error('Error fetching map data:', error);
@@ -90,6 +122,16 @@ export default function InteractiveMap({ onPlotClick }) {
         setSelectedPlot(plot);
         if (onPlotClick) {
             onPlotClick(plot);
+        }
+    };
+
+    const handleMouseMove = (e) => {
+        if (hoveredPlot && containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            setTooltipPosition({
+                x: e.clientX - rect.left + 15,
+                y: e.clientY - rect.top + 15
+            });
         }
     };
 
@@ -146,13 +188,17 @@ export default function InteractiveMap({ onPlotClick }) {
             </div>
 
             {/* Interactive Map */}
-            <div ref={containerRef} className="relative bg-white p-4 rounded-lg shadow overflow-auto">
+            <div
+                ref={containerRef}
+                className="relative bg-white p-4 rounded-lg shadow overflow-auto flex justify-center items-center"
+                onMouseMove={handleMouseMove}
+            >
                 <div className="relative inline-block">
                     <img
                         ref={imageRef}
                         src={baseImage}
                         alt="Master Plan"
-                        className="max-w-full h-auto"
+                        className="max-w-full h-auto mx-auto"
                         onLoad={() => {
                             if (imageRef.current) {
                                 setDimensions({
@@ -202,6 +248,37 @@ export default function InteractiveMap({ onPlotClick }) {
                         </svg>
                     )}
                 </div>
+
+                {/* Tooltip */}
+                {hoveredPlot && (
+                    <div
+                        className="absolute z-10 bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg text-sm pointer-events-none"
+                        style={{
+                            left: `${tooltipPosition.x}px`,
+                            top: `${tooltipPosition.y}px`,
+                            maxWidth: '250px'
+                        }}
+                    >
+                        <div className="font-bold mb-1">{hoveredPlot.plot_number}</div>
+                        <div className="text-xs space-y-1">
+                            <div>Sector: {hoveredPlot.sector} | Block: {hoveredPlot.block}</div>
+                            <div>Area: {hoveredPlot.area} sq. units</div>
+                            <div>Price: PKR {parseFloat(hoveredPlot.price).toLocaleString()}</div>
+                            <div className="mt-1">
+                                <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                                    hoveredPlot.status.toLowerCase() === 'available' ? 'bg-green-500' :
+                                    hoveredPlot.status.toLowerCase() === 'reserved' ? 'bg-yellow-500' :
+                                    'bg-red-500'
+                                }`}>
+                                    {hoveredPlot.status}
+                                </span>
+                            </div>
+                            <div className="text-gray-300 text-xs mt-2 italic">
+                                {hoveredPlot.status.toLowerCase() === 'available' ? 'Click to inquire' : 'Click for details'}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Hovered Plot Info */}
@@ -214,7 +291,7 @@ export default function InteractiveMap({ onPlotClick }) {
                                 Sector: {hoveredPlot.sector} | Block: {hoveredPlot.block}
                             </p>
                             <p className="text-sm text-gray-600">
-                                Area: {hoveredPlot.area} sq. units | Price: ${parseFloat(hoveredPlot.price).toLocaleString()}
+                                Area: {hoveredPlot.area} sq. units | Price: PKR {parseFloat(hoveredPlot.price).toLocaleString()}
                             </p>
                         </div>
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${

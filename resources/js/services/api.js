@@ -89,7 +89,16 @@ export const authService = {
 };
 
 export const plotService = {
-    getAll: (params) => api.get('/public/plots', { params }),
+    getAll: (params) => {
+        // Remove empty string and null parameters to avoid backend issues
+        const cleanParams = Object.entries(params || {}).reduce((acc, [key, value]) => {
+            if (value !== '' && value !== null && value !== undefined) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+        return api.get('/public/plots', { params: cleanParams });
+    },
     getOne: (id) => api.get(`/public/plots/${id}`),
     getSectors: () => api.get('/public/plots/meta/sectors'),
     getBlocks: (params) => api.get('/public/plots/meta/blocks', { params }),
@@ -168,7 +177,7 @@ export const mediaService = {
 
 export const settingService = {
     getAll: (params) => api.get('/admin/settings', { params }),
-    getByGroup: (group) => api.get(`/admin/settings/group/${group}`),
+    getByGroup: (group) => api.get(`/public/settings/group/${group}`),
     create: (data) => api.post('/admin/settings', data),
     update: (id, data) => api.put(`/admin/settings/${id}`, data),
     delete: (id) => api.delete(`/admin/settings/${id}`),
