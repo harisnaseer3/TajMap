@@ -176,7 +176,7 @@ export default function InteractiveMap({ onPlotClick }) {
             {/* Interactive Map */}
             <div
                 ref={containerRef}
-                className="relative bg-white p-4 rounded-lg shadow overflow-auto"
+                className="relative bg-white p-4 rounded-lg shadow overflow-auto flex justify-center items-center"
                 onMouseMove={handleMouseMove}
             >
                 <div className="relative inline-block">
@@ -184,7 +184,7 @@ export default function InteractiveMap({ onPlotClick }) {
                         ref={imageRef}
                         src={baseImage}
                         alt="Master Plan"
-                        className="max-w-full h-auto"
+                        className="max-w-full h-auto mx-auto"
                         onLoad={() => {
                             if (imageRef.current) {
                                 setDimensions({
