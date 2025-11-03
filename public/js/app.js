@@ -82376,6 +82376,10 @@ function InteractiveMap(_ref) {
     _useState12 = _slicedToArray(_useState11, 2),
     tooltipPosition = _useState12[0],
     setTooltipPosition = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState14 = _slicedToArray(_useState13, 2),
+    showPrices = _useState14[0],
+    setShowPrices = _useState14[1];
   var containerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   var imageRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
 
@@ -82403,7 +82407,7 @@ function InteractiveMap(_ref) {
   }, [baseImage]);
   var fetchMapData = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var _plotsResponse$data, plotsResponse, plotsData, mappedPlots, _settingsResponse$dat, settingsResponse, settings, _t, _t2;
+      var _plotsResponse$data, plotsResponse, plotsData, mappedPlots, _mapSettingsResponse$, _generalSettingsRespo, _yield$Promise$all, _yield$Promise$all2, mapSettingsResponse, generalSettingsResponse, mapSettings, allSettings, showPricesSetting, showPricesValue, _t, _t2;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
@@ -82420,17 +82424,28 @@ function InteractiveMap(_ref) {
             plotsData = ((_plotsResponse$data = plotsResponse.data) === null || _plotsResponse$data === void 0 ? void 0 : _plotsResponse$data.data) || plotsResponse.data || []; // Filter plots that have coordinates
             mappedPlots = plotsData.filter(function (plot) {
               return plot.coordinates && plot.coordinates.length > 0;
-            }); // Fetch base map from settings
+            }); // Fetch base map and general settings
             _context.p = 2;
             _context.n = 3;
-            return _services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.getByGroup('map');
+            return Promise.all([_services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.getByGroup('map'), _services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.getAll()]);
           case 3:
-            settingsResponse = _context.v;
-            settings = ((_settingsResponse$dat = settingsResponse.data) === null || _settingsResponse$dat === void 0 ? void 0 : _settingsResponse$dat.data) || settingsResponse.data || {};
-            if (settings.base_map_url && mappedPlots.length > 0) {
-              setBaseImage(settings.base_map_url);
+            _yield$Promise$all = _context.v;
+            _yield$Promise$all2 = _slicedToArray(_yield$Promise$all, 2);
+            mapSettingsResponse = _yield$Promise$all2[0];
+            generalSettingsResponse = _yield$Promise$all2[1];
+            mapSettings = ((_mapSettingsResponse$ = mapSettingsResponse.data) === null || _mapSettingsResponse$ === void 0 ? void 0 : _mapSettingsResponse$.data) || mapSettingsResponse.data || {};
+            allSettings = ((_generalSettingsRespo = generalSettingsResponse.data) === null || _generalSettingsRespo === void 0 ? void 0 : _generalSettingsRespo.data) || generalSettingsResponse.data || []; // Find show_plot_prices setting
+            showPricesSetting = allSettings.find(function (s) {
+              return s.key === 'show_plot_prices';
+            });
+            if (showPricesSetting) {
+              showPricesValue = showPricesSetting.value; // Handle different boolean representations
+              setShowPrices(showPricesValue === true || showPricesValue === 'true' || showPricesValue === '1' || showPricesValue === 1);
+            }
+            if (mapSettings.base_map_url && mappedPlots.length > 0) {
+              setBaseImage(mapSettings.base_map_url);
               setPlots(mappedPlots);
-            } else if (!settings.base_map_url) {
+            } else if (!mapSettings.base_map_url) {
               react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('No base map configured. Admin needs to upload a base map.');
             } else if (mappedPlots.length === 0) {
               react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('No plots configured yet. Admin needs to add plot coordinates.');
@@ -82440,7 +82455,6 @@ function InteractiveMap(_ref) {
           case 4:
             _context.p = 4;
             _t = _context.v;
-            console.error('Error fetching settings:', _t);
             // Fallback: try to get base image from plots
             if (mappedPlots.length > 0 && mappedPlots[0].base_image) {
               setBaseImage(mappedPlots[0].base_image.url);
@@ -82454,7 +82468,6 @@ function InteractiveMap(_ref) {
           case 6:
             _context.p = 6;
             _t2 = _context.v;
-            console.error('Error fetching map data:', _t2);
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Failed to load map');
           case 7:
             _context.p = 7;
@@ -82653,7 +82666,7 @@ function InteractiveMap(_ref) {
     className: "font-bold mb-1"
   }, hoveredPlot.plot_number), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "text-xs space-y-1"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Sector: ", hoveredPlot.sector, " | Block: ", hoveredPlot.block), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Area: ", hoveredPlot.area, " sq. units"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Price: PKR ", parseFloat(hoveredPlot.price).toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Sector: ", hoveredPlot.sector, " | Block: ", hoveredPlot.block), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Area: ", hoveredPlot.area, " sq. units"), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Price: PKR ", parseFloat(hoveredPlot.price).toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "mt-1"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     className: "px-2 py-0.5 rounded text-xs font-semibold ".concat(hoveredPlot.status.toLowerCase() === 'available' ? 'bg-green-500' : hoveredPlot.status.toLowerCase() === 'reserved' ? 'bg-yellow-500' : 'bg-red-500')
@@ -82669,7 +82682,7 @@ function InteractiveMap(_ref) {
     className: "text-sm text-gray-600"
   }, "Sector: ", hoveredPlot.sector, " | Block: ", hoveredPlot.block), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "text-sm text-gray-600"
-  }, "Area: ", hoveredPlot.area, " sq. units | Price: PKR ", parseFloat(hoveredPlot.price).toLocaleString())), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+  }, "Area: ", hoveredPlot.area, " sq. units", showPrices && " | Price: PKR ".concat(parseFloat(hoveredPlot.price).toLocaleString()))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     className: "px-3 py-1 rounded-full text-xs font-semibold ".concat(hoveredPlot.status.toLowerCase() === 'available' ? 'bg-green-100 text-green-800' : hoveredPlot.status.toLowerCase() === 'reserved' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')
   }, hoveredPlot.status)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "text-sm text-gray-500 mt-2"
@@ -82751,7 +82764,6 @@ function Logo(_ref) {
           case 2:
             _context.p = 2;
             _t = _context.v;
-            console.error('Error fetching logo:', _t);
           case 3:
             _context.p = 3;
             setLoading(false);
@@ -86658,6 +86670,10 @@ function AdminSettings() {
     _useState12 = _slicedToArray(_useState11, 2),
     logoUrl = _useState12[0],
     setLogoUrl = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
+    _useState14 = _slicedToArray(_useState13, 2),
+    expandedGroups = _useState14[0],
+    setExpandedGroups = _useState14[1];
   var logoFileInputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchSettings();
@@ -86677,12 +86693,16 @@ function AdminSettings() {
             settingsData = ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.data) || response.data || [];
             setSettings(settingsData);
 
-            // Group settings by group
+            // Group settings by group and subsection
             grouped = settingsData.reduce(function (acc, setting) {
               if (!acc[setting.group]) {
-                acc[setting.group] = [];
+                acc[setting.group] = {};
               }
-              acc[setting.group].push(setting);
+              var subsection = setting.subsection || 'general';
+              if (!acc[setting.group][subsection]) {
+                acc[setting.group][subsection] = [];
+              }
+              acc[setting.group][subsection].push(setting);
               return acc;
             }, {});
             setSettingsByGroup(grouped);
@@ -86702,7 +86722,6 @@ function AdminSettings() {
           case 2:
             _context.p = 2;
             _t = _context.v;
-            console.error('Error fetching settings:', _t);
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Failed to load settings');
           case 3:
             _context.p = 3;
@@ -86759,6 +86778,7 @@ function AdminSettings() {
               value: uploadedImage.url,
               type: 'string',
               group: 'general',
+              subsection: 'branding',
               label: 'Site Logo URL',
               description: 'URL of the site logo image'
             }, {
@@ -86766,6 +86786,7 @@ function AdminSettings() {
               value: uploadedImage.id.toString(),
               type: 'integer',
               group: 'general',
+              subsection: 'branding',
               label: 'Site Logo Media ID',
               description: 'Media ID of the site logo'
             }]);
@@ -86785,7 +86806,6 @@ function AdminSettings() {
           case 8:
             _context2.p = 8;
             _t2 = _context2.v;
-            console.error('Error uploading logo:', _t2);
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Failed to upload logo');
           case 9:
             _context2.p = 9;
@@ -86802,21 +86822,28 @@ function AdminSettings() {
   }();
   var handleSaveAll = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
-      var settingsToUpdate, _t3;
+      var settingsToUpdate, _error$response, _t3;
       return _regenerator().w(function (_context3) {
         while (1) switch (_context3.p = _context3.n) {
           case 0:
             _context3.p = 0;
             setSaving(true);
 
-            // Prepare settings for bulk update
-            settingsToUpdate = Object.entries(editedSettings).map(function (_ref4) {
-              var _ref5 = _slicedToArray(_ref4, 2),
-                key = _ref5[0],
-                value = _ref5[1];
+            // Prepare settings for bulk update - preserve all original fields
+            settingsToUpdate = settings.map(function (setting) {
+              var _editedSettings$setti;
+              var updatedValue = (_editedSettings$setti = editedSettings[setting.key]) !== null && _editedSettings$setti !== void 0 ? _editedSettings$setti : setting.value;
+
+              // Ensure value is never null - convert to empty string if needed
+              var finalValue = updatedValue === null || updatedValue === undefined ? '' : updatedValue;
               return {
-                key: key,
-                value: value
+                key: setting.key,
+                value: finalValue,
+                type: setting.type || 'string',
+                group: setting.group || 'general',
+                subsection: setting.subsection || null,
+                label: setting.label || null,
+                description: setting.description || null
               };
             });
             _context3.n = 1;
@@ -86831,8 +86858,7 @@ function AdminSettings() {
           case 3:
             _context3.p = 3;
             _t3 = _context3.v;
-            console.error('Error saving settings:', _t3);
-            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Failed to save settings');
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error(((_error$response = _t3.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message) || 'Failed to save settings');
           case 4:
             _context3.p = 4;
             setSaving(false);
@@ -86846,31 +86872,159 @@ function AdminSettings() {
       return _ref3.apply(this, arguments);
     };
   }();
+  var getSettingUsage = function getSettingUsage(key) {
+    // Map settings to where they're used in the application
+    var usageMap = {
+      'site_name': {
+        page: 'Landing Page, Admin Header',
+        status: 'active'
+      },
+      'site_description': {
+        page: 'Landing Page Meta',
+        status: 'active'
+      },
+      'contact_email': {
+        page: 'Contact Forms, Footer',
+        status: 'not-implemented'
+      },
+      'contact_phone': {
+        page: 'Contact Section',
+        status: 'not-implemented'
+      },
+      'maintenance_mode': {
+        page: 'Public Access Control',
+        status: 'not-implemented'
+      },
+      'email_from_address': {
+        page: 'Email Configuration',
+        status: 'not-implemented'
+      },
+      'email_from_name': {
+        page: 'Email Configuration',
+        status: 'not-implemented'
+      },
+      'email_notifications': {
+        page: 'Notification System',
+        status: 'not-implemented'
+      },
+      'lead_auto_assignment': {
+        page: 'Lead Management',
+        status: 'not-implemented'
+      },
+      'lead_max_per_admin': {
+        page: 'Lead Distribution',
+        status: 'not-implemented'
+      },
+      'lead_follow_up_days': {
+        page: 'Lead Reminders',
+        status: 'not-implemented'
+      },
+      'plot_default_status': {
+        page: 'New Plot Creation',
+        status: 'not-implemented'
+      },
+      'plot_image_max_size': {
+        page: 'Image Upload Validation',
+        status: 'not-implemented'
+      },
+      'plot_featured_limit': {
+        page: 'Featured Plots Display',
+        status: 'not-implemented'
+      },
+      'theme_primary_color': {
+        page: 'Site Theming',
+        status: 'not-implemented'
+      },
+      'items_per_page': {
+        page: 'Pagination',
+        status: 'not-implemented'
+      },
+      'show_plot_prices': {
+        page: 'Interactive Map, Plot Display',
+        status: 'active'
+      },
+      'map_default_zoom': {
+        page: 'Map Display',
+        status: 'not-implemented'
+      },
+      'map_center_latitude': {
+        page: 'Map Center',
+        status: 'not-implemented'
+      },
+      'map_center_longitude': {
+        page: 'Map Center',
+        status: 'not-implemented'
+      },
+      'site_logo_url': {
+        page: 'Headers, Navigation',
+        status: 'active'
+      },
+      'site_logo_id': {
+        page: 'Logo Management',
+        status: 'active'
+      }
+    };
+    return usageMap[key] || {
+      page: 'Unknown',
+      status: 'not-implemented'
+    };
+  };
+  var getSettingOptions = function getSettingOptions(setting) {
+    // Define dropdown options for specific settings
+    var optionsMap = {
+      'plot_default_status': [{
+        value: 'Available',
+        label: 'Available'
+      }, {
+        value: 'Reserved',
+        label: 'Reserved'
+      }, {
+        value: 'Sold',
+        label: 'Sold'
+      }]
+    };
+    return optionsMap[setting.key] || null;
+  };
   var renderSettingInput = function renderSettingInput(setting) {
-    var _editedSettings$setti;
-    var value = (_editedSettings$setti = editedSettings[setting.key]) !== null && _editedSettings$setti !== void 0 ? _editedSettings$setti : setting.value;
+    var _editedSettings$setti2;
+    var value = (_editedSettings$setti2 = editedSettings[setting.key]) !== null && _editedSettings$setti2 !== void 0 ? _editedSettings$setti2 : setting.value;
+
+    // Ensure value is never null or undefined
+    var safeValue = value === null || value === undefined ? '' : value;
+
+    // Check if this setting has predefined options
+    var options = getSettingOptions(setting);
+    if (options) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+        value: safeValue,
+        onChange: function onChange(e) {
+          return handleSettingChange(setting.key, e.target.value);
+        },
+        className: "w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+      }, options.map(function (opt) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+          key: opt.value,
+          value: opt.value
+        }, opt.label);
+      }));
+    }
     switch (setting.type) {
       case 'boolean':
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
-          className: "flex items-center cursor-pointer"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-          className: "relative"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
-          type: "checkbox",
-          className: "sr-only",
-          checked: value === 'true' || value === true || value === '1',
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+          value: safeValue === true || safeValue === 'true' || safeValue === '1' || safeValue === 1 ? 'true' : 'false',
           onChange: function onChange(e) {
-            return handleSettingChange(setting.key, e.target.checked);
-          }
-        }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-          className: "block w-14 h-8 rounded-full transition ".concat(value === 'true' || value === true || value === '1' ? 'bg-blue-600' : 'bg-gray-300')
-        }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-          className: "dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform ".concat(value === 'true' || value === true || value === '1' ? 'translate-x-6' : '')
-        })));
+            return handleSettingChange(setting.key, e.target.value);
+          },
+          className: "w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+          value: "true"
+        }, "Enabled / True"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+          value: "false"
+        }, "Disabled / False"));
       case 'number':
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
           type: "number",
-          value: value,
+          value: safeValue,
           onChange: function onChange(e) {
             return handleSettingChange(setting.key, e.target.value);
           },
@@ -86878,7 +87032,7 @@ function AdminSettings() {
         });
       case 'json':
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("textarea", {
-          value: _typeof(value) === 'object' ? JSON.stringify(value, null, 2) : value,
+          value: _typeof(safeValue) === 'object' ? JSON.stringify(safeValue, null, 2) : safeValue,
           onChange: function onChange(e) {
             return handleSettingChange(setting.key, e.target.value);
           },
@@ -86888,7 +87042,7 @@ function AdminSettings() {
         });
       case 'textarea':
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("textarea", {
-          value: value,
+          value: safeValue,
           onChange: function onChange(e) {
             return handleSettingChange(setting.key, e.target.value);
           },
@@ -86899,7 +87053,7 @@ function AdminSettings() {
         // text
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
           type: "text",
-          value: value,
+          value: safeValue,
           onChange: function onChange(e) {
             return handleSettingChange(setting.key, e.target.value);
           },
@@ -86912,6 +87066,33 @@ function AdminSettings() {
       return word.charAt(0).toUpperCase() + word.slice(1);
     }).join(' ');
   };
+  var toggleGroup = function toggleGroup(group) {
+    setExpandedGroups(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, group, !prev[group]));
+    });
+  };
+  var getGroupIcon = function getGroupIcon(group) {
+    var icons = {
+      general: '⚙️',
+      map: '🗺️',
+      email: '📧',
+      appearance: '🎨',
+      security: '🔒',
+      payment: '💳',
+      api: '🔌'
+    };
+    return icons[group] || '📋';
+  };
+  var expandAll = function expandAll() {
+    var allExpanded = {};
+    Object.keys(settingsByGroup).forEach(function (group) {
+      allExpanded[group] = true;
+    });
+    setExpandedGroups(allExpanded);
+  };
+  var collapseAll = function collapseAll() {
+    setExpandedGroups({});
+  };
   if (loading) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "flex items-center justify-center h-64"
@@ -86919,17 +87100,27 @@ function AdminSettings() {
       className: "text-lg text-gray-600"
     }, "Loading settings..."));
   }
+  var allExpanded = Object.keys(settingsByGroup).length > 0 && Object.keys(settingsByGroup).every(function (group) {
+    return expandedGroups[group];
+  });
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "space-y-6"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "flex justify-between items-center"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
     className: "text-2xl font-bold"
-  }, "Settings"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+  }, "Settings"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-sm text-gray-500 mt-1"
+  }, "Manage your application settings and configuration")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex gap-2"
+  }, Object.keys(settingsByGroup).length > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: allExpanded ? collapseAll : expandAll,
+    className: "px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition text-sm"
+  }, allExpanded ? 'Collapse All' : 'Expand All'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: handleSaveAll,
     disabled: saving,
     className: "px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
-  }, saving ? 'Saving...' : 'Save All Changes')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, saving ? 'Saving...' : 'Save All Changes'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "bg-white p-6 rounded-lg shadow"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
     className: "text-xl font-bold mb-4 text-gray-800 border-b pb-3"
@@ -86970,7 +87161,7 @@ function AdminSettings() {
     className: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 transition"
   }, uploadingLogo ? 'Uploading...' : logoUrl ? 'Change Logo' : 'Upload Logo'), logoUrl && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
-      var _t4;
+      var logoUrlSetting, logoIdSetting, updatePayload, _t4;
       return _regenerator().w(function (_context4) {
         while (1) switch (_context4.p = _context4.n) {
           case 0:
@@ -86979,11 +87170,38 @@ function AdminSettings() {
               break;
             }
             _context4.p = 1;
+            // Find the logo settings to preserve their metadata
+            logoUrlSetting = settings.find(function (s) {
+              return s.key === 'site_logo_url';
+            });
+            logoIdSetting = settings.find(function (s) {
+              return s.key === 'site_logo_id';
+            });
+            updatePayload = [];
+            if (logoUrlSetting) {
+              updatePayload.push({
+                key: 'site_logo_url',
+                value: '',
+                type: logoUrlSetting.type,
+                group: logoUrlSetting.group,
+                subsection: logoUrlSetting.subsection,
+                label: logoUrlSetting.label,
+                description: logoUrlSetting.description
+              });
+            }
+            if (logoIdSetting) {
+              updatePayload.push({
+                key: 'site_logo_id',
+                value: '',
+                type: logoIdSetting.type,
+                group: logoIdSetting.group,
+                subsection: logoIdSetting.subsection,
+                label: logoIdSetting.label,
+                description: logoIdSetting.description
+              });
+            }
             _context4.n = 2;
-            return _services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.bulkUpdate([{
-              key: 'site_logo_url',
-              value: ''
-            }]);
+            return _services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.bulkUpdate(updatePayload);
           case 2:
             setLogoUrl('');
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Logo removed successfully');
@@ -87013,39 +87231,114 @@ function AdminSettings() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "text-gray-500"
   }, "No settings found. Settings will appear here once configured.")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "space-y-6"
-  }, Object.entries(settingsByGroup).map(function (_ref7) {
-    var _ref8 = _slicedToArray(_ref7, 2),
-      group = _ref8[0],
-      groupSettings = _ref8[1];
+    className: "space-y-3"
+  }, Object.entries(settingsByGroup).map(function (_ref5) {
+    var _expandedGroups$group;
+    var _ref6 = _slicedToArray(_ref5, 2),
+      group = _ref6[0],
+      subsections = _ref6[1];
+    var isExpanded = (_expandedGroups$group = expandedGroups[group]) !== null && _expandedGroups$group !== void 0 ? _expandedGroups$group : false;
+    var totalSettings = Object.values(subsections).reduce(function (sum, settings) {
+      return sum + settings.length;
+    }, 0);
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       key: group,
-      className: "bg-white p-6 rounded-lg shadow"
+      className: "bg-white rounded-lg shadow overflow-hidden border border-gray-200"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      onClick: function onClick() {
+        return toggleGroup(group);
+      },
+      className: "w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex items-center gap-3"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "text-2xl"
+    }, getGroupIcon(group)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-left"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
-      className: "text-xl font-bold mb-6 text-gray-800 border-b pb-3"
-    }, formatGroupName(group)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "space-y-6"
-    }, groupSettings.map(function (setting) {
+      className: "text-lg font-bold text-gray-800"
+    }, formatGroupName(group)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+      className: "text-xs text-gray-500"
+    }, totalSettings, " ", totalSettings === 1 ? 'setting' : 'settings', Object.keys(subsections).length > 1 && " \u2022 ".concat(Object.keys(subsections).length, " subsections")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+      className: "w-5 h-5 text-gray-500 transition-transform ".concat(isExpanded ? 'rotate-180' : ''),
+      fill: "none",
+      stroke: "currentColor",
+      viewBox: "0 0 24 24"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      strokeWidth: 2,
+      d: "M19 9l-7 7-7-7"
+    }))), isExpanded && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "border-t border-gray-200 bg-gray-50"
+    }, Object.entries(subsections).map(function (_ref7, subsectionIndex) {
+      var _ref8 = _slicedToArray(_ref7, 2),
+        subsection = _ref8[0],
+        subsectionSettings = _ref8[1];
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-        key: setting.id,
-        className: "grid grid-cols-1 md:grid-cols-3 gap-4 items-start"
+        key: subsection,
+        className: subsectionIndex !== 0 ? 'border-t border-gray-200' : ''
+      }, subsection !== 'general' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+        className: "px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-50"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+        className: "text-sm font-bold text-gray-700 uppercase tracking-wide"
+      }, formatGroupName(subsection))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+        className: "px-6 py-4"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-        className: "md:col-span-1"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
-        className: "block text-sm font-semibold text-gray-700 mb-1"
-      }, setting.key.split('_').map(function (word) {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-      }).join(' ')), setting.description && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
-        className: "text-xs text-gray-500 mt-1"
-      }, setting.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-        className: "mt-2 flex items-center gap-2"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-        className: "text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded"
-      }, setting.type), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-        className: "text-xs text-gray-400"
-      }, "Key: ", setting.key))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-        className: "md:col-span-2"
-      }, renderSettingInput(setting)));
+        className: "space-y-4"
+      }, subsectionSettings.map(function (setting, index) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+          key: setting.id,
+          className: "bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+          className: "flex flex-col md:flex-row md:items-start gap-4"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+          className: "md:w-1/3"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+          className: "block text-sm font-semibold text-gray-800 mb-1"
+        }, setting.key.split('_').map(function (word) {
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        }).join(' ')), setting.description && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+          className: "text-xs text-gray-500 mt-1 mb-2"
+        }, setting.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+          className: "flex flex-wrap items-center gap-2 mb-2"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+          className: "text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded font-medium"
+        }, setting.type), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+          className: "text-xs text-gray-400 font-mono"
+        }, setting.key)), function () {
+          var usage = getSettingUsage(setting.key);
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+            className: "mt-2"
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+            className: "flex items-center gap-2"
+          }, usage.status === 'active' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+            className: "inline-flex items-center gap-1 text-xs px-2 py-1 bg-green-100 text-green-800 rounded font-medium"
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+            className: "w-3 h-3",
+            fill: "currentColor",
+            viewBox: "0 0 20 20"
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+            fillRule: "evenodd",
+            d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z",
+            clipRule: "evenodd"
+          })), "Active") : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+            className: "inline-flex items-center gap-1 text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded font-medium"
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+            className: "w-3 h-3",
+            fill: "currentColor",
+            viewBox: "0 0 20 20"
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+            fillRule: "evenodd",
+            d: "M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z",
+            clipRule: "evenodd"
+          })), "Not Applied"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+            className: "text-xs text-gray-600"
+          }, "Used in: ", usage.page)));
+        }()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+          className: "md:w-2/3"
+        }, renderSettingInput(setting))));
+      }))));
     })));
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "bg-blue-50 border border-blue-200 rounded-lg p-4"
@@ -88534,36 +88827,74 @@ function PlotListPage() {
     _useState10 = _slicedToArray(_useState1, 2),
     submitting = _useState10[0],
     setSubmitting = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState12 = _slicedToArray(_useState11, 2),
+    showPrices = _useState12[0],
+    setShowPrices = _useState12[1];
 
   // Pagination state
-  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       current_page: 1,
       last_page: 1,
       per_page: 12,
       total: 0
     }),
-    _useState12 = _slicedToArray(_useState11, 2),
-    pagination = _useState12[0],
-    setPagination = _useState12[1];
+    _useState14 = _slicedToArray(_useState13, 2),
+    pagination = _useState14[0],
+    setPagination = _useState14[1];
 
   // Sectors and blocks for filters
-  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
-    _useState14 = _slicedToArray(_useState13, 2),
-    sectors = _useState14[0],
-    setSectors = _useState14[1];
   var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState16 = _slicedToArray(_useState15, 2),
-    blocks = _useState16[0],
-    setBlocks = _useState16[1];
-
-  // All plots for map view (without pagination)
+    sectors = _useState16[0],
+    setSectors = _useState16[1];
   var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState18 = _slicedToArray(_useState17, 2),
-    allPlots = _useState18[0],
-    setAllPlots = _useState18[1];
+    blocks = _useState18[0],
+    setBlocks = _useState18[1];
+
+  // All plots for map view (without pagination)
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState20 = _slicedToArray(_useState19, 2),
+    allPlots = _useState20[0],
+    setAllPlots = _useState20[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchSectors();
+    fetchSettings();
   }, []);
+  var fetchSettings = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var _response$data, response, allSettings, showPricesSetting, showPricesValue, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            _context.p = 0;
+            _context.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_3__.settingService.getAll();
+          case 1:
+            response = _context.v;
+            allSettings = ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.data) || response.data || []; // Find show_plot_prices setting
+            showPricesSetting = allSettings.find(function (s) {
+              return s.key === 'show_plot_prices';
+            });
+            if (showPricesSetting) {
+              showPricesValue = showPricesSetting.value;
+              setShowPrices(showPricesValue === true || showPricesValue === 'true' || showPricesValue === '1' || showPricesValue === 1);
+            }
+            _context.n = 3;
+            break;
+          case 2:
+            _context.p = 2;
+            _t = _context.v;
+          case 3:
+            return _context.a(2);
+        }
+      }, _callee, null, [[0, 2]]);
+    }));
+    return function fetchSettings() {
+      return _ref.apply(this, arguments);
+    };
+  }();
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (filters.sector) {
       fetchBlocks(filters.sector);
@@ -88577,76 +88908,74 @@ function PlotListPage() {
     }
   }, [filters, pagination.current_page, viewMode]);
   var fetchSectors = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var _response$data, response, _t;
-      return _regenerator().w(function (_context) {
-        while (1) switch (_context.p = _context.n) {
-          case 0:
-            _context.p = 0;
-            _context.n = 1;
-            return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getSectors();
-          case 1:
-            response = _context.v;
-            setSectors(((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.sectors) || []);
-            _context.n = 3;
-            break;
-          case 2:
-            _context.p = 2;
-            _t = _context.v;
-            console.error('Error fetching sectors:', _t);
-          case 3:
-            return _context.a(2);
-        }
-      }, _callee, null, [[0, 2]]);
-    }));
-    return function fetchSectors() {
-      return _ref.apply(this, arguments);
-    };
-  }();
-  var fetchBlocks = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(sector) {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
       var _response$data2, response, _t2;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
             _context2.p = 0;
             _context2.n = 1;
-            return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getBlocks({
-              sector: sector
-            });
+            return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getSectors();
           case 1:
             response = _context2.v;
-            setBlocks(((_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.blocks) || []);
+            setSectors(((_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.sectors) || []);
             _context2.n = 3;
             break;
           case 2:
             _context2.p = 2;
             _t2 = _context2.v;
-            console.error('Error fetching blocks:', _t2);
           case 3:
             return _context2.a(2);
         }
       }, _callee2, null, [[0, 2]]);
     }));
-    return function fetchBlocks(_x) {
+    return function fetchSectors() {
       return _ref2.apply(this, arguments);
     };
   }();
-  var fetchPlots = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
-      var response, data, paginationData, _t3;
+  var fetchBlocks = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(sector) {
+      var _response$data3, response, _t3;
       return _regenerator().w(function (_context3) {
         while (1) switch (_context3.p = _context3.n) {
           case 0:
+            _context3.p = 0;
+            _context3.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getBlocks({
+              sector: sector
+            });
+          case 1:
+            response = _context3.v;
+            setBlocks(((_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.blocks) || []);
+            _context3.n = 3;
+            break;
+          case 2:
+            _context3.p = 2;
+            _t3 = _context3.v;
+          case 3:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[0, 2]]);
+    }));
+    return function fetchBlocks(_x) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+  var fetchPlots = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+      var response, data, paginationData, _t4;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
             setLoading(true);
-            _context3.p = 1;
-            _context3.n = 2;
+            _context4.p = 1;
+            _context4.n = 2;
             return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getAll(_objectSpread(_objectSpread({}, filters), {}, {
               per_page: pagination.per_page,
               page: pagination.current_page
             }));
           case 2:
-            response = _context3.v;
+            response = _context4.v;
             data = response.data; // Check if pagination data is in meta object (Laravel Resource) or at root level
             paginationData = data.meta || data;
             setPlots(data.data || []);
@@ -88660,48 +88989,11 @@ function PlotListPage() {
               from: paginationData.from || 0,
               to: paginationData.to || 0
             });
-            _context3.n = 4;
-            break;
-          case 3:
-            _context3.p = 3;
-            _t3 = _context3.v;
-            console.error('Error fetching plots:', _t3);
-            react_hot_toast__WEBPACK_IMPORTED_MODULE_5__["default"].error('Failed to load plots');
-          case 4:
-            _context3.p = 4;
-            setLoading(false);
-            return _context3.f(4);
-          case 5:
-            return _context3.a(2);
-        }
-      }, _callee3, null, [[1, 3, 4, 5]]);
-    }));
-    return function fetchPlots() {
-      return _ref3.apply(this, arguments);
-    };
-  }();
-  var fetchAllPlots = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
-      var response, data, _t4;
-      return _regenerator().w(function (_context4) {
-        while (1) switch (_context4.p = _context4.n) {
-          case 0:
-            setLoading(true);
-            _context4.p = 1;
-            _context4.n = 2;
-            return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getAll(_objectSpread(_objectSpread({}, filters), {}, {
-              per_page: 1000
-            }));
-          case 2:
-            response = _context4.v;
-            data = response.data;
-            setAllPlots(data.data || []);
             _context4.n = 4;
             break;
           case 3:
             _context4.p = 3;
             _t4 = _context4.v;
-            console.error('Error fetching plots:', _t4);
             react_hot_toast__WEBPACK_IMPORTED_MODULE_5__["default"].error('Failed to load plots');
           case 4:
             _context4.p = 4;
@@ -88712,8 +89004,43 @@ function PlotListPage() {
         }
       }, _callee4, null, [[1, 3, 4, 5]]);
     }));
-    return function fetchAllPlots() {
+    return function fetchPlots() {
       return _ref4.apply(this, arguments);
+    };
+  }();
+  var fetchAllPlots = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+      var response, data, _t5;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
+          case 0:
+            setLoading(true);
+            _context5.p = 1;
+            _context5.n = 2;
+            return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getAll(_objectSpread(_objectSpread({}, filters), {}, {
+              per_page: 1000
+            }));
+          case 2:
+            response = _context5.v;
+            data = response.data;
+            setAllPlots(data.data || []);
+            _context5.n = 4;
+            break;
+          case 3:
+            _context5.p = 3;
+            _t5 = _context5.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_5__["default"].error('Failed to load plots');
+          case 4:
+            _context5.p = 4;
+            setLoading(false);
+            return _context5.f(4);
+          case 5:
+            return _context5.a(2);
+        }
+      }, _callee5, null, [[1, 3, 4, 5]]);
+    }));
+    return function fetchAllPlots() {
+      return _ref5.apply(this, arguments);
     };
   }();
   var handlePlotClick = function handlePlotClick(plot) {
@@ -88721,15 +89048,15 @@ function PlotListPage() {
     setShowLeadModal(true);
   };
   var handleLeadSubmit = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(e) {
-      var _t5;
-      return _regenerator().w(function (_context5) {
-        while (1) switch (_context5.p = _context5.n) {
+    var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(e) {
+      var _t6;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.p = _context6.n) {
           case 0:
             e.preventDefault();
-            _context5.p = 1;
+            _context6.p = 1;
             setSubmitting(true);
-            _context5.n = 2;
+            _context6.n = 2;
             return _services_api__WEBPACK_IMPORTED_MODULE_3__.leadService.submit(_objectSpread(_objectSpread({}, leadForm), {}, {
               plot_id: selectedPlot.id
             }));
@@ -88742,24 +89069,23 @@ function PlotListPage() {
               email: '',
               message: ''
             });
-            _context5.n = 4;
+            _context6.n = 4;
             break;
           case 3:
-            _context5.p = 3;
-            _t5 = _context5.v;
-            console.error('Error submitting lead:', _t5);
+            _context6.p = 3;
+            _t6 = _context6.v;
             react_hot_toast__WEBPACK_IMPORTED_MODULE_5__["default"].error('Failed to submit inquiry');
           case 4:
-            _context5.p = 4;
+            _context6.p = 4;
             setSubmitting(false);
-            return _context5.f(4);
+            return _context6.f(4);
           case 5:
-            return _context5.a(2);
+            return _context6.a(2);
         }
-      }, _callee5, null, [[1, 3, 4, 5]]);
+      }, _callee6, null, [[1, 3, 4, 5]]);
     }));
     return function handleLeadSubmit(_x2) {
-      return _ref5.apply(this, arguments);
+      return _ref6.apply(this, arguments);
     };
   }();
   var handleFilterChange = function handleFilterChange(newFilters) {
@@ -88973,7 +89299,7 @@ function PlotListPage() {
       key: block,
       value: block
     }, block);
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+  }))), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_10__["default"], {
     className: "h-4 w-4"
@@ -89046,9 +89372,9 @@ function PlotListPage() {
     value: "created_at-desc"
   }, "Newest First"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "created_at-asc"
-  }, "Oldest First"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  }, "Oldest First"), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "price-asc"
-  }, "Price: Low to High"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+  }, "Price: Low to High"), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "price-desc"
   }, "Price: High to Low"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "area-asc"
@@ -89165,12 +89491,12 @@ function PlotListPage() {
     }, plot.sector && "Sector ".concat(plot.sector), plot.block && ", Block ".concat(plot.block))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       className: "px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap ".concat(plot.status === 'available' ? 'bg-green-100 text-green-800' : plot.status === 'reserved' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')
     }, plot.status)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "mt-4 grid grid-cols-2 gap-4"
+      className: "mt-4 grid ".concat(showPrices ? 'grid-cols-2' : 'grid-cols-1', " gap-4")
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-sm text-gray-600"
     }, "Area"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-lg font-semibold text-gray-900"
-    }, plot.area, " sq. units")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    }, plot.area, " sq. units")), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-sm text-gray-600"
     }, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-lg font-semibold text-gray-900"
@@ -89272,7 +89598,7 @@ function PlotListPage() {
     className: "text-sm text-gray-600"
   }, "Area"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "font-semibold"
-  }, selectedPlot.area, " sq. units")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+  }, selectedPlot.area, " sq. units")), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "text-sm text-gray-600"
   }, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "font-semibold"

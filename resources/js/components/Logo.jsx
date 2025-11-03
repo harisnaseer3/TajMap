@@ -19,7 +19,7 @@ export default function Logo({ className = '', iconClassName = 'h-8 w-8', textCl
                 setLogoUrl(logoSetting.value);
             }
         } catch (error) {
-            console.error('Error fetching logo:', error);
+            // Silently fail and use default
         } finally {
             setLoading(false);
         }

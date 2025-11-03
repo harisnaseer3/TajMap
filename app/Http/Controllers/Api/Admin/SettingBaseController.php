@@ -98,8 +98,9 @@ class SettingBaseController extends BaseController
             'settings' => ['required', 'array'],
             'settings.*.key' => ['required', 'string'],
             'settings.*.value' => ['present'],
-            'settings.*.type' => ['nullable', 'string', 'in:string,integer,boolean,json'],
+            'settings.*.type' => ['nullable', 'string', 'in:string,integer,boolean,json,number,textarea'],
             'settings.*.group' => ['nullable', 'string'],
+            'settings.*.subsection' => ['nullable', 'string'],
             'settings.*.label' => ['nullable', 'string'],
             'settings.*.description' => ['nullable', 'string'],
         ]);
@@ -114,6 +115,7 @@ class SettingBaseController extends BaseController
                     'value' => is_array($value) ? json_encode($value) : $value,
                     'type' => $type,
                     'group' => $settingData['group'] ?? 'general',
+                    'subsection' => $settingData['subsection'] ?? null,
                     'label' => $settingData['label'] ?? null,
                     'description' => $settingData['description'] ?? null,
                 ]
