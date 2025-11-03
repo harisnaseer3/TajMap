@@ -97,7 +97,7 @@ class SettingBaseController extends BaseController
         $request->validate([
             'settings' => ['required', 'array'],
             'settings.*.key' => ['required', 'string'],
-            'settings.*.value' => ['required'],
+            'settings.*.value' => ['present'],
             'settings.*.type' => ['nullable', 'string', 'in:string,integer,boolean,json'],
             'settings.*.group' => ['nullable', 'string'],
             'settings.*.label' => ['nullable', 'string'],

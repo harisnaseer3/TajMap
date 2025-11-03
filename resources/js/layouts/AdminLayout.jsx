@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { authService } from '../services/api';
 import toast from 'react-hot-toast';
+import Logo from '../components/Logo';
 
 export default function AdminLayout() {
     const location = useLocation();
@@ -38,7 +39,12 @@ export default function AdminLayout() {
             {/* Sidebar */}
             <aside className={`bg-gray-900 text-white transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'}`}>
                 <div className="p-4 flex items-center justify-between border-b border-gray-700">
-                    {sidebarOpen && <h1 className="text-xl font-bold">TajMap Admin</h1>}
+                    <Logo
+                        showText={sidebarOpen}
+                        text="TajMap Admin"
+                        iconClassName="h-8 w-8"
+                        textClassName="ml-2 text-xl font-bold text-white"
+                    />
                     <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-400 hover:text-white">
                         {sidebarOpen ? '◀' : '▶'}
                     </button>

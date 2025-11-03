@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { settingService } from '../../services/api';
+import React, { useEffect, useState, useRef } from 'react';
+import { settingService, mediaService } from '../../services/api';
 import toast from 'react-hot-toast';
 
 export default function AdminSettings() {
@@ -8,6 +8,9 @@ export default function AdminSettings() {
     const [settings, setSettings] = useState([]);
     const [settingsByGroup, setSettingsByGroup] = useState({});
     const [editedSettings, setEditedSettings] = useState({});
+    const [uploadingLogo, setUploadingLogo] = useState(false);
+    const [logoUrl, setLogoUrl] = useState('');
+    const logoFileInputRef = useRef(null);
 
     useEffect(() => {
         fetchSettings();
@@ -36,6 +39,10 @@ export default function AdminSettings() {
             const initialEdits = {};
             settingsData.forEach(setting => {
                 initialEdits[setting.key] = setting.value;
+                // Get logo URL if it exists
+                if (setting.key === 'site_logo_url') {
+                    setLogoUrl(setting.value || '');
+                }
             });
             setEditedSettings(initialEdits);
         } catch (error) {
@@ -51,6 +58,55 @@ export default function AdminSettings() {
             ...prev,
             [key]: value
         }));
+    };
+
+    const handleLogoUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            toast.error('Please upload an image file');
+            return;
+        }
+
+        try {
+            setUploadingLogo(true);
+            const response = await mediaService.upload(file, 'logo');
+            const uploadedImage = response.data?.data || response.data;
+
+            if (uploadedImage && uploadedImage.url) {
+                // Save logo URL to settings
+                await settingService.bulkUpdate([
+                    {
+                        key: 'site_logo_url',
+                        value: uploadedImage.url,
+                        type: 'string',
+                        group: 'general',
+                        label: 'Site Logo URL',
+                        description: 'URL of the site logo image'
+                    },
+                    {
+                        key: 'site_logo_id',
+                        value: uploadedImage.id.toString(),
+                        type: 'integer',
+                        group: 'general',
+                        label: 'Site Logo Media ID',
+                        description: 'Media ID of the site logo'
+                    }
+                ]);
+
+                setLogoUrl(uploadedImage.url);
+                toast.success('Logo uploaded successfully');
+                await fetchSettings();
+            } else {
+                toast.error('Upload succeeded but no URL returned');
+            }
+        } catch (error) {
+            console.error('Error uploading logo:', error);
+            toast.error('Failed to upload logo');
+        } finally {
+            setUploadingLogo(false);
+        }
     };
 
     const handleSaveAll = async () => {
@@ -172,6 +228,72 @@ export default function AdminSettings() {
                 >
                     {saving ? 'Saving...' : 'Save All Changes'}
                 </button>
+            </div>
+
+            {/* Logo Upload Section */}
+            <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4 text-gray-800 border-b pb-3">Site Logo</h2>
+                <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0">
+                        {logoUrl ? (
+                            <img
+                                src={logoUrl}
+                                alt="Site Logo"
+                                className="w-32 h-32 object-contain border-2 border-gray-200 rounded-lg p-2 bg-gray-50"
+                            />
+                        ) : (
+                            <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-2">Upload Site Logo</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Upload a logo to display on your site. The logo will appear in the navigation header on both user and admin dashboards.
+                            Recommended size: 200x200px. Supported formats: JPG, PNG, GIF, WEBP.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => logoFileInputRef.current?.click()}
+                                disabled={uploadingLogo}
+                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 transition"
+                            >
+                                {uploadingLogo ? 'Uploading...' : logoUrl ? 'Change Logo' : 'Upload Logo'}
+                            </button>
+                            {logoUrl && (
+                                <button
+                                    onClick={async () => {
+                                        if (confirm('Are you sure you want to remove the logo?')) {
+                                            try {
+                                                await settingService.bulkUpdate([
+                                                    { key: 'site_logo_url', value: '' }
+                                                ]);
+                                                setLogoUrl('');
+                                                toast.success('Logo removed successfully');
+                                                await fetchSettings();
+                                            } catch (error) {
+                                                toast.error('Failed to remove logo');
+                                            }
+                                        }
+                                    }}
+                                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                                >
+                                    Remove Logo
+                                </button>
+                            )}
+                        </div>
+                        <input
+                            ref={logoFileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleLogoUpload}
+                            className="hidden"
+                        />
+                    </div>
+                </div>
             </div>
 
             {Object.keys(settingsByGroup).length === 0 ? (
