@@ -156,8 +156,9 @@ export default function AdminMapEditor() {
         if (!isDrawing && !isCreatingNewPlot) return;
 
         const rect = imageRef.current.getBoundingClientRect();
-        const x = (e.clientX - rect.left - panOffset.x) / (rect.width * zoom);
-        const y = (e.clientY - rect.top - panOffset.y) / (rect.height * zoom);
+        // rect.width already includes zoom, so don't multiply by zoom
+        const x = (e.clientX - rect.left - panOffset.x) / rect.width;
+        const y = (e.clientY - rect.top - panOffset.y) / rect.height;
 
         if (currentTool === 'polygon') {
             const newPoints = [...currentPoints, { x, y }];
@@ -186,8 +187,9 @@ export default function AdminMapEditor() {
                 setIsDraggingPoint(true);
             }
         } else if (currentTool === 'rectangle' && !rectangleStart) {
-            const x = (mouseX - panOffset.x) / (rect.width * zoom);
-            const y = (mouseY - panOffset.y) / (rect.height * zoom);
+            // rect.width already includes zoom, so don't multiply by zoom
+            const x = (mouseX - panOffset.x) / rect.width;
+            const y = (mouseY - panOffset.y) / rect.height;
             setRectangleStart({ x, y });
         }
     };
@@ -200,9 +202,9 @@ export default function AdminMapEditor() {
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        // Update current mouse position for preview
-        const x = (mouseX - panOffset.x) / (rect.width * zoom);
-        const y = (mouseY - panOffset.y) / (rect.height * zoom);
+        // Update current mouse position for preview - rect.width already includes zoom
+        const x = (mouseX - panOffset.x) / rect.width;
+        const y = (mouseY - panOffset.y) / rect.height;
         setCurrentMousePos({ x, y });
 
         if (isPanning && currentTool === 'pan') {
@@ -436,9 +438,10 @@ export default function AdminMapEditor() {
 
     const convertCoordinates = (coords) => {
         if (!dimensions.width || !dimensions.height) return [];
+        // dimensions already include zoom (from clientWidth/Height), so don't multiply by zoom again
         return coords.map(coord => ({
-            x: coord.x * dimensions.width * zoom,
-            y: coord.y * dimensions.height * zoom
+            x: coord.x * dimensions.width,
+            y: coord.y * dimensions.height
         }));
     };
 
@@ -447,6 +450,7 @@ export default function AdminMapEditor() {
         return converted.map(c => `${c.x},${c.y}`).join(' ');
     };
 
+    // Update dimensions when image loads or resizes
     useEffect(() => {
         if (imageRef.current) {
             setDimensions({
@@ -455,6 +459,35 @@ export default function AdminMapEditor() {
             });
         }
     }, [baseImage]);
+
+    // Add resize observer to track dimension changes
+    useEffect(() => {
+        if (!imageRef.current) return;
+
+        const updateDimensions = () => {
+            if (imageRef.current) {
+                setDimensions({
+                    width: imageRef.current.clientWidth,
+                    height: imageRef.current.clientHeight
+                });
+            }
+        };
+
+        // Create resize observer
+        const resizeObserver = new ResizeObserver(updateDimensions);
+        resizeObserver.observe(imageRef.current);
+
+        // Also listen to window resize
+        window.addEventListener('resize', updateDimensions);
+
+        // Initial update
+        updateDimensions();
+
+        return () => {
+            resizeObserver.disconnect();
+            window.removeEventListener('resize', updateDimensions);
+        };
+    }, [baseImage, zoom]);
 
     // Keyboard shortcuts
     useEffect(() => {
@@ -822,8 +855,8 @@ export default function AdminMapEditor() {
                                         ref={svgRef}
                                         className="absolute top-0 left-0"
                                         style={{
-                                            width: dimensions.width * zoom,
-                                            height: dimensions.height * zoom,
+                                            width: dimensions.width,
+                                            height: dimensions.height,
                                             pointerEvents: currentTool === 'edit' ? 'auto' : 'none'
                                         }}
                                     >
@@ -876,10 +909,10 @@ export default function AdminMapEditor() {
                                         {/* Polygon preview line (from last point to cursor) */}
                                         {currentTool === 'polygon' && currentPoints.length > 0 && currentMousePos && (
                                             <line
-                                                x1={currentPoints[currentPoints.length - 1].x * dimensions.width * zoom}
-                                                y1={currentPoints[currentPoints.length - 1].y * dimensions.height * zoom}
-                                                x2={currentMousePos.x * dimensions.width * zoom}
-                                                y2={currentMousePos.y * dimensions.height * zoom}
+                                                x1={currentPoints[currentPoints.length - 1].x * dimensions.width}
+                                                y1={currentPoints[currentPoints.length - 1].y * dimensions.height}
+                                                x2={currentMousePos.x * dimensions.width}
+                                                y2={currentMousePos.y * dimensions.height}
                                                 stroke={isCreatingNewPlot ? "rgba(34, 197, 94, 0.6)" : "rgba(59, 130, 246, 0.6)"}
                                                 strokeWidth="2"
                                                 strokeDasharray="5,5"
@@ -889,10 +922,10 @@ export default function AdminMapEditor() {
                                         {/* Rectangle preview while dragging */}
                                         {currentTool === 'rectangle' && rectangleStart && rectangleEnd && (
                                             <rect
-                                                x={Math.min(rectangleStart.x, rectangleEnd.x) * dimensions.width * zoom}
-                                                y={Math.min(rectangleStart.y, rectangleEnd.y) * dimensions.height * zoom}
-                                                width={Math.abs(rectangleEnd.x - rectangleStart.x) * dimensions.width * zoom}
-                                                height={Math.abs(rectangleEnd.y - rectangleStart.y) * dimensions.height * zoom}
+                                                x={Math.min(rectangleStart.x, rectangleEnd.x) * dimensions.width}
+                                                y={Math.min(rectangleStart.y, rectangleEnd.y) * dimensions.height}
+                                                width={Math.abs(rectangleEnd.x - rectangleStart.x) * dimensions.width}
+                                                height={Math.abs(rectangleEnd.y - rectangleStart.y) * dimensions.height}
                                                 fill={isCreatingNewPlot ? "rgba(34, 197, 94, 0.2)" : "rgba(59, 130, 246, 0.2)"}
                                                 stroke={isCreatingNewPlot ? "rgba(34, 197, 94, 0.8)" : "rgba(59, 130, 246, 0.8)"}
                                                 strokeWidth="2"
