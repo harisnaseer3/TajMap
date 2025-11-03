@@ -14,6 +14,7 @@ class Setting extends Model
         'value',
         'type',
         'group',
+        'subsection',
         'label',
         'description',
     ];

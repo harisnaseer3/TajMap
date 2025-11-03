@@ -40,6 +40,10 @@ export default function AdminMapEditor() {
     });
     const [isSavingPlot, setIsSavingPlot] = useState(false);
 
+    // Search and sort state
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortBy, setSortBy] = useState('plot_number'); // 'plot_number', 'status', 'sector', 'has_coordinates'
+
     const containerRef = useRef(null);
     const imageRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -156,8 +160,9 @@ export default function AdminMapEditor() {
         if (!isDrawing && !isCreatingNewPlot) return;
 
         const rect = imageRef.current.getBoundingClientRect();
-        const x = (e.clientX - rect.left - panOffset.x) / (rect.width * zoom);
-        const y = (e.clientY - rect.top - panOffset.y) / (rect.height * zoom);
+        // rect.width already includes zoom, so don't multiply by zoom
+        const x = (e.clientX - rect.left - panOffset.x) / rect.width;
+        const y = (e.clientY - rect.top - panOffset.y) / rect.height;
 
         if (currentTool === 'polygon') {
             const newPoints = [...currentPoints, { x, y }];
@@ -186,8 +191,9 @@ export default function AdminMapEditor() {
                 setIsDraggingPoint(true);
             }
         } else if (currentTool === 'rectangle' && !rectangleStart) {
-            const x = (mouseX - panOffset.x) / (rect.width * zoom);
-            const y = (mouseY - panOffset.y) / (rect.height * zoom);
+            // rect.width already includes zoom, so don't multiply by zoom
+            const x = (mouseX - panOffset.x) / rect.width;
+            const y = (mouseY - panOffset.y) / rect.height;
             setRectangleStart({ x, y });
         }
     };
@@ -200,9 +206,9 @@ export default function AdminMapEditor() {
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        // Update current mouse position for preview
-        const x = (mouseX - panOffset.x) / (rect.width * zoom);
-        const y = (mouseY - panOffset.y) / (rect.height * zoom);
+        // Update current mouse position for preview - rect.width already includes zoom
+        const x = (mouseX - panOffset.x) / rect.width;
+        const y = (mouseY - panOffset.y) / rect.height;
         setCurrentMousePos({ x, y });
 
         if (isPanning && currentTool === 'pan') {
@@ -421,6 +427,49 @@ export default function AdminMapEditor() {
         }
     };
 
+    // Filter and sort plots
+    const getFilteredAndSortedPlots = () => {
+        let filteredPlots = [...plots];
+
+        // Apply search filter
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            filteredPlots = filteredPlots.filter(plot =>
+                plot.plot_number.toLowerCase().includes(query) ||
+                plot.sector?.toLowerCase().includes(query) ||
+                plot.block?.toLowerCase().includes(query) ||
+                plot.status?.toLowerCase().includes(query)
+            );
+        }
+
+        // Apply sorting
+        filteredPlots.sort((a, b) => {
+            switch (sortBy) {
+                case 'plot_number':
+                    return a.plot_number.localeCompare(b.plot_number);
+
+                case 'status':
+                    const statusOrder = { available: 1, reserved: 2, sold: 3 };
+                    return (statusOrder[a.status] || 4) - (statusOrder[b.status] || 4);
+
+                case 'sector':
+                    const sectorA = a.sector || '';
+                    const sectorB = b.sector || '';
+                    return sectorA.localeCompare(sectorB);
+
+                case 'has_coordinates':
+                    const hasCoordA = a.coordinates && a.coordinates.length > 0 ? 0 : 1;
+                    const hasCoordB = b.coordinates && b.coordinates.length > 0 ? 0 : 1;
+                    return hasCoordA - hasCoordB;
+
+                default:
+                    return 0;
+            }
+        });
+
+        return filteredPlots;
+    };
+
     const handleZoomIn = () => {
         setZoom(Math.min(zoom + 0.25, 5));
     };
@@ -436,9 +485,10 @@ export default function AdminMapEditor() {
 
     const convertCoordinates = (coords) => {
         if (!dimensions.width || !dimensions.height) return [];
+        // dimensions already include zoom (from clientWidth/Height), so don't multiply by zoom again
         return coords.map(coord => ({
-            x: coord.x * dimensions.width * zoom,
-            y: coord.y * dimensions.height * zoom
+            x: coord.x * dimensions.width,
+            y: coord.y * dimensions.height
         }));
     };
 
@@ -447,6 +497,7 @@ export default function AdminMapEditor() {
         return converted.map(c => `${c.x},${c.y}`).join(' ');
     };
 
+    // Update dimensions when image loads or resizes
     useEffect(() => {
         if (imageRef.current) {
             setDimensions({
@@ -455,6 +506,35 @@ export default function AdminMapEditor() {
             });
         }
     }, [baseImage]);
+
+    // Add resize observer to track dimension changes
+    useEffect(() => {
+        if (!imageRef.current) return;
+
+        const updateDimensions = () => {
+            if (imageRef.current) {
+                setDimensions({
+                    width: imageRef.current.clientWidth,
+                    height: imageRef.current.clientHeight
+                });
+            }
+        };
+
+        // Create resize observer
+        const resizeObserver = new ResizeObserver(updateDimensions);
+        resizeObserver.observe(imageRef.current);
+
+        // Also listen to window resize
+        window.addEventListener('resize', updateDimensions);
+
+        // Initial update
+        updateDimensions();
+
+        return () => {
+            resizeObserver.disconnect();
+            window.removeEventListener('resize', updateDimensions);
+        };
+    }, [baseImage, zoom]);
 
     // Keyboard shortcuts
     useEffect(() => {
@@ -549,46 +629,112 @@ export default function AdminMapEditor() {
                     {/* Plots List */}
                     <div className="lg:col-span-1 bg-white p-4 rounded-lg shadow max-h-[600px] overflow-y-auto">
                         <h2 className="font-bold text-lg mb-4">Plots ({plots.length})</h2>
+
+                        {/* Search Input */}
+                        <div className="mb-3">
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Search plots..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full px-3 py-2 pl-9 pr-9 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                />
+                                <svg className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                {searchQuery && (
+                                    <button
+                                        onClick={() => setSearchQuery('')}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                        title="Clear search"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Sort Dropdown */}
+                        <div className="mb-4">
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                            >
+                                <option value="plot_number">Sort by Plot Number</option>
+                                <option value="status">Sort by Status</option>
+                                <option value="sector">Sort by Sector</option>
+                                <option value="has_coordinates">Sort by Coordinates</option>
+                            </select>
+                        </div>
+
+                        {/* Results count */}
+                        {searchQuery && (
+                            <div className="mb-3 text-xs text-gray-600 px-1">
+                                {getFilteredAndSortedPlots().length} result(s) found
+                            </div>
+                        )}
+
                         <div className="space-y-2">
-                            {plots.map((plot) => (
-                                <div
-                                    key={plot.id}
-                                    className={`p-3 rounded border-2 cursor-pointer transition ${
-                                        selectedPlot?.id === plot.id
-                                            ? 'border-blue-500 bg-blue-50'
-                                            : plot.coordinates && plot.coordinates.length > 0
-                                            ? 'border-green-200 bg-green-50 hover:border-green-400'
-                                            : 'border-gray-200 hover:border-gray-400'
-                                    }`}
-                                    onClick={() => !isDrawing && !isCreatingNewPlot && handleStartDrawing(plot)}
-                                >
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <div className="font-semibold">{plot.plot_number}</div>
-                                            <div className="text-xs text-gray-600">
-                                                {plot.sector} - {plot.block}
+                            {getFilteredAndSortedPlots().length > 0 ? (
+                                getFilteredAndSortedPlots().map((plot) => (
+                                    <div
+                                        key={plot.id}
+                                        className={`p-3 rounded border-2 cursor-pointer transition ${
+                                            selectedPlot?.id === plot.id
+                                                ? 'border-blue-500 bg-blue-50'
+                                                : plot.coordinates && plot.coordinates.length > 0
+                                                ? 'border-green-200 bg-green-50 hover:border-green-400'
+                                                : 'border-gray-200 hover:border-gray-400'
+                                        }`}
+                                        onClick={() => !isDrawing && !isCreatingNewPlot && handleStartDrawing(plot)}
+                                    >
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <div className="font-semibold">{plot.plot_number}</div>
+                                                <div className="text-xs text-gray-600">
+                                                    {plot.sector} - {plot.block}
+                                                </div>
+                                                <div className="text-xs text-gray-500 mt-1">
+                                                    {plot.coordinates && plot.coordinates.length > 0
+                                                        ? `${plot.coordinates.length} points`
+                                                        : 'No coordinates'}
+                                                </div>
                                             </div>
-                                            <div className="text-xs text-gray-500 mt-1">
-                                                {plot.coordinates && plot.coordinates.length > 0
-                                                    ? `${plot.coordinates.length} points`
-                                                    : 'No coordinates'}
-                                            </div>
+                                            {plot.coordinates && plot.coordinates.length > 0 && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleClearCoordinates(plot);
+                                                    }}
+                                                    className="text-red-500 hover:text-red-700 text-xs"
+                                                    title="Clear coordinates"
+                                                >
+                                                    Clear
+                                                </button>
+                                            )}
                                         </div>
-                                        {plot.coordinates && plot.coordinates.length > 0 && (
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleClearCoordinates(plot);
-                                                }}
-                                                className="text-red-500 hover:text-red-700 text-xs"
-                                                title="Clear coordinates"
-                                            >
-                                                Clear
-                                            </button>
-                                        )}
                                     </div>
+                                ))
+                            ) : (
+                                <div className="text-center py-8 text-gray-500">
+                                    <svg className="w-12 h-12 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <p className="text-sm">No plots found</p>
+                                    {searchQuery && (
+                                        <button
+                                            onClick={() => setSearchQuery('')}
+                                            className="text-xs text-blue-600 hover:text-blue-800 mt-2"
+                                        >
+                                            Clear search
+                                        </button>
+                                    )}
                                 </div>
-                            ))}
+                            )}
                         </div>
                     </div>
 
@@ -822,8 +968,8 @@ export default function AdminMapEditor() {
                                         ref={svgRef}
                                         className="absolute top-0 left-0"
                                         style={{
-                                            width: dimensions.width * zoom,
-                                            height: dimensions.height * zoom,
+                                            width: dimensions.width,
+                                            height: dimensions.height,
                                             pointerEvents: currentTool === 'edit' ? 'auto' : 'none'
                                         }}
                                     >
@@ -876,10 +1022,10 @@ export default function AdminMapEditor() {
                                         {/* Polygon preview line (from last point to cursor) */}
                                         {currentTool === 'polygon' && currentPoints.length > 0 && currentMousePos && (
                                             <line
-                                                x1={currentPoints[currentPoints.length - 1].x * dimensions.width * zoom}
-                                                y1={currentPoints[currentPoints.length - 1].y * dimensions.height * zoom}
-                                                x2={currentMousePos.x * dimensions.width * zoom}
-                                                y2={currentMousePos.y * dimensions.height * zoom}
+                                                x1={currentPoints[currentPoints.length - 1].x * dimensions.width}
+                                                y1={currentPoints[currentPoints.length - 1].y * dimensions.height}
+                                                x2={currentMousePos.x * dimensions.width}
+                                                y2={currentMousePos.y * dimensions.height}
                                                 stroke={isCreatingNewPlot ? "rgba(34, 197, 94, 0.6)" : "rgba(59, 130, 246, 0.6)"}
                                                 strokeWidth="2"
                                                 strokeDasharray="5,5"
@@ -889,10 +1035,10 @@ export default function AdminMapEditor() {
                                         {/* Rectangle preview while dragging */}
                                         {currentTool === 'rectangle' && rectangleStart && rectangleEnd && (
                                             <rect
-                                                x={Math.min(rectangleStart.x, rectangleEnd.x) * dimensions.width * zoom}
-                                                y={Math.min(rectangleStart.y, rectangleEnd.y) * dimensions.height * zoom}
-                                                width={Math.abs(rectangleEnd.x - rectangleStart.x) * dimensions.width * zoom}
-                                                height={Math.abs(rectangleEnd.y - rectangleStart.y) * dimensions.height * zoom}
+                                                x={Math.min(rectangleStart.x, rectangleEnd.x) * dimensions.width}
+                                                y={Math.min(rectangleStart.y, rectangleEnd.y) * dimensions.height}
+                                                width={Math.abs(rectangleEnd.x - rectangleStart.x) * dimensions.width}
+                                                height={Math.abs(rectangleEnd.y - rectangleStart.y) * dimensions.height}
                                                 fill={isCreatingNewPlot ? "rgba(34, 197, 94, 0.2)" : "rgba(59, 130, 246, 0.2)"}
                                                 stroke={isCreatingNewPlot ? "rgba(34, 197, 94, 0.8)" : "rgba(59, 130, 246, 0.8)"}
                                                 strokeWidth="2"

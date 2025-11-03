@@ -15,7 +15,7 @@ class UploadMediaRequest extends FormRequest
     {
         return [
             'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp'], // 10MB max
-            'type' => ['nullable', 'string', 'in:base_map,plot_image,other'],
+            'type' => ['nullable', 'string', 'in:base_map,plot_image,logo,other'],
         ];
     }
 }

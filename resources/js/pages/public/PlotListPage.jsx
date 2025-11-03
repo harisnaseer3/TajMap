@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import InteractiveMap from '../../components/InteractiveMap';
-import { plotService, leadService } from '../../services/api';
+import { plotService, leadService, settingService } from '../../services/api';
 import { usePlotStore } from '../../store/plotStore';
 import toast from 'react-hot-toast';
 import {
@@ -29,6 +29,7 @@ export default function PlotListPage() {
     const [showLeadModal, setShowLeadModal] = useState(false);
     const [leadForm, setLeadForm] = useState({ name: '', phone: '', email: '', message: '' });
     const [submitting, setSubmitting] = useState(false);
+    const [showPrices, setShowPrices] = useState(true);
 
     // Pagination state
     const [pagination, setPagination] = useState({
@@ -47,7 +48,29 @@ export default function PlotListPage() {
 
     useEffect(() => {
         fetchSectors();
+        fetchSettings();
     }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const response = await settingService.getAll();
+            const allSettings = response.data?.data || response.data || [];
+
+            // Find show_plot_prices setting
+            const showPricesSetting = allSettings.find(s => s.key === 'show_plot_prices');
+            if (showPricesSetting) {
+                const showPricesValue = showPricesSetting.value;
+                setShowPrices(
+                    showPricesValue === true ||
+                    showPricesValue === 'true' ||
+                    showPricesValue === '1' ||
+                    showPricesValue === 1
+                );
+            }
+        } catch (error) {
+            // Silently fail and use default
+        }
+    };
 
     useEffect(() => {
         if (filters.sector) {
@@ -68,7 +91,7 @@ export default function PlotListPage() {
             const response = await plotService.getSectors();
             setSectors(response.data?.sectors || []);
         } catch (error) {
-            console.error('Error fetching sectors:', error);
+            // Silently fail
         }
     };
 
@@ -77,7 +100,7 @@ export default function PlotListPage() {
             const response = await plotService.getBlocks({ sector });
             setBlocks(response.data?.blocks || []);
         } catch (error) {
-            console.error('Error fetching blocks:', error);
+            // Silently fail
         }
     };
 
@@ -107,7 +130,6 @@ export default function PlotListPage() {
                 to: paginationData.to || 0,
             });
         } catch (error) {
-            console.error('Error fetching plots:', error);
             toast.error('Failed to load plots');
         } finally {
             setLoading(false);
@@ -121,7 +143,6 @@ export default function PlotListPage() {
             const data = response.data;
             setAllPlots(data.data || []);
         } catch (error) {
-            console.error('Error fetching plots:', error);
             toast.error('Failed to load plots');
         } finally {
             setLoading(false);
@@ -142,7 +163,6 @@ export default function PlotListPage() {
             setShowLeadModal(false);
             setLeadForm({ name: '', phone: '', email: '', message: '' });
         } catch (error) {
-            console.error('Error submitting lead:', error);
             toast.error('Failed to submit inquiry');
         } finally {
             setSubmitting(false);
@@ -329,28 +349,30 @@ export default function PlotListPage() {
                                 </div>
 
                                 {/* Price Range */}
-                                <div>
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                        <CurrencyDollarIcon className="h-4 w-4" />
-                                        Price Range
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <input
-                                            type="number"
-                                            placeholder="Min"
-                                            value={filters.min_price || ''}
-                                            onChange={(e) => handleFilterChange({ ...filters, min_price: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        />
-                                        <input
-                                            type="number"
-                                            placeholder="Max"
-                                            value={filters.max_price || ''}
-                                            onChange={(e) => handleFilterChange({ ...filters, max_price: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        />
+                                {showPrices && (
+                                    <div>
+                                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                            <CurrencyDollarIcon className="h-4 w-4" />
+                                            Price Range
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <input
+                                                type="number"
+                                                placeholder="Min"
+                                                value={filters.min_price || ''}
+                                                onChange={(e) => handleFilterChange({ ...filters, min_price: e.target.value })}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                            <input
+                                                type="number"
+                                                placeholder="Max"
+                                                value={filters.max_price || ''}
+                                                onChange={(e) => handleFilterChange({ ...filters, max_price: e.target.value })}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
                                 {/* Area Range */}
                                 <div>
@@ -392,8 +414,8 @@ export default function PlotListPage() {
                                     >
                                         <option value="created_at-desc">Newest First</option>
                                         <option value="created_at-asc">Oldest First</option>
-                                        <option value="price-asc">Price: Low to High</option>
-                                        <option value="price-desc">Price: High to Low</option>
+                                        {showPrices && <option value="price-asc">Price: Low to High</option>}
+                                        {showPrices && <option value="price-desc">Price: High to Low</option>}
                                         <option value="area-asc">Area: Small to Large</option>
                                         <option value="area-desc">Area: Large to Small</option>
                                         <option value="plot_number-asc">Plot Number: A-Z</option>
@@ -542,15 +564,17 @@ export default function PlotListPage() {
                                                             </span>
                                                         </div>
 
-                                                        <div className="mt-4 grid grid-cols-2 gap-4">
+                                                        <div className={`mt-4 grid ${showPrices ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
                                                             <div>
                                                                 <p className="text-sm text-gray-600">Area</p>
                                                                 <p className="text-lg font-semibold text-gray-900">{plot.area} sq. units</p>
                                                             </div>
-                                                            <div>
-                                                                <p className="text-sm text-gray-600">Price</p>
-                                                                <p className="text-lg font-semibold text-gray-900">PKR {parseFloat(plot.price).toLocaleString()}</p>
-                                                            </div>
+                                                            {showPrices && (
+                                                                <div>
+                                                                    <p className="text-sm text-gray-600">Price</p>
+                                                                    <p className="text-lg font-semibold text-gray-900">PKR {parseFloat(plot.price).toLocaleString()}</p>
+                                                                </div>
+                                                            )}
                                                         </div>
 
                                                         {plot.description && (
@@ -692,10 +716,12 @@ export default function PlotListPage() {
                                         <p className="text-sm text-gray-600">Area</p>
                                         <p className="font-semibold">{selectedPlot.area} sq. units</p>
                                     </div>
-                                    <div>
-                                        <p className="text-sm text-gray-600">Price</p>
-                                        <p className="font-semibold">PKR {parseFloat(selectedPlot.price).toLocaleString()}</p>
-                                    </div>
+                                    {showPrices && (
+                                        <div>
+                                            <p className="text-sm text-gray-600">Price</p>
+                                            <p className="font-semibold">PKR {parseFloat(selectedPlot.price).toLocaleString()}</p>
+                                        </div>
+                                    )}
                                 </div>
                                 {selectedPlot.description && (
                                     <div className="mt-4">

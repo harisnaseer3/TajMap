@@ -13,12 +13,13 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         $settings = [
-            // General Settings
+            // General Settings - Site Information
             [
                 'key' => 'site_name',
                 'value' => 'TajMap',
                 'type' => 'string',
                 'group' => 'general',
+                'subsection' => 'site_info',
                 'label' => 'Site Name',
                 'description' => 'The name of your website',
             ],
@@ -27,14 +28,18 @@ class SettingSeeder extends Seeder
                 'value' => 'Real Estate Plot Management System',
                 'type' => 'textarea',
                 'group' => 'general',
+                'subsection' => 'site_info',
                 'label' => 'Site Description',
                 'description' => 'A brief description of your website',
             ],
+
+            // General Settings - Contact Information
             [
                 'key' => 'contact_email',
                 'value' => 'contact@tajmap.com',
                 'type' => 'string',
                 'group' => 'general',
+                'subsection' => 'contact',
                 'label' => 'Contact Email',
                 'description' => 'Primary contact email address',
             ],
@@ -43,14 +48,18 @@ class SettingSeeder extends Seeder
                 'value' => '+92 123 4567890',
                 'type' => 'string',
                 'group' => 'general',
+                'subsection' => 'contact',
                 'label' => 'Contact Phone',
                 'description' => 'Primary contact phone number',
             ],
+
+            // General Settings - System
             [
                 'key' => 'maintenance_mode',
                 'value' => 'false',
                 'type' => 'boolean',
                 'group' => 'general',
+                'subsection' => 'system',
                 'label' => 'Maintenance Mode',
                 'description' => 'Enable maintenance mode to prevent public access',
             ],

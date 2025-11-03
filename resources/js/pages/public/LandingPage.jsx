@@ -10,6 +10,7 @@ import {
     XMarkIcon
 } from '@heroicons/react/24/outline';
 import InteractiveMap from '../../components/InteractiveMap';
+import Logo from '../../components/Logo';
 import toast from 'react-hot-toast';
 import { leadService } from '../../services/api';
 
@@ -89,10 +90,11 @@ export default function LandingPage() {
             <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center">
-                            <MapIcon className="h-8 w-8 text-blue-600" />
-                            <span className="ml-2 text-xl font-bold text-gray-900">TajMap</span>
-                        </div>
+                        <Logo
+                            text="TajMap"
+                            iconClassName="h-8 w-8"
+                            textClassName="ml-2 text-xl font-bold text-gray-900"
+                        />
                         <div className="hidden md:flex items-center space-x-8">
                             <a href="#map" className="text-gray-600 hover:text-gray-900 transition">
                                 View Map
@@ -439,9 +441,12 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-4 gap-8 mb-8">
                         <div>
-                            <div className="flex items-center mb-4">
-                                <MapIcon className="h-8 w-8 text-blue-500" />
-                                <span className="ml-2 text-xl font-bold text-white">TajMap</span>
+                            <div className="mb-4">
+                                <Logo
+                                    text="TajMap"
+                                    iconClassName="h-8 w-8"
+                                    textClassName="ml-2 text-xl font-bold text-white"
+                                />
                             </div>
                             <p className="text-sm">
                                 Your trusted partner in finding the perfect plot of land.
