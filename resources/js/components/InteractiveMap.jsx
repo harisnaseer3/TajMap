@@ -62,22 +62,22 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                 plot.coordinates.length > 0
             );
 
-            // Fetch base map and general settings
+            // Fetch base map and appearance settings
             try {
-                const [mapSettingsResponse, generalSettingsResponse] = await Promise.all([
+                const [mapSettingsResponse, appearanceSettingsResponse] = await Promise.all([
                     settingService.getByGroup('map'),
-                    settingService.getByGroup('general')
+                    settingService.getByGroup('appearance')
                 ]);
 
                 // getByGroup returns an object like { key: value }, not an array
                 const mapSettings = mapSettingsResponse.data || {};
-                const allSettings = generalSettingsResponse.data || {};
+                const appearanceSettings = appearanceSettingsResponse.data || {};
 
                 // Get base_map_url directly from the object
                 const baseMapUrl = mapSettings.base_map_url;
 
                 // Get show_plot_prices setting
-                const showPricesValue = allSettings.show_plot_prices;
+                const showPricesValue = appearanceSettings.show_plot_prices;
                 if (showPricesValue !== undefined) {
                     // Handle different boolean representations
                     setShowPrices(

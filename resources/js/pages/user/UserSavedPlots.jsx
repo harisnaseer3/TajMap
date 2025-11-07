@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { savedPlotService } from '../../services/api';
+import { savedPlotService, settingService } from '../../services/api';
 import toast from 'react-hot-toast';
 import {
     BookmarkIcon,
@@ -21,9 +21,11 @@ export default function UserSavedPlots() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState('');
+    const [showPrices, setShowPrices] = useState(true);
 
     useEffect(() => {
         fetchSavedPlots();
+        fetchSettings();
     }, []);
 
     useEffect(() => {
@@ -46,6 +48,24 @@ export default function UserSavedPlots() {
             toast.error('Failed to load saved plots');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchSettings = async () => {
+        try {
+            const response = await settingService.getByGroup('appearance');
+            const settings = response.data || {};
+            const showPricesValue = settings.show_plot_prices;
+            if (showPricesValue !== undefined) {
+                setShowPrices(
+                    showPricesValue === true ||
+                    showPricesValue === 'true' ||
+                    showPricesValue === '1' ||
+                    showPricesValue === 1
+                );
+            }
+        } catch (error) {
+            console.error('Failed to fetch settings:', error);
         }
     };
 
@@ -257,7 +277,7 @@ export default function UserSavedPlots() {
                                                 <p className="text-sm font-semibold text-gray-800">{plot.area} sq. units</p>
                                             </div>
                                         </div>
-                                        {plot.price && (
+                                        {showPrices && plot.price && (
                                             <div className="flex items-center gap-3">
                                                 <CurrencyDollarIcon className="h-5 w-5 text-gray-400" />
                                                 <div>

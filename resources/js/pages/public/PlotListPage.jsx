@@ -61,7 +61,7 @@ export default function PlotListPage() {
 
     const fetchSettings = async () => {
         try {
-            const response = await settingService.getByGroup('general');
+            const response = await settingService.getByGroup('appearance');
             // getByGroup returns an object like { key: value }, not an array
             const settings = response.data || {};
 
