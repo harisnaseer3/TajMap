@@ -14,6 +14,10 @@ export default function UserDashboard() {
                         <h2 className="text-xl font-bold mb-2">Saved Plots</h2>
                         <p className="text-gray-600">View your favorite plots</p>
                     </Link>
+                    <Link to="/user/tickets" className="bg-white p-6 rounded-lg shadow hover:shadow-lg">
+                        <h2 className="text-xl font-bold mb-2">Support Tickets</h2>
+                        <p className="text-gray-600">View and manage your tickets</p>
+                    </Link>
                     <Link to="/plots" className="bg-white p-6 rounded-lg shadow hover:shadow-lg">
                         <h2 className="text-xl font-bold mb-2">Browse Plots</h2>
                         <p className="text-gray-600">Find your perfect plot</p>

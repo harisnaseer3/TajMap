@@ -82191,16 +82191,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pages_auth_RegisterPage__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../pages/auth/RegisterPage */ "./resources/js/pages/auth/RegisterPage.jsx");
 /* harmony import */ var _pages_user_UserDashboard__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../pages/user/UserDashboard */ "./resources/js/pages/user/UserDashboard.jsx");
 /* harmony import */ var _pages_user_UserSavedPlots__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../pages/user/UserSavedPlots */ "./resources/js/pages/user/UserSavedPlots.jsx");
-/* harmony import */ var _layouts_AdminLayout__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../layouts/AdminLayout */ "./resources/js/layouts/AdminLayout.jsx");
-/* harmony import */ var _pages_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../pages/admin/AdminDashboard */ "./resources/js/pages/admin/AdminDashboard.jsx");
-/* harmony import */ var _pages_admin_AdminPlots__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../pages/admin/AdminPlots */ "./resources/js/pages/admin/AdminPlots.jsx");
-/* harmony import */ var _pages_admin_AdminLeads__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../pages/admin/AdminLeads */ "./resources/js/pages/admin/AdminLeads.jsx");
-/* harmony import */ var _pages_admin_AdminAnalytics__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../pages/admin/AdminAnalytics */ "./resources/js/pages/admin/AdminAnalytics.jsx");
-/* harmony import */ var _pages_admin_AdminSettings__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../pages/admin/AdminSettings */ "./resources/js/pages/admin/AdminSettings.jsx");
-/* harmony import */ var _pages_admin_AdminUsers__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../pages/admin/AdminUsers */ "./resources/js/pages/admin/AdminUsers.jsx");
-/* harmony import */ var _pages_admin_AdminMapEditor__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../pages/admin/AdminMapEditor */ "./resources/js/pages/admin/AdminMapEditor.jsx");
-/* harmony import */ var _ProtectedRoute__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./ProtectedRoute */ "./resources/js/components/ProtectedRoute.jsx");
-/* harmony import */ var _AdminRoute__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./AdminRoute */ "./resources/js/components/AdminRoute.jsx");
+/* harmony import */ var _pages_user_UserTickets__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../pages/user/UserTickets */ "./resources/js/pages/user/UserTickets.jsx");
+/* harmony import */ var _pages_user_UserTicketDetails__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../pages/user/UserTicketDetails */ "./resources/js/pages/user/UserTicketDetails.jsx");
+/* harmony import */ var _pages_user_CreateTicket__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../pages/user/CreateTicket */ "./resources/js/pages/user/CreateTicket.jsx");
+/* harmony import */ var _layouts_AdminLayout__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../layouts/AdminLayout */ "./resources/js/layouts/AdminLayout.jsx");
+/* harmony import */ var _pages_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../pages/admin/AdminDashboard */ "./resources/js/pages/admin/AdminDashboard.jsx");
+/* harmony import */ var _pages_admin_AdminPlots__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../pages/admin/AdminPlots */ "./resources/js/pages/admin/AdminPlots.jsx");
+/* harmony import */ var _pages_admin_AdminLeads__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../pages/admin/AdminLeads */ "./resources/js/pages/admin/AdminLeads.jsx");
+/* harmony import */ var _pages_admin_AdminAnalytics__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../pages/admin/AdminAnalytics */ "./resources/js/pages/admin/AdminAnalytics.jsx");
+/* harmony import */ var _pages_admin_AdminSettings__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../pages/admin/AdminSettings */ "./resources/js/pages/admin/AdminSettings.jsx");
+/* harmony import */ var _pages_admin_AdminUsers__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../pages/admin/AdminUsers */ "./resources/js/pages/admin/AdminUsers.jsx");
+/* harmony import */ var _pages_admin_AdminMapEditor__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../pages/admin/AdminMapEditor */ "./resources/js/pages/admin/AdminMapEditor.jsx");
+/* harmony import */ var _pages_admin_AdminTickets__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../pages/admin/AdminTickets */ "./resources/js/pages/admin/AdminTickets.jsx");
+/* harmony import */ var _pages_admin_AdminTicketDetails__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../pages/admin/AdminTicketDetails */ "./resources/js/pages/admin/AdminTicketDetails.jsx");
+/* harmony import */ var _ProtectedRoute__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./ProtectedRoute */ "./resources/js/components/ProtectedRoute.jsx");
+/* harmony import */ var _AdminRoute__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./AdminRoute */ "./resources/js/components/AdminRoute.jsx");
 
 
 
@@ -82216,7 +82221,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
 // Admin Pages
+
+
 
 
 
@@ -82249,18 +82259,27 @@ function App() {
     element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_auth_RegisterPage__WEBPACK_IMPORTED_MODULE_7__["default"], null)
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "/user",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_ProtectedRoute__WEBPACK_IMPORTED_MODULE_18__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_ProtectedRoute__WEBPACK_IMPORTED_MODULE_23__["default"], null)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "dashboard",
     element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_user_UserDashboard__WEBPACK_IMPORTED_MODULE_8__["default"], null)
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "saved-plots",
     element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_user_UserSavedPlots__WEBPACK_IMPORTED_MODULE_9__["default"], null)
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
+    path: "tickets",
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_user_UserTickets__WEBPACK_IMPORTED_MODULE_10__["default"], null)
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
+    path: "tickets/create",
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_user_CreateTicket__WEBPACK_IMPORTED_MODULE_12__["default"], null)
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
+    path: "tickets/:id",
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_user_UserTicketDetails__WEBPACK_IMPORTED_MODULE_11__["default"], null)
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "/admin",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_AdminRoute__WEBPACK_IMPORTED_MODULE_19__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_AdminRoute__WEBPACK_IMPORTED_MODULE_24__["default"], null)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_layouts_AdminLayout__WEBPACK_IMPORTED_MODULE_10__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_layouts_AdminLayout__WEBPACK_IMPORTED_MODULE_13__["default"], null)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     index: true,
     element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Navigate, {
@@ -82269,25 +82288,31 @@ function App() {
     })
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "dashboard",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_11__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_14__["default"], null)
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "plots",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminPlots__WEBPACK_IMPORTED_MODULE_12__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminPlots__WEBPACK_IMPORTED_MODULE_15__["default"], null)
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "leads",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminLeads__WEBPACK_IMPORTED_MODULE_13__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminLeads__WEBPACK_IMPORTED_MODULE_16__["default"], null)
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
+    path: "tickets",
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminTickets__WEBPACK_IMPORTED_MODULE_21__["default"], null)
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
+    path: "tickets/:id",
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminTicketDetails__WEBPACK_IMPORTED_MODULE_22__["default"], null)
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "analytics",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminAnalytics__WEBPACK_IMPORTED_MODULE_14__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminAnalytics__WEBPACK_IMPORTED_MODULE_17__["default"], null)
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "map-editor",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminMapEditor__WEBPACK_IMPORTED_MODULE_17__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminMapEditor__WEBPACK_IMPORTED_MODULE_20__["default"], null)
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "settings",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminSettings__WEBPACK_IMPORTED_MODULE_15__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminSettings__WEBPACK_IMPORTED_MODULE_18__["default"], null)
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "users",
-    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminUsers__WEBPACK_IMPORTED_MODULE_16__["default"], null)
+    element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_pages_admin_AdminUsers__WEBPACK_IMPORTED_MODULE_19__["default"], null)
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Route, {
     path: "*",
     element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement("div", {
@@ -82407,7 +82432,7 @@ function InteractiveMap(_ref) {
   }, [baseImage]);
   var fetchMapData = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var _plotsResponse$data, plotsResponse, plotsData, mappedPlots, _mapSettingsResponse$, _generalSettingsRespo, _yield$Promise$all, _yield$Promise$all2, mapSettingsResponse, generalSettingsResponse, mapSettings, allSettings, showPricesSetting, showPricesValue, _t, _t2;
+      var _plotsResponse$data, plotsResponse, plotsData, mappedPlots, _yield$Promise$all, _yield$Promise$all2, mapSettingsResponse, generalSettingsResponse, mapSettings, allSettings, baseMapUrl, showPricesValue, _t, _t2;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
@@ -82427,25 +82452,25 @@ function InteractiveMap(_ref) {
             }); // Fetch base map and general settings
             _context.p = 2;
             _context.n = 3;
-            return Promise.all([_services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.getByGroup('map'), _services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.getAll()]);
+            return Promise.all([_services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.getByGroup('map'), _services_api__WEBPACK_IMPORTED_MODULE_1__.settingService.getByGroup('general')]);
           case 3:
             _yield$Promise$all = _context.v;
             _yield$Promise$all2 = _slicedToArray(_yield$Promise$all, 2);
             mapSettingsResponse = _yield$Promise$all2[0];
             generalSettingsResponse = _yield$Promise$all2[1];
-            mapSettings = ((_mapSettingsResponse$ = mapSettingsResponse.data) === null || _mapSettingsResponse$ === void 0 ? void 0 : _mapSettingsResponse$.data) || mapSettingsResponse.data || {};
-            allSettings = ((_generalSettingsRespo = generalSettingsResponse.data) === null || _generalSettingsRespo === void 0 ? void 0 : _generalSettingsRespo.data) || generalSettingsResponse.data || []; // Find show_plot_prices setting
-            showPricesSetting = allSettings.find(function (s) {
-              return s.key === 'show_plot_prices';
-            });
-            if (showPricesSetting) {
-              showPricesValue = showPricesSetting.value; // Handle different boolean representations
+            // getByGroup returns an object like { key: value }, not an array
+            mapSettings = mapSettingsResponse.data || {};
+            allSettings = generalSettingsResponse.data || {}; // Get base_map_url directly from the object
+            baseMapUrl = mapSettings.base_map_url; // Get show_plot_prices setting
+            showPricesValue = allSettings.show_plot_prices;
+            if (showPricesValue !== undefined) {
+              // Handle different boolean representations
               setShowPrices(showPricesValue === true || showPricesValue === 'true' || showPricesValue === '1' || showPricesValue === 1);
             }
-            if (mapSettings.base_map_url && mappedPlots.length > 0) {
-              setBaseImage(mapSettings.base_map_url);
+            if (baseMapUrl && mappedPlots.length > 0) {
+              setBaseImage(baseMapUrl);
               setPlots(mappedPlots);
-            } else if (!mapSettings.base_map_url) {
+            } else if (!baseMapUrl) {
               react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('No base map configured. Admin needs to upload a base map.');
             } else if (mappedPlots.length === 0) {
               react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('No plots configured yet. Admin needs to add plot coordinates.');
@@ -82743,21 +82768,20 @@ function Logo(_ref) {
   }, []);
   var fetchLogo = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var _response$data, response, settingsData, logoSetting, _t;
+      var response, settings, _logoUrl, _t;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
             _context.p = 0;
             _context.n = 1;
-            return _services_api__WEBPACK_IMPORTED_MODULE_2__.settingService.getAll();
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.settingService.getByGroup('general');
           case 1:
             response = _context.v;
-            settingsData = ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.data) || response.data || [];
-            logoSetting = settingsData.find(function (s) {
-              return s.key === 'site_logo_url';
-            });
-            if (logoSetting && logoSetting.value) {
-              setLogoUrl(logoSetting.value);
+            // getByGroup returns an object like { key: value }, not an array
+            settings = response.data || {};
+            _logoUrl = settings.site_logo_url;
+            if (_logoUrl) {
+              setLogoUrl(_logoUrl);
             }
             _context.n = 3;
             break;
@@ -82921,6 +82945,10 @@ function AdminLayout() {
     path: '/admin/leads',
     label: 'Leads',
     icon: '👥'
+  }, {
+    path: '/admin/tickets',
+    label: 'Tickets',
+    icon: '🎫'
   }, {
     path: '/admin/analytics',
     label: 'Analytics',
@@ -87361,6 +87389,817 @@ function AdminSettings() {
 
 /***/ }),
 
+/***/ "./resources/js/pages/admin/AdminTicketDetails.jsx":
+/*!*********************************************************!*\
+  !*** ./resources/js/pages/admin/AdminTicketDetails.jsx ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AdminTicketDetails)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/development/chunk-OIYGIGL5.mjs");
+/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
+/* harmony import */ var _store_authStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../store/authStore */ "./resources/js/store/authStore.js");
+/* harmony import */ var react_hot_toast__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-hot-toast */ "./node_modules/react-hot-toast/dist/index.mjs");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+
+function AdminTicketDetails() {
+  var _ticket$user, _ticket$user2, _ticket$replies;
+  var _useParams = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.useParams)(),
+    id = _useParams.id;
+  var navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.useNavigate)();
+  var user = (0,_store_authStore__WEBPACK_IMPORTED_MODULE_3__.useAuthStore)(function (state) {
+    return state.user;
+  });
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    ticket = _useState2[0],
+    setTicket = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState6 = _slicedToArray(_useState5, 2),
+    admins = _useState6[0],
+    setAdmins = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState8 = _slicedToArray(_useState7, 2),
+    replyMessage = _useState8[0],
+    setReplyMessage = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState0 = _slicedToArray(_useState9, 2),
+    submitting = _useState0[0],
+    setSubmitting = _useState0[1];
+  var fetchTicket = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var response, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            _context.p = 0;
+            setLoading(true);
+            _context.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.adminGetOne(id);
+          case 1:
+            response = _context.v;
+            setTicket(response.data);
+            _context.n = 3;
+            break;
+          case 2:
+            _context.p = 2;
+            _t = _context.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].error('Failed to load ticket');
+            navigate('/admin/tickets');
+          case 3:
+            _context.p = 3;
+            setLoading(false);
+            return _context.f(3);
+          case 4:
+            return _context.a(2);
+        }
+      }, _callee, null, [[0, 2, 3, 4]]);
+    }));
+    return function fetchTicket() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  var fetchAdmins = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var response, _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            _context2.p = 0;
+            _context2.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.userService.getAll({
+              role: 'admin'
+            });
+          case 1:
+            response = _context2.v;
+            setAdmins(response.data.data || response.data.items || []);
+            _context2.n = 3;
+            break;
+          case 2:
+            _context2.p = 2;
+            _t2 = _context2.v;
+            console.error('Failed to load admins');
+          case 3:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[0, 2]]);
+    }));
+    return function fetchAdmins() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchTicket();
+    fetchAdmins();
+  }, [id]);
+  var handleUpdateStatus = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(status) {
+      var _t3;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            _context3.p = 0;
+            _context3.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.adminUpdateStatus(id, status);
+          case 1:
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].success('Status updated successfully');
+            fetchTicket();
+            _context3.n = 3;
+            break;
+          case 2:
+            _context3.p = 2;
+            _t3 = _context3.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].error('Failed to update status');
+          case 3:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[0, 2]]);
+    }));
+    return function handleUpdateStatus(_x) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+  var handleUpdatePriority = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(priority) {
+      var _t4;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            _context4.p = 0;
+            _context4.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.adminUpdatePriority(id, priority);
+          case 1:
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].success('Priority updated successfully');
+            fetchTicket();
+            _context4.n = 3;
+            break;
+          case 2:
+            _context4.p = 2;
+            _t4 = _context4.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].error('Failed to update priority');
+          case 3:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[0, 2]]);
+    }));
+    return function handleUpdatePriority(_x2) {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  var handleAssign = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(adminUserId) {
+      var _t5;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
+          case 0:
+            _context5.p = 0;
+            _context5.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.adminAssign(id, adminUserId);
+          case 1:
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].success('Ticket assigned successfully');
+            fetchTicket();
+            _context5.n = 3;
+            break;
+          case 2:
+            _context5.p = 2;
+            _t5 = _context5.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].error('Failed to assign ticket');
+          case 3:
+            return _context5.a(2);
+        }
+      }, _callee5, null, [[0, 2]]);
+    }));
+    return function handleAssign(_x3) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+  var handleSubmitReply = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(e) {
+      var _t6;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.p = _context6.n) {
+          case 0:
+            e.preventDefault();
+            if (replyMessage.trim()) {
+              _context6.n = 1;
+              break;
+            }
+            return _context6.a(2);
+          case 1:
+            _context6.p = 1;
+            setSubmitting(true);
+            _context6.n = 2;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.adminAddReply(id, replyMessage);
+          case 2:
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].success('Reply added successfully');
+            setReplyMessage('');
+            fetchTicket();
+            _context6.n = 4;
+            break;
+          case 3:
+            _context6.p = 3;
+            _t6 = _context6.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].error('Failed to add reply');
+          case 4:
+            _context6.p = 4;
+            setSubmitting(false);
+            return _context6.f(4);
+          case 5:
+            return _context6.a(2);
+        }
+      }, _callee6, null, [[1, 3, 4, 5]]);
+    }));
+    return function handleSubmitReply(_x4) {
+      return _ref6.apply(this, arguments);
+    };
+  }();
+  var handleDelete = /*#__PURE__*/function () {
+    var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+      var _t7;
+      return _regenerator().w(function (_context7) {
+        while (1) switch (_context7.p = _context7.n) {
+          case 0:
+            if (confirm('Are you sure you want to delete this ticket?')) {
+              _context7.n = 1;
+              break;
+            }
+            return _context7.a(2);
+          case 1:
+            _context7.p = 1;
+            _context7.n = 2;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.adminDelete(id);
+          case 2:
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].success('Ticket deleted successfully');
+            navigate('/admin/tickets');
+            _context7.n = 4;
+            break;
+          case 3:
+            _context7.p = 3;
+            _t7 = _context7.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].error('Failed to delete ticket');
+          case 4:
+            return _context7.a(2);
+        }
+      }, _callee7, null, [[1, 3]]);
+    }));
+    return function handleDelete() {
+      return _ref7.apply(this, arguments);
+    };
+  }();
+  var getStatusColor = function getStatusColor(status) {
+    switch (status) {
+      case 'open':
+        return 'bg-blue-100 text-blue-800';
+      case 'in_progress':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'resolved':
+        return 'bg-green-100 text-green-800';
+      case 'closed':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  var getPriorityColor = function getPriorityColor(priority) {
+    switch (priority) {
+      case 'low':
+        return 'bg-gray-100 text-gray-800';
+      case 'medium':
+        return 'bg-blue-100 text-blue-800';
+      case 'high':
+        return 'bg-orange-100 text-orange-800';
+      case 'urgent':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  if (loading) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "min-h-screen bg-gray-100 flex items-center justify-center"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"
+    }));
+  }
+  if (!ticket) return null;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "min-h-screen bg-gray-100 p-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "max-w-6xl mx-auto"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    to: "/admin/tickets",
+    className: "text-blue-600 hover:underline"
+  }, "\u2190 Back to Tickets")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "grid md:grid-cols-3 gap-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "md:col-span-2 space-y-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex justify-between items-start mb-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+    className: "text-2xl font-bold"
+  }, "#", ticket.id, " - ", ticket.subject), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "px-3 py-1 rounded-full text-xs font-medium ".concat(getPriorityColor(ticket.priority))
+  }, ticket.priority), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "px-3 py-1 rounded-full text-xs font-medium ".concat(getStatusColor(ticket.status))
+  }, ticket.status.replace('_', ' ')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-700 whitespace-pre-wrap mb-4"
+  }, ticket.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-sm text-gray-500"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "Created by: ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "font-semibold"
+  }, (_ticket$user = ticket.user) === null || _ticket$user === void 0 ? void 0 : _ticket$user.name), " (", (_ticket$user2 = ticket.user) === null || _ticket$user2 === void 0 ? void 0 : _ticket$user2.email, ")"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "Created: ", new Date(ticket.created_at).toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "Last updated: ", new Date(ticket.updated_at).toLocaleString()))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: "text-xl font-bold mb-4"
+  }, "Replies (", ((_ticket$replies = ticket.replies) === null || _ticket$replies === void 0 ? void 0 : _ticket$replies.length) || 0, ")"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "space-y-4"
+  }, ticket.replies && ticket.replies.length > 0 ? _toConsumableArray(ticket.replies).reverse().map(function (reply) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      key: reply.id,
+      className: "border-l-4 pl-4 py-2 ".concat(reply.user.role === 'admin' ? 'border-purple-400' : 'border-gray-300')
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex justify-between items-start mb-2"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "font-semibold"
+    }, reply.user.name), reply.user.role === 'admin' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded"
+    }, "Admin")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "text-sm text-gray-500"
+    }, new Date(reply.created_at).toLocaleString())), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+      className: "text-gray-700 whitespace-pre-wrap"
+    }, reply.message));
+  }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-500 text-center py-4"
+  }, "No replies yet"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: "text-xl font-bold mb-4"
+  }, "Add Reply"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
+    onSubmit: handleSubmitReply
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("textarea", {
+    className: "w-full border rounded-lg px-4 py-2 mb-4",
+    rows: "4",
+    placeholder: "Type your response...",
+    value: replyMessage,
+    onChange: function onChange(e) {
+      return setReplyMessage(e.target.value);
+    },
+    required: true
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    type: "submit",
+    disabled: submitting,
+    className: "bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+  }, submitting ? 'Sending...' : 'Send Reply')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+    className: "font-bold mb-3"
+  }, "Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "w-full border rounded-lg px-3 py-2",
+    value: ticket.status,
+    onChange: function onChange(e) {
+      return handleUpdateStatus(e.target.value);
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "open"
+  }, "Open"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "in_progress"
+  }, "In Progress"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "resolved"
+  }, "Resolved"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "closed"
+  }, "Closed"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+    className: "font-bold mb-3"
+  }, "Priority"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "w-full border rounded-lg px-3 py-2",
+    value: ticket.priority,
+    onChange: function onChange(e) {
+      return handleUpdatePriority(e.target.value);
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "low"
+  }, "Low"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "medium"
+  }, "Medium"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "high"
+  }, "High"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "urgent"
+  }, "Urgent"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+    className: "font-bold mb-3"
+  }, "Assigned To"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "w-full border rounded-lg px-3 py-2",
+    value: ticket.admin_user_id || '',
+    onChange: function onChange(e) {
+      return handleAssign(e.target.value);
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: ""
+  }, "Unassigned"), admins.map(function (admin) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+      key: admin.id,
+      value: admin.id
+    }, admin.name);
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+    className: "font-bold mb-3"
+  }, "Actions"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: handleDelete,
+    className: "w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+  }, "Delete Ticket"))))));
+}
+
+/***/ }),
+
+/***/ "./resources/js/pages/admin/AdminTickets.jsx":
+/*!***************************************************!*\
+  !*** ./resources/js/pages/admin/AdminTickets.jsx ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AdminTickets)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/development/chunk-OIYGIGL5.mjs");
+/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
+/* harmony import */ var react_hot_toast__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-hot-toast */ "./node_modules/react-hot-toast/dist/index.mjs");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+function AdminTickets() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    tickets = _useState2[0],
+    setTickets = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    statistics = _useState6[0],
+    setStatistics = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      status: '',
+      priority: '',
+      admin_user_id: '',
+      search: ''
+    }),
+    _useState8 = _slicedToArray(_useState7, 2),
+    filters = _useState8[0],
+    setFilters = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      current_page: 1,
+      last_page: 1,
+      total: 0
+    }),
+    _useState0 = _slicedToArray(_useState9, 2),
+    pagination = _useState0[0],
+    setPagination = _useState0[1];
+  var fetchTickets = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var page,
+        response,
+        _args = arguments,
+        _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            page = _args.length > 0 && _args[0] !== undefined ? _args[0] : 1;
+            _context.p = 1;
+            setLoading(true);
+            _context.n = 2;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.adminGetAll(_objectSpread(_objectSpread({}, filters), {}, {
+              page: page,
+              per_page: 20
+            }));
+          case 2:
+            response = _context.v;
+            setTickets(response.data.data);
+            setPagination(response.data.meta || response.data.pagination);
+            _context.n = 4;
+            break;
+          case 3:
+            _context.p = 3;
+            _t = _context.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Failed to load tickets');
+          case 4:
+            _context.p = 4;
+            setLoading(false);
+            return _context.f(4);
+          case 5:
+            return _context.a(2);
+        }
+      }, _callee, null, [[1, 3, 4, 5]]);
+    }));
+    return function fetchTickets() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  var fetchStatistics = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var response, _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            _context2.p = 0;
+            _context2.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.adminGetStatistics();
+          case 1:
+            response = _context2.v;
+            setStatistics(response.data);
+            _context2.n = 3;
+            break;
+          case 2:
+            _context2.p = 2;
+            _t2 = _context2.v;
+            console.error('Failed to load statistics');
+          case 3:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[0, 2]]);
+    }));
+    return function fetchStatistics() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchTickets();
+    fetchStatistics();
+  }, [filters]);
+  var getStatusColor = function getStatusColor(status) {
+    switch (status) {
+      case 'open':
+        return 'bg-blue-100 text-blue-800';
+      case 'in_progress':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'resolved':
+        return 'bg-green-100 text-green-800';
+      case 'closed':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  var getPriorityColor = function getPriorityColor(priority) {
+    switch (priority) {
+      case 'low':
+        return 'bg-gray-100 text-gray-800';
+      case 'medium':
+        return 'bg-blue-100 text-blue-800';
+      case 'high':
+        return 'bg-orange-100 text-orange-800';
+      case 'urgent':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "min-h-screen bg-gray-100 p-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "max-w-7xl mx-auto"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+    className: "text-3xl font-bold mb-6"
+  }, "Ticket Management"), statistics && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "grid md:grid-cols-5 gap-4 mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-4 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-600 text-sm"
+  }, "Total Tickets"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-2xl font-bold"
+  }, statistics.total)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-blue-50 p-4 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-600 text-sm"
+  }, "Open"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-2xl font-bold text-blue-600"
+  }, statistics.open)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-yellow-50 p-4 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-600 text-sm"
+  }, "In Progress"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-2xl font-bold text-yellow-600"
+  }, statistics.in_progress)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-green-50 p-4 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-600 text-sm"
+  }, "Resolved"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-2xl font-bold text-green-600"
+  }, statistics.resolved)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-orange-50 p-4 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-600 text-sm"
+  }, "Unassigned"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-2xl font-bold text-orange-600"
+  }, statistics.unassigned))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-4 rounded-lg shadow mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "grid md:grid-cols-4 gap-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    placeholder: "Search tickets...",
+    className: "border rounded-lg px-4 py-2",
+    value: filters.search,
+    onChange: function onChange(e) {
+      return setFilters(_objectSpread(_objectSpread({}, filters), {}, {
+        search: e.target.value
+      }));
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "border rounded-lg px-4 py-2",
+    value: filters.status,
+    onChange: function onChange(e) {
+      return setFilters(_objectSpread(_objectSpread({}, filters), {}, {
+        status: e.target.value
+      }));
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: ""
+  }, "All Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "open"
+  }, "Open"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "in_progress"
+  }, "In Progress"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "resolved"
+  }, "Resolved"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "closed"
+  }, "Closed")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "border rounded-lg px-4 py-2",
+    value: filters.priority,
+    onChange: function onChange(e) {
+      return setFilters(_objectSpread(_objectSpread({}, filters), {}, {
+        priority: e.target.value
+      }));
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: ""
+  }, "All Priorities"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "low"
+  }, "Low"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "medium"
+  }, "Medium"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "high"
+  }, "High"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "urgent"
+  }, "Urgent")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "border rounded-lg px-4 py-2",
+    value: filters.admin_user_id,
+    onChange: function onChange(e) {
+      return setFilters(_objectSpread(_objectSpread({}, filters), {}, {
+        admin_user_id: e.target.value
+      }));
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: ""
+  }, "All Assignments"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "unassigned"
+  }, "Unassigned")))), loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-center py-12"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"
+  })) : tickets.length === 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-12 rounded-lg shadow text-center"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-500"
+  }, "No tickets found")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white rounded-lg shadow overflow-hidden"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", {
+    className: "w-full"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", {
+    className: "bg-gray-50"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+  }, "ID"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+  }, "Subject"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+  }, "User"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+  }, "Priority"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+  }, "Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+  }, "Assigned"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+  }, "Created"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+  }, "Actions"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", {
+    className: "divide-y divide-gray-200"
+  }, tickets.map(function (ticket) {
+    var _ticket$user;
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", {
+      key: ticket.id,
+      className: "hover:bg-gray-50"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4 text-sm"
+    }, "#", ticket.id), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-sm font-medium text-gray-900"
+    }, ticket.subject), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-sm text-gray-500 line-clamp-1"
+    }, ticket.description)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4 text-sm"
+    }, (_ticket$user = ticket.user) === null || _ticket$user === void 0 ? void 0 : _ticket$user.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "px-2 py-1 rounded-full text-xs font-medium ".concat(getPriorityColor(ticket.priority))
+    }, ticket.priority)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "px-2 py-1 rounded-full text-xs font-medium ".concat(getStatusColor(ticket.status))
+    }, ticket.status.replace('_', ' '))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4 text-sm"
+    }, ticket.admin_user ? ticket.admin_user.name : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "text-gray-400"
+    }, "Unassigned")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4 text-sm text-gray-500"
+    }, new Date(ticket.created_at).toLocaleDateString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
+      to: "/admin/tickets/".concat(ticket.id),
+      className: "text-blue-600 hover:underline text-sm"
+    }, "View")));
+  })))), pagination.last_page > 1 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mt-6 flex justify-center gap-2"
+  }, Array.from({
+    length: pagination.last_page
+  }, function (_, i) {
+    return i + 1;
+  }).map(function (page) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      key: page,
+      onClick: function onClick() {
+        return fetchTickets(page);
+      },
+      className: "px-4 py-2 rounded ".concat(page === pagination.current_page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100')
+    }, page);
+  }))));
+}
+
+/***/ }),
+
 /***/ "./resources/js/pages/admin/AdminUsers.jsx":
 /*!*************************************************!*\
   !*** ./resources/js/pages/admin/AdminUsers.jsx ***!
@@ -88864,21 +89703,19 @@ function PlotListPage() {
   }, []);
   var fetchSettings = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var _response$data, response, allSettings, showPricesSetting, showPricesValue, _t;
+      var response, settings, showPricesValue, _t;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
             _context.p = 0;
             _context.n = 1;
-            return _services_api__WEBPACK_IMPORTED_MODULE_3__.settingService.getAll();
+            return _services_api__WEBPACK_IMPORTED_MODULE_3__.settingService.getByGroup('general');
           case 1:
             response = _context.v;
-            allSettings = ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.data) || response.data || []; // Find show_plot_prices setting
-            showPricesSetting = allSettings.find(function (s) {
-              return s.key === 'show_plot_prices';
-            });
-            if (showPricesSetting) {
-              showPricesValue = showPricesSetting.value;
+            // getByGroup returns an object like { key: value }, not an array
+            settings = response.data || {}; // Get show_plot_prices setting
+            showPricesValue = settings.show_plot_prices;
+            if (showPricesValue !== undefined) {
               setShowPrices(showPricesValue === true || showPricesValue === 'true' || showPricesValue === '1' || showPricesValue === 1);
             }
             _context.n = 3;
@@ -88909,7 +89746,7 @@ function PlotListPage() {
   }, [filters, pagination.current_page, viewMode]);
   var fetchSectors = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-      var _response$data2, response, _t2;
+      var _response$data, response, _t2;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
@@ -88918,7 +89755,7 @@ function PlotListPage() {
             return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getSectors();
           case 1:
             response = _context2.v;
-            setSectors(((_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.sectors) || []);
+            setSectors(((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.sectors) || []);
             _context2.n = 3;
             break;
           case 2:
@@ -88935,7 +89772,7 @@ function PlotListPage() {
   }();
   var fetchBlocks = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(sector) {
-      var _response$data3, response, _t3;
+      var _response$data2, response, _t3;
       return _regenerator().w(function (_context3) {
         while (1) switch (_context3.p = _context3.n) {
           case 0:
@@ -88946,7 +89783,7 @@ function PlotListPage() {
             });
           case 1:
             response = _context3.v;
-            setBlocks(((_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.blocks) || []);
+            setBlocks(((_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.blocks) || []);
             _context3.n = 3;
             break;
           case 2:
@@ -89695,6 +90532,173 @@ function PlotListPage() {
 
 /***/ }),
 
+/***/ "./resources/js/pages/user/CreateTicket.jsx":
+/*!**************************************************!*\
+  !*** ./resources/js/pages/user/CreateTicket.jsx ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ CreateTicket)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/development/chunk-OIYGIGL5.mjs");
+/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
+/* harmony import */ var react_hot_toast__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-hot-toast */ "./node_modules/react-hot-toast/dist/index.mjs");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+function CreateTicket() {
+  var navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.useNavigate)();
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      subject: '',
+      description: '',
+      priority: 'medium'
+    }),
+    _useState2 = _slicedToArray(_useState, 2),
+    formData = _useState2[0],
+    setFormData = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    submitting = _useState4[0],
+    setSubmitting = _useState4[1];
+  var handleSubmit = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
+      var response, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            e.preventDefault();
+            _context.p = 1;
+            setSubmitting(true);
+            _context.n = 2;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.create(formData);
+          case 2:
+            response = _context.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].success('Ticket created successfully');
+            navigate("/user/tickets/".concat(response.data.id));
+            _context.n = 4;
+            break;
+          case 3:
+            _context.p = 3;
+            _t = _context.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Failed to create ticket');
+          case 4:
+            _context.p = 4;
+            setSubmitting(false);
+            return _context.f(4);
+          case 5:
+            return _context.a(2);
+        }
+      }, _callee, null, [[1, 3, 4, 5]]);
+    }));
+    return function handleSubmit(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "min-h-screen bg-gray-100 p-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "max-w-2xl mx-auto"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    to: "/user/tickets",
+    className: "text-blue-600 hover:underline"
+  }, "\u2190 Back to Tickets")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+    className: "text-2xl font-bold mb-6"
+  }, "Create New Ticket"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
+    onSubmit: handleSubmit
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mb-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-gray-700 font-semibold mb-2"
+  }, "Subject *"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    className: "w-full border rounded-lg px-4 py-2",
+    placeholder: "Brief description of your issue",
+    value: formData.subject,
+    onChange: function onChange(e) {
+      return setFormData(_objectSpread(_objectSpread({}, formData), {}, {
+        subject: e.target.value
+      }));
+    },
+    required: true,
+    maxLength: 255
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mb-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-gray-700 font-semibold mb-2"
+  }, "Description *"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("textarea", {
+    className: "w-full border rounded-lg px-4 py-2",
+    rows: "6",
+    placeholder: "Detailed description of your issue...",
+    value: formData.description,
+    onChange: function onChange(e) {
+      return setFormData(_objectSpread(_objectSpread({}, formData), {}, {
+        description: e.target.value
+      }));
+    },
+    required: true,
+    maxLength: 5000
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-sm text-gray-500 mt-1"
+  }, formData.description.length, " / 5000 characters")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-gray-700 font-semibold mb-2"
+  }, "Priority"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "w-full border rounded-lg px-4 py-2",
+    value: formData.priority,
+    onChange: function onChange(e) {
+      return setFormData(_objectSpread(_objectSpread({}, formData), {}, {
+        priority: e.target.value
+      }));
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "low"
+  }, "Low"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "medium"
+  }, "Medium"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "high"
+  }, "High"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "urgent"
+  }, "Urgent"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex gap-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    type: "submit",
+    disabled: submitting,
+    className: "bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+  }, submitting ? 'Creating...' : 'Create Ticket'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    to: "/user/tickets",
+    className: "bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300"
+  }, "Cancel"))))));
+}
+
+/***/ }),
+
 /***/ "./resources/js/pages/user/UserDashboard.jsx":
 /*!***************************************************!*\
   !*** ./resources/js/pages/user/UserDashboard.jsx ***!
@@ -89733,6 +90737,13 @@ function UserDashboard() {
   }, "Saved Plots"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement("p", {
     className: "text-gray-600"
   }, "View your favorite plots")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Link, {
+    to: "/user/tickets",
+    className: "bg-white p-6 rounded-lg shadow hover:shadow-lg"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement("h2", {
+    className: "text-xl font-bold mb-2"
+  }, "Support Tickets"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement("p", {
+    className: "text-gray-600"
+  }, "View and manage your tickets")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_0__.Link, {
     to: "/plots",
     className: "bg-white p-6 rounded-lg shadow hover:shadow-lg"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2___default().createElement("h2", {
@@ -89840,6 +90851,495 @@ function UserSavedPlots() {
 
 /***/ }),
 
+/***/ "./resources/js/pages/user/UserTicketDetails.jsx":
+/*!*******************************************************!*\
+  !*** ./resources/js/pages/user/UserTicketDetails.jsx ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ UserTicketDetails)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/development/chunk-OIYGIGL5.mjs");
+/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
+/* harmony import */ var _store_authStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../store/authStore */ "./resources/js/store/authStore.js");
+/* harmony import */ var react_hot_toast__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-hot-toast */ "./node_modules/react-hot-toast/dist/index.mjs");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+
+function UserTicketDetails() {
+  var _ticket$replies;
+  var _useParams = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.useParams)(),
+    id = _useParams.id;
+  var navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.useNavigate)();
+  var user = (0,_store_authStore__WEBPACK_IMPORTED_MODULE_3__.useAuthStore)(function (state) {
+    return state.user;
+  });
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    ticket = _useState2[0],
+    setTicket = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    replyMessage = _useState6[0],
+    setReplyMessage = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    submitting = _useState8[0],
+    setSubmitting = _useState8[1];
+  var fetchTicket = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var response, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            _context.p = 0;
+            setLoading(true);
+            _context.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.getOne(id);
+          case 1:
+            response = _context.v;
+            setTicket(response.data);
+            _context.n = 3;
+            break;
+          case 2:
+            _context.p = 2;
+            _t = _context.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].error('Failed to load ticket');
+            navigate('/user/tickets');
+          case 3:
+            _context.p = 3;
+            setLoading(false);
+            return _context.f(3);
+          case 4:
+            return _context.a(2);
+        }
+      }, _callee, null, [[0, 2, 3, 4]]);
+    }));
+    return function fetchTicket() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchTicket();
+  }, [id]);
+  var handleSubmitReply = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(e) {
+      var _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            e.preventDefault();
+            if (replyMessage.trim()) {
+              _context2.n = 1;
+              break;
+            }
+            return _context2.a(2);
+          case 1:
+            _context2.p = 1;
+            setSubmitting(true);
+            _context2.n = 2;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.addReply(id, replyMessage);
+          case 2:
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].success('Reply added successfully');
+            setReplyMessage('');
+            fetchTicket();
+            _context2.n = 4;
+            break;
+          case 3:
+            _context2.p = 3;
+            _t2 = _context2.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_4__["default"].error('Failed to add reply');
+          case 4:
+            _context2.p = 4;
+            setSubmitting(false);
+            return _context2.f(4);
+          case 5:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[1, 3, 4, 5]]);
+    }));
+    return function handleSubmitReply(_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  var getStatusColor = function getStatusColor(status) {
+    switch (status) {
+      case 'open':
+        return 'bg-blue-100 text-blue-800';
+      case 'in_progress':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'resolved':
+        return 'bg-green-100 text-green-800';
+      case 'closed':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  var getPriorityColor = function getPriorityColor(priority) {
+    switch (priority) {
+      case 'low':
+        return 'bg-gray-100 text-gray-800';
+      case 'medium':
+        return 'bg-blue-100 text-blue-800';
+      case 'high':
+        return 'bg-orange-100 text-orange-800';
+      case 'urgent':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  if (loading) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "min-h-screen bg-gray-100 flex items-center justify-center"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"
+    }));
+  }
+  if (!ticket) return null;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "min-h-screen bg-gray-100 p-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "max-w-4xl mx-auto"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    to: "/user/tickets",
+    className: "text-blue-600 hover:underline"
+  }, "\u2190 Back to Tickets")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex justify-between items-start mb-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+    className: "text-2xl font-bold"
+  }, ticket.subject), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "px-3 py-1 rounded-full text-xs font-medium ".concat(getPriorityColor(ticket.priority))
+  }, ticket.priority), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "px-3 py-1 rounded-full text-xs font-medium ".concat(getStatusColor(ticket.status))
+  }, ticket.status.replace('_', ' ')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-700 whitespace-pre-wrap"
+  }, ticket.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mt-4 text-sm text-gray-500"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "Created: ", new Date(ticket.created_at).toLocaleString()), ticket.admin_user && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "Assigned to: ", ticket.admin_user.name))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: "text-xl font-bold mb-4"
+  }, "Replies (", ((_ticket$replies = ticket.replies) === null || _ticket$replies === void 0 ? void 0 : _ticket$replies.length) || 0, ")"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "space-y-4"
+  }, ticket.replies && ticket.replies.length > 0 ? _toConsumableArray(ticket.replies).reverse().map(function (reply) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      key: reply.id,
+      className: "border-l-4 border-gray-300 pl-4 py-2"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex justify-between items-start mb-2"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "font-semibold"
+    }, reply.user.name), reply.user.role === 'admin' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded"
+    }, "Admin")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "text-sm text-gray-500"
+    }, new Date(reply.created_at).toLocaleString())), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+      className: "text-gray-700 whitespace-pre-wrap"
+    }, reply.message));
+  }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-500 text-center py-4"
+  }, "No replies yet"))), ticket.status !== 'closed' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: "text-xl font-bold mb-4"
+  }, "Add Reply"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
+    onSubmit: handleSubmitReply
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("textarea", {
+    className: "w-full border rounded-lg px-4 py-2 mb-4",
+    rows: "4",
+    placeholder: "Type your message...",
+    value: replyMessage,
+    onChange: function onChange(e) {
+      return setReplyMessage(e.target.value);
+    },
+    required: true
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    type: "submit",
+    disabled: submitting,
+    className: "bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+  }, submitting ? 'Sending...' : 'Send Reply')))));
+}
+
+/***/ }),
+
+/***/ "./resources/js/pages/user/UserTickets.jsx":
+/*!*************************************************!*\
+  !*** ./resources/js/pages/user/UserTickets.jsx ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ UserTickets)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/development/chunk-OIYGIGL5.mjs");
+/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
+/* harmony import */ var react_hot_toast__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-hot-toast */ "./node_modules/react-hot-toast/dist/index.mjs");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+function UserTickets() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    tickets = _useState2[0],
+    setTickets = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      status: '',
+      priority: '',
+      search: ''
+    }),
+    _useState6 = _slicedToArray(_useState5, 2),
+    filters = _useState6[0],
+    setFilters = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      current_page: 1,
+      last_page: 1,
+      total: 0
+    }),
+    _useState8 = _slicedToArray(_useState7, 2),
+    pagination = _useState8[0],
+    setPagination = _useState8[1];
+  var fetchTickets = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var page,
+        response,
+        _args = arguments,
+        _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            page = _args.length > 0 && _args[0] !== undefined ? _args[0] : 1;
+            _context.p = 1;
+            setLoading(true);
+            _context.n = 2;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.ticketService.getAll(_objectSpread(_objectSpread({}, filters), {}, {
+              page: page,
+              per_page: 15
+            }));
+          case 2:
+            response = _context.v;
+            setTickets(response.data.data);
+            setPagination(response.data.meta || response.data.pagination);
+            _context.n = 4;
+            break;
+          case 3:
+            _context.p = 3;
+            _t = _context.v;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Failed to load tickets');
+          case 4:
+            _context.p = 4;
+            setLoading(false);
+            return _context.f(4);
+          case 5:
+            return _context.a(2);
+        }
+      }, _callee, null, [[1, 3, 4, 5]]);
+    }));
+    return function fetchTickets() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchTickets();
+  }, [filters]);
+  var getStatusColor = function getStatusColor(status) {
+    switch (status) {
+      case 'open':
+        return 'bg-blue-100 text-blue-800';
+      case 'in_progress':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'resolved':
+        return 'bg-green-100 text-green-800';
+      case 'closed':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  var getPriorityColor = function getPriorityColor(priority) {
+    switch (priority) {
+      case 'low':
+        return 'bg-gray-100 text-gray-800';
+      case 'medium':
+        return 'bg-blue-100 text-blue-800';
+      case 'high':
+        return 'bg-orange-100 text-orange-800';
+      case 'urgent':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "min-h-screen bg-gray-100 p-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "max-w-7xl mx-auto"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex justify-between items-center mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+    className: "text-3xl font-bold"
+  }, "My Tickets"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    to: "/user/tickets/create",
+    className: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+  }, "Create New Ticket")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-4 rounded-lg shadow mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "grid md:grid-cols-3 gap-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    placeholder: "Search tickets...",
+    className: "border rounded-lg px-4 py-2",
+    value: filters.search,
+    onChange: function onChange(e) {
+      return setFilters(_objectSpread(_objectSpread({}, filters), {}, {
+        search: e.target.value
+      }));
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "border rounded-lg px-4 py-2",
+    value: filters.status,
+    onChange: function onChange(e) {
+      return setFilters(_objectSpread(_objectSpread({}, filters), {}, {
+        status: e.target.value
+      }));
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: ""
+  }, "All Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "open"
+  }, "Open"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "in_progress"
+  }, "In Progress"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "resolved"
+  }, "Resolved"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "closed"
+  }, "Closed")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "border rounded-lg px-4 py-2",
+    value: filters.priority,
+    onChange: function onChange(e) {
+      return setFilters(_objectSpread(_objectSpread({}, filters), {}, {
+        priority: e.target.value
+      }));
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: ""
+  }, "All Priorities"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "low"
+  }, "Low"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "medium"
+  }, "Medium"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "high"
+  }, "High"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "urgent"
+  }, "Urgent")))), loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-center py-12"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"
+  })) : tickets.length === 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-12 rounded-lg shadow text-center"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-gray-500"
+  }, "No tickets found"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    to: "/user/tickets/create",
+    className: "text-blue-600 hover:underline mt-2 inline-block"
+  }, "Create your first ticket")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "space-y-4"
+  }, tickets.map(function (ticket) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
+      key: ticket.id,
+      to: "/user/tickets/".concat(ticket.id),
+      className: "bg-white p-6 rounded-lg shadow hover:shadow-lg block"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex justify-between items-start mb-2"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+      className: "text-lg font-semibold"
+    }, ticket.subject), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex gap-2"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "px-3 py-1 rounded-full text-xs font-medium ".concat(getPriorityColor(ticket.priority))
+    }, ticket.priority), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "px-3 py-1 rounded-full text-xs font-medium ".concat(getStatusColor(ticket.status))
+    }, ticket.status.replace('_', ' ')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+      className: "text-gray-600 text-sm mb-3 line-clamp-2"
+    }, ticket.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex justify-between items-center text-sm text-gray-500"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Created ", new Date(ticket.created_at).toLocaleDateString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, ticket.replies_count || 0, " replies")));
+  })), pagination.last_page > 1 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mt-6 flex justify-center gap-2"
+  }, Array.from({
+    length: pagination.last_page
+  }, function (_, i) {
+    return i + 1;
+  }).map(function (page) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      key: page,
+      onClick: function onClick() {
+        return fetchTickets(page);
+      },
+      className: "px-4 py-2 rounded ".concat(page === pagination.current_page ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100')
+    }, page);
+  }))));
+}
+
+/***/ }),
+
 /***/ "./resources/js/services/api.js":
 /*!**************************************!*\
   !*** ./resources/js/services/api.js ***!
@@ -89858,6 +91358,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   plotService: () => (/* binding */ plotService),
 /* harmony export */   savedPlotService: () => (/* binding */ savedPlotService),
 /* harmony export */   settingService: () => (/* binding */ settingService),
+/* harmony export */   ticketService: () => (/* binding */ ticketService),
 /* harmony export */   userService: () => (/* binding */ userService)
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
@@ -90179,6 +91680,81 @@ var userService = {
   },
   "delete": function _delete(id) {
     return api["delete"]("/admin/users/".concat(id));
+  }
+};
+var ticketService = {
+  // User endpoints
+  getAll: function getAll(params) {
+    var cleanParams = Object.entries(params || {}).reduce(function (acc, _ref9) {
+      var _ref0 = _slicedToArray(_ref9, 2),
+        key = _ref0[0],
+        value = _ref0[1];
+      if (value !== '' && value !== null && value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    return api.get('/user/tickets', {
+      params: cleanParams
+    });
+  },
+  getOne: function getOne(id) {
+    return api.get("/user/tickets/".concat(id));
+  },
+  create: function create(data) {
+    return api.post('/user/tickets', data);
+  },
+  addReply: function addReply(id, message) {
+    return api.post("/user/tickets/".concat(id, "/replies"), {
+      message: message
+    });
+  },
+  // Admin endpoints
+  adminGetAll: function adminGetAll(params) {
+    var cleanParams = Object.entries(params || {}).reduce(function (acc, _ref1) {
+      var _ref10 = _slicedToArray(_ref1, 2),
+        key = _ref10[0],
+        value = _ref10[1];
+      if (value !== '' && value !== null && value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    return api.get('/admin/tickets', {
+      params: cleanParams
+    });
+  },
+  adminGetOne: function adminGetOne(id) {
+    return api.get("/admin/tickets/".concat(id));
+  },
+  adminUpdate: function adminUpdate(id, data) {
+    return api.put("/admin/tickets/".concat(id), data);
+  },
+  adminDelete: function adminDelete(id) {
+    return api["delete"]("/admin/tickets/".concat(id));
+  },
+  adminAssign: function adminAssign(id, adminUserId) {
+    return api.post("/admin/tickets/".concat(id, "/assign"), {
+      admin_user_id: adminUserId
+    });
+  },
+  adminUpdateStatus: function adminUpdateStatus(id, status) {
+    return api.post("/admin/tickets/".concat(id, "/status"), {
+      status: status
+    });
+  },
+  adminUpdatePriority: function adminUpdatePriority(id, priority) {
+    return api.post("/admin/tickets/".concat(id, "/priority"), {
+      priority: priority
+    });
+  },
+  adminAddReply: function adminAddReply(id, message) {
+    return api.post("/admin/tickets/".concat(id, "/replies"), {
+      message: message
+    });
+  },
+  adminGetStatistics: function adminGetStatistics() {
+    return api.get('/admin/tickets/statistics');
   }
 };
 

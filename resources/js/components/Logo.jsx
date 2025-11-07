@@ -12,11 +12,12 @@ export default function Logo({ className = '', iconClassName = 'h-8 w-8', textCl
 
     const fetchLogo = async () => {
         try {
-            const response = await settingService.getAll();
-            const settingsData = response.data?.data || response.data || [];
-            const logoSetting = settingsData.find(s => s.key === 'site_logo_url');
-            if (logoSetting && logoSetting.value) {
-                setLogoUrl(logoSetting.value);
+            const response = await settingService.getByGroup('general');
+            // getByGroup returns an object like { key: value }, not an array
+            const settings = response.data || {};
+            const logoUrl = settings.site_logo_url;
+            if (logoUrl) {
+                setLogoUrl(logoUrl);
             }
         } catch (error) {
             // Silently fail and use default

@@ -53,13 +53,13 @@ export default function PlotListPage() {
 
     const fetchSettings = async () => {
         try {
-            const response = await settingService.getAll();
-            const allSettings = response.data?.data || response.data || [];
+            const response = await settingService.getByGroup('general');
+            // getByGroup returns an object like { key: value }, not an array
+            const settings = response.data || {};
 
-            // Find show_plot_prices setting
-            const showPricesSetting = allSettings.find(s => s.key === 'show_plot_prices');
-            if (showPricesSetting) {
-                const showPricesValue = showPricesSetting.value;
+            // Get show_plot_prices setting
+            const showPricesValue = settings.show_plot_prices;
+            if (showPricesValue !== undefined) {
                 setShowPrices(
                     showPricesValue === true ||
                     showPricesValue === 'true' ||

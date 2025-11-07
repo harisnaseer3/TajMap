@@ -66,16 +66,19 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
             try {
                 const [mapSettingsResponse, generalSettingsResponse] = await Promise.all([
                     settingService.getByGroup('map'),
-                    settingService.getAll()
+                    settingService.getByGroup('general')
                 ]);
 
-                const mapSettings = mapSettingsResponse.data?.data || mapSettingsResponse.data || {};
-                const allSettings = generalSettingsResponse.data?.data || generalSettingsResponse.data || [];
+                // getByGroup returns an object like { key: value }, not an array
+                const mapSettings = mapSettingsResponse.data || {};
+                const allSettings = generalSettingsResponse.data || {};
 
-                // Find show_plot_prices setting
-                const showPricesSetting = allSettings.find(s => s.key === 'show_plot_prices');
-                if (showPricesSetting) {
-                    const showPricesValue = showPricesSetting.value;
+                // Get base_map_url directly from the object
+                const baseMapUrl = mapSettings.base_map_url;
+
+                // Get show_plot_prices setting
+                const showPricesValue = allSettings.show_plot_prices;
+                if (showPricesValue !== undefined) {
                     // Handle different boolean representations
                     setShowPrices(
                         showPricesValue === true ||
@@ -85,10 +88,10 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                     );
                 }
 
-                if (mapSettings.base_map_url && mappedPlots.length > 0) {
-                    setBaseImage(mapSettings.base_map_url);
+                if (baseMapUrl && mappedPlots.length > 0) {
+                    setBaseImage(baseMapUrl);
                     setPlots(mappedPlots);
-                } else if (!mapSettings.base_map_url) {
+                } else if (!baseMapUrl) {
                     toast.error('No base map configured. Admin needs to upload a base map.');
                 } else if (mappedPlots.length === 0) {
                     toast.error('No plots configured yet. Admin needs to add plot coordinates.');

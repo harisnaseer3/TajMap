@@ -5,12 +5,14 @@ use App\Http\Controllers\Api\Admin\LeadBaseController as AdminLeadController;
 use App\Http\Controllers\Api\Admin\MediaBaseController;
 use App\Http\Controllers\Api\Admin\PlotBaseController as AdminPlotController;
 use App\Http\Controllers\Api\Admin\SettingBaseController;
+use App\Http\Controllers\Api\Admin\TicketBaseController as AdminTicketController;
 use App\Http\Controllers\Api\Admin\UserBaseController;
 use App\Http\Controllers\Api\Auth\AuthBaseController;
 use App\Http\Controllers\Api\Public\LeadBaseController as PublicLeadController;
 use App\Http\Controllers\Api\Public\PlotBaseController as PublicPlotController;
 use App\Http\Controllers\Api\User\DashboardBaseController;
 use App\Http\Controllers\Api\User\SavedPlotBaseController;
+use App\Http\Controllers\Api\User\TicketBaseController as UserTicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -71,6 +73,12 @@ Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     Route::get('/saved-plots', [SavedPlotBaseController::class, 'index']);
     Route::post('/saved-plots/{plot}', [SavedPlotBaseController::class, 'store']);
     Route::delete('/saved-plots/{plot}', [SavedPlotBaseController::class, 'destroy']);
+
+    // Tickets
+    Route::get('/tickets', [UserTicketController::class, 'index']);
+    Route::post('/tickets', [UserTicketController::class, 'store']);
+    Route::get('/tickets/{ticket}', [UserTicketController::class, 'show']);
+    Route::post('/tickets/{ticket}/replies', [UserTicketController::class, 'addReply']);
 });
 
 // Admin routes
@@ -105,4 +113,15 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // Users
     Route::apiResource('users', UserBaseController::class);
+
+    // Tickets
+    Route::get('/tickets', [AdminTicketController::class, 'index']);
+    Route::get('/tickets/statistics', [AdminTicketController::class, 'statistics']);
+    Route::get('/tickets/{ticket}', [AdminTicketController::class, 'show']);
+    Route::put('/tickets/{ticket}', [AdminTicketController::class, 'update']);
+    Route::delete('/tickets/{ticket}', [AdminTicketController::class, 'destroy']);
+    Route::post('/tickets/{ticket}/assign', [AdminTicketController::class, 'assign']);
+    Route::post('/tickets/{ticket}/status', [AdminTicketController::class, 'updateStatus']);
+    Route::post('/tickets/{ticket}/priority', [AdminTicketController::class, 'updatePriority']);
+    Route::post('/tickets/{ticket}/replies', [AdminTicketController::class, 'addReply']);
 });
