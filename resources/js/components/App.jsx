@@ -12,6 +12,9 @@ import RegisterPage from '../pages/auth/RegisterPage';
 // User Pages
 import UserDashboard from '../pages/user/UserDashboard';
 import UserSavedPlots from '../pages/user/UserSavedPlots';
+import UserTickets from '../pages/user/UserTickets';
+import UserTicketDetails from '../pages/user/UserTicketDetails';
+import CreateTicket from '../pages/user/CreateTicket';
 
 // Admin Pages
 import AdminLayout from '../layouts/AdminLayout';
@@ -22,6 +25,8 @@ import AdminAnalytics from '../pages/admin/AdminAnalytics';
 import AdminSettings from '../pages/admin/AdminSettings';
 import AdminUsers from '../pages/admin/AdminUsers';
 import AdminMapEditor from '../pages/admin/AdminMapEditor';
+import AdminTickets from '../pages/admin/AdminTickets';
+import AdminTicketDetails from '../pages/admin/AdminTicketDetails';
 
 // Components
 import ProtectedRoute from './ProtectedRoute';
@@ -43,6 +48,9 @@ export default function App() {
                 <Route path="/user" element={<ProtectedRoute />}>
                     <Route path="dashboard" element={<UserDashboard />} />
                     <Route path="saved-plots" element={<UserSavedPlots />} />
+                    <Route path="tickets" element={<UserTickets />} />
+                    <Route path="tickets/create" element={<CreateTicket />} />
+                    <Route path="tickets/:id" element={<UserTicketDetails />} />
                 </Route>
 
                 {/* Admin Routes */}
@@ -52,6 +60,8 @@ export default function App() {
                         <Route path="dashboard" element={<AdminDashboard />} />
                         <Route path="plots" element={<AdminPlots />} />
                         <Route path="leads" element={<AdminLeads />} />
+                        <Route path="tickets" element={<AdminTickets />} />
+                        <Route path="tickets/:id" element={<AdminTicketDetails />} />
                         <Route path="analytics" element={<AdminAnalytics />} />
                         <Route path="map-editor" element={<AdminMapEditor />} />
                         <Route path="settings" element={<AdminSettings />} />

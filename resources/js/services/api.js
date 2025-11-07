@@ -200,3 +200,38 @@ export const userService = {
     update: (id, data) => api.put(`/admin/users/${id}`, data),
     delete: (id) => api.delete(`/admin/users/${id}`),
 };
+
+export const ticketService = {
+    // User endpoints
+    getAll: (params) => {
+        const cleanParams = Object.entries(params || {}).reduce((acc, [key, value]) => {
+            if (value !== '' && value !== null && value !== undefined) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+        return api.get('/user/tickets', { params: cleanParams });
+    },
+    getOne: (id) => api.get(`/user/tickets/${id}`),
+    create: (data) => api.post('/user/tickets', data),
+    addReply: (id, message) => api.post(`/user/tickets/${id}/replies`, { message }),
+
+    // Admin endpoints
+    adminGetAll: (params) => {
+        const cleanParams = Object.entries(params || {}).reduce((acc, [key, value]) => {
+            if (value !== '' && value !== null && value !== undefined) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+        return api.get('/admin/tickets', { params: cleanParams });
+    },
+    adminGetOne: (id) => api.get(`/admin/tickets/${id}`),
+    adminUpdate: (id, data) => api.put(`/admin/tickets/${id}`, data),
+    adminDelete: (id) => api.delete(`/admin/tickets/${id}`),
+    adminAssign: (id, adminUserId) => api.post(`/admin/tickets/${id}/assign`, { admin_user_id: adminUserId }),
+    adminUpdateStatus: (id, status) => api.post(`/admin/tickets/${id}/status`, { status }),
+    adminUpdatePriority: (id, priority) => api.post(`/admin/tickets/${id}/priority`, { priority }),
+    adminAddReply: (id, message) => api.post(`/admin/tickets/${id}/replies`, { message }),
+    adminGetStatistics: () => api.get('/admin/tickets/statistics'),
+};

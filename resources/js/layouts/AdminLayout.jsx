@@ -28,6 +28,7 @@ export default function AdminLayout() {
         { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
         { path: '/admin/plots', label: 'Plots', icon: '🗺️' },
         { path: '/admin/leads', label: 'Leads', icon: '👥' },
+        { path: '/admin/tickets', label: 'Tickets', icon: '🎫' },
         { path: '/admin/analytics', label: 'Analytics', icon: '📈' },
         { path: '/admin/map-editor', label: 'Map Editor', icon: '🗺️' },
         { path: '/admin/users', label: 'Users', icon: '👤' },
