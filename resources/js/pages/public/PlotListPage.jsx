@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import InteractiveMap from '../../components/InteractiveMap';
-import { plotService, leadService, settingService } from '../../services/api';
+import { plotService, leadService, settingService, savedPlotService } from '../../services/api';
 import { usePlotStore } from '../../store/plotStore';
+import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
 import {
     MapIcon,
@@ -18,11 +19,14 @@ import {
     CurrencyDollarIcon,
     ScaleIcon,
     MapPinIcon,
-    AdjustmentsHorizontalIcon
+    AdjustmentsHorizontalIcon,
+    BookmarkIcon
 } from '@heroicons/react/24/outline';
+import { BookmarkIcon as BookmarkSolidIcon } from '@heroicons/react/24/solid';
 
 export default function PlotListPage() {
     const { plots, setPlots, filters, setFilters } = usePlotStore();
+    const { user, token } = useAuthStore();
     const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState('map'); // map or list
     const [selectedPlot, setSelectedPlot] = useState(null);
@@ -30,6 +34,7 @@ export default function PlotListPage() {
     const [leadForm, setLeadForm] = useState({ name: '', phone: '', email: '', message: '' });
     const [submitting, setSubmitting] = useState(false);
     const [showPrices, setShowPrices] = useState(true);
+    const [savedPlotIds, setSavedPlotIds] = useState([]);
 
     // Pagination state
     const [pagination, setPagination] = useState({
@@ -49,7 +54,10 @@ export default function PlotListPage() {
     useEffect(() => {
         fetchSectors();
         fetchSettings();
-    }, []);
+        if (token) {
+            fetchSavedPlots();
+        }
+    }, [token]);
 
     const fetchSettings = async () => {
         try {
@@ -69,6 +77,48 @@ export default function PlotListPage() {
             }
         } catch (error) {
             // Silently fail and use default
+        }
+    };
+
+    const fetchSavedPlots = async () => {
+        try {
+            const response = await savedPlotService.getAll();
+            let savedPlots = [];
+            if (Array.isArray(response.data)) {
+                savedPlots = response.data;
+            } else if (response.data?.data && Array.isArray(response.data.data)) {
+                savedPlots = response.data.data;
+            }
+            // savedPlots contains Plot objects directly, so use plot.id
+            const ids = savedPlots.map(plot => plot.id);
+            setSavedPlotIds(ids);
+        } catch (error) {
+            console.error('Failed to fetch saved plots:', error);
+        }
+    };
+
+    const handleSavePlot = async (plotId) => {
+        if (!token) {
+            toast.error('Please login to save plots');
+            return;
+        }
+
+        try {
+            await savedPlotService.save(plotId);
+            setSavedPlotIds([...savedPlotIds, plotId]);
+            toast.success('Plot saved successfully');
+        } catch (error) {
+            toast.error('Failed to save plot');
+        }
+    };
+
+    const handleUnsavePlot = async (plotId) => {
+        try {
+            await savedPlotService.remove(plotId);
+            setSavedPlotIds(savedPlotIds.filter(id => id !== plotId));
+            toast.success('Plot removed from saved');
+        } catch (error) {
+            toast.error('Failed to remove plot');
         }
     };
 
@@ -597,6 +647,28 @@ export default function PlotListPage() {
                                                         >
                                                             {plot.status === 'available' ? 'Inquire Now' : 'Not Available'}
                                                         </button>
+                                                        {token && (
+                                                            <button
+                                                                onClick={() => savedPlotIds.includes(plot.id) ? handleUnsavePlot(plot.id) : handleSavePlot(plot.id)}
+                                                                className={`px-6 py-3 rounded-md font-semibold transition whitespace-nowrap flex items-center justify-center gap-2 ${
+                                                                    savedPlotIds.includes(plot.id)
+                                                                        ? 'bg-yellow-600 text-white hover:bg-yellow-700'
+                                                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                                }`}
+                                                            >
+                                                                {savedPlotIds.includes(plot.id) ? (
+                                                                    <>
+                                                                        <BookmarkSolidIcon className="h-5 w-5" />
+                                                                        Saved
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <BookmarkIcon className="h-5 w-5" />
+                                                                        Save Plot
+                                                                    </>
+                                                                )}
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>

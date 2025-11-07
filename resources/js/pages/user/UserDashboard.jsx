@@ -247,17 +247,17 @@ export default function UserDashboard() {
                             </div>
                             {savedPlots.length > 0 ? (
                                 <div className="space-y-3">
-                                    {savedPlots.map((item) => (
-                                        <div key={item.id} className="flex items-center p-3 border border-gray-200 rounded-lg">
+                                    {savedPlots.map((plot) => (
+                                        <div key={plot.id} className="flex items-center p-3 border border-gray-200 rounded-lg">
                                             <div className="bg-blue-100 p-3 rounded-lg mr-4">
                                                 <MapIcon className="h-6 w-6 text-blue-600" />
                                             </div>
                                             <div className="flex-1">
-                                                <p className="font-semibold text-gray-800">{item.plot?.plot_number || 'Plot'}</p>
-                                                <p className="text-sm text-gray-500">{item.plot?.sector} - {item.plot?.block}</p>
+                                                <p className="font-semibold text-gray-800">{plot.plot_number || 'Plot'}</p>
+                                                <p className="text-sm text-gray-500">{plot.sector} - {plot.block}</p>
                                             </div>
                                             <Link
-                                                to={`/plots/${item.plot?.id}`}
+                                                to={`/plots?search=${plot.plot_number}`}
                                                 className="text-blue-600 text-sm hover:underline"
                                             >
                                                 View
