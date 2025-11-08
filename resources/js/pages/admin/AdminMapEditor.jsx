@@ -930,6 +930,7 @@ export default function AdminMapEditor() {
                                     transform: `translate(${panOffset.x}px, ${panOffset.y}px)`,
                                     cursor: getCursorStyle()
                                 }}
+                                onClick={handleImageClick}
                                 onMouseDown={handleMouseDown}
                                 onMouseMove={handleMouseMove}
                                 onMouseUp={handleMouseUp}
@@ -948,7 +949,6 @@ export default function AdminMapEditor() {
                                         width: `${100 * zoom}%`,
                                         pointerEvents: (isDrawing || isCreatingNewPlot) ? 'none' : 'auto'
                                     }}
-                                    onClick={handleImageClick}
                                     onLoad={() => {
                                         if (imageRef.current) {
                                             setDimensions({
