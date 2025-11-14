@@ -118,6 +118,7 @@ export const plotService = {
     adminUpdate: (id, data) => api.put(`/admin/plots/${id}`, data),
     adminDelete: (id) => api.delete(`/admin/plots/${id}`),
     adminRestore: (id) => api.post(`/admin/plots/${id}/restore`),
+    adminBulkDelete: (ids) => api.post('/admin/plots/bulk-delete', { ids }),
 };
 
 export const leadService = {

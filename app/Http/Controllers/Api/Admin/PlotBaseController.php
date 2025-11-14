@@ -109,4 +109,22 @@ class PlotBaseController extends BaseController
             'Plot restored successfully'
         );
     }
+
+    /**
+     * Bulk delete plots
+     */
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'required|integer|exists:plots,id',
+        ]);
+
+        $deletedCount = Plot::whereIn('id', $request->ids)->delete();
+
+        return $this->successResponse(
+            ['deleted_count' => $deletedCount],
+            "{$deletedCount} plot(s) deleted successfully"
+        );
+    }
 }

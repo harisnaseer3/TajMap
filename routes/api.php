@@ -86,6 +86,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     // Plots
     Route::apiResource('plots', AdminPlotController::class);
     Route::post('/plots/{id}/restore', [AdminPlotController::class, 'restore']);
+    Route::post('/plots/bulk-delete', [AdminPlotController::class, 'bulkDelete']);
 
     // Leads
     Route::apiResource('leads', AdminLeadController::class)->except(['store']);

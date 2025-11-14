@@ -8,6 +8,7 @@ export default function AdminPlots() {
     const [pagination, setPagination] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [editingPlot, setEditingPlot] = useState(null);
+    const [selectedPlots, setSelectedPlots] = useState([]);
     const [filters, setFilters] = useState({
         search: '',
         status: '',
@@ -20,6 +21,8 @@ export default function AdminPlots() {
 
     useEffect(() => {
         fetchPlots();
+        // Clear selections when filters change
+        setSelectedPlots([]);
     }, [filters]);
 
     const fetchPlots = async () => {
@@ -97,6 +100,49 @@ export default function AdminPlots() {
         setFilters(prev => ({ ...prev, page }));
     };
 
+    const handleSelectAll = (e) => {
+        if (e.target.checked) {
+            // Select all non-deleted plots on current page
+            const selectablePlotIds = plots
+                .filter(plot => !plot.deleted_at)
+                .map(plot => plot.id);
+            setSelectedPlots(selectablePlotIds);
+        } else {
+            setSelectedPlots([]);
+        }
+    };
+
+    const handleSelectPlot = (plotId) => {
+        setSelectedPlots(prev => {
+            if (prev.includes(plotId)) {
+                return prev.filter(id => id !== plotId);
+            } else {
+                return [...prev, plotId];
+            }
+        });
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedPlots.length === 0) {
+            toast.error('Please select at least one plot to delete');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete ${selectedPlots.length} plot(s)?`)) {
+            return;
+        }
+
+        try {
+            await plotService.adminBulkDelete(selectedPlots);
+            toast.success(`${selectedPlots.length} plot(s) deleted successfully`);
+            setSelectedPlots([]);
+            fetchPlots();
+        } catch (error) {
+            console.error('Error deleting plots:', error);
+            toast.error('Failed to delete plots');
+        }
+    };
+
     const getStatusBadge = (status) => {
         const badges = {
             available: 'bg-green-100 text-green-800',
@@ -117,13 +163,33 @@ export default function AdminPlots() {
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Plots Management</h1>
-                <button
-                    onClick={handleCreate}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                >
-                    + Add New Plot
-                </button>
+                <div>
+                    <h1 className="text-2xl font-bold">Plots Management</h1>
+                    {selectedPlots.length > 0 && (
+                        <p className="text-sm text-gray-600 mt-1">
+                            {selectedPlots.length} plot(s) selected
+                        </p>
+                    )}
+                </div>
+                <div className="flex gap-2">
+                    {selectedPlots.length > 0 && (
+                        <button
+                            onClick={handleBulkDelete}
+                            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition flex items-center gap-2"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Delete Selected ({selectedPlots.length})
+                        </button>
+                    )}
+                    <button
+                        onClick={handleCreate}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    >
+                        + Add New Plot
+                    </button>
+                </div>
             </div>
 
             {/* Filters */}
@@ -178,6 +244,14 @@ export default function AdminPlots() {
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
+                                <th className="px-6 py-3 text-left">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedPlots.length > 0 && selectedPlots.length === plots.filter(p => !p.deleted_at).length}
+                                        onChange={handleSelectAll}
+                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    />
+                                </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Plot Number
                                 </th>
@@ -204,13 +278,23 @@ export default function AdminPlots() {
                         <tbody className="bg-white divide-y divide-gray-200">
                             {plots.length === 0 ? (
                                 <tr>
-                                    <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                                    <td colSpan="8" className="px-6 py-8 text-center text-gray-500">
                                         No plots found. Create your first plot to get started.
                                     </td>
                                 </tr>
                             ) : (
                                 plots.map((plot) => (
                                     <tr key={plot.id} className={plot.deleted_at ? 'bg-gray-50' : ''}>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {!plot.deleted_at && (
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedPlots.includes(plot.id)}
+                                                    onChange={() => handleSelectPlot(plot.id)}
+                                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                />
+                                            )}
+                                        </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">{plot.plot_number}</div>
                                         </td>
