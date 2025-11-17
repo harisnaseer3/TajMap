@@ -82737,7 +82737,7 @@ function InteractiveMap(_ref) {
   // Serialize filters to prevent unnecessary re-renders from object reference changes
   var filtersKey = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
     return JSON.stringify(filters);
-  }, [filters === null || filters === void 0 ? void 0 : filters.search, filters === null || filters === void 0 ? void 0 : filters.status, filters === null || filters === void 0 ? void 0 : filters.sector, filters === null || filters === void 0 ? void 0 : filters.block, filters === null || filters === void 0 ? void 0 : filters.min_price, filters === null || filters === void 0 ? void 0 : filters.max_price, filters === null || filters === void 0 ? void 0 : filters.min_area, filters === null || filters === void 0 ? void 0 : filters.max_area, filters === null || filters === void 0 ? void 0 : filters.sort_by, filters === null || filters === void 0 ? void 0 : filters.sort_order]);
+  }, [filters === null || filters === void 0 ? void 0 : filters.search, filters === null || filters === void 0 ? void 0 : filters.status, filters === null || filters === void 0 ? void 0 : filters.sector, filters === null || filters === void 0 ? void 0 : filters.street, filters === null || filters === void 0 ? void 0 : filters.type, filters === null || filters === void 0 ? void 0 : filters.category, filters === null || filters === void 0 ? void 0 : filters.min_price, filters === null || filters === void 0 ? void 0 : filters.max_price, filters === null || filters === void 0 ? void 0 : filters.min_area, filters === null || filters === void 0 ? void 0 : filters.max_area, filters === null || filters === void 0 ? void 0 : filters.sort_by, filters === null || filters === void 0 ? void 0 : filters.sort_order]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchMapData();
   }, [filtersKey]);
@@ -83017,7 +83017,7 @@ function InteractiveMap(_ref) {
     className: "font-bold mb-1"
   }, hoveredPlot.plot_number), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "text-xs space-y-1"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Sector: ", hoveredPlot.sector, " | Block: ", hoveredPlot.block), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Area: ", hoveredPlot.area, " sq. units"), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Price: PKR ", parseFloat(hoveredPlot.price).toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Sector: ", hoveredPlot.sector, " | Street: ", hoveredPlot.street), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Area: ", hoveredPlot.area, " sq. units"), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Price: PKR ", parseFloat(hoveredPlot.price).toLocaleString()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "mt-1"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     className: "px-2 py-0.5 rounded text-xs font-semibold ".concat(hoveredPlot.status.toLowerCase() === 'available' ? 'bg-green-500' : hoveredPlot.status.toLowerCase() === 'reserved' ? 'bg-yellow-500' : 'bg-red-500')
@@ -83031,7 +83031,7 @@ function InteractiveMap(_ref) {
     className: "font-bold text-lg"
   }, hoveredPlot.plot_number), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "text-sm text-gray-600"
-  }, "Sector: ", hoveredPlot.sector, " | Block: ", hoveredPlot.block), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+  }, "Sector: ", hoveredPlot.sector, " | Street: ", hoveredPlot.street), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "text-sm text-gray-600"
   }, "Area: ", hoveredPlot.area, " sq. units", showPrices && " | Price: PKR ".concat(parseFloat(hoveredPlot.price).toLocaleString()))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     className: "px-3 py-1 rounded-full text-xs font-semibold ".concat(hoveredPlot.status.toLowerCase() === 'available' ? 'bg-green-100 text-green-800' : hoveredPlot.status.toLowerCase() === 'reserved' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')
@@ -83772,30 +83772,84 @@ function AdminAnalytics() {
     className: "bg-white p-6 rounded-lg shadow"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
     className: "text-xl font-bold mb-4"
-  }, "Plots by Block (Top 10)"), plotDistribution !== null && plotDistribution !== void 0 && plotDistribution.by_block && plotDistribution.by_block.length > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, "Plots by Street (Top 10)"), plotDistribution !== null && plotDistribution !== void 0 && plotDistribution.by_street && plotDistribution.by_street.length > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "space-y-3"
-  }, plotDistribution.by_block.map(function (item) {
+  }, plotDistribution.by_street.map(function (item) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      key: item.block
+      key: item.street
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "flex justify-between text-sm mb-1"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       className: "font-medium"
-    }, "Block ", item.block), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    }, "Street ", item.street), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       className: "text-gray-600"
     }, item.count, " plots")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "w-full bg-gray-200 rounded-full h-3"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "bg-blue-500 h-3 rounded-full",
       style: {
-        width: "".concat(item.count / Math.max.apply(Math, _toConsumableArray(plotDistribution.by_block.map(function (b) {
+        width: "".concat(item.count / Math.max.apply(Math, _toConsumableArray(plotDistribution.by_street.map(function (b) {
           return b.count;
         }))) * 100, "%")
       }
     })));
   })) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "text-center text-gray-500 py-8"
-  }, "No block data available"))));
+  }, "No street data available")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: "text-xl font-bold mb-4"
+  }, "Plots by Type"), plotDistribution !== null && plotDistribution !== void 0 && plotDistribution.by_type && plotDistribution.by_type.length > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "space-y-3"
+  }, plotDistribution.by_type.map(function (item) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      key: item.type
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex justify-between text-sm mb-1"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "font-medium"
+    }, item.type), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "text-gray-600"
+    }, item.count, " plots")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "w-full bg-gray-200 rounded-full h-3"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "bg-purple-500 h-3 rounded-full",
+      style: {
+        width: "".concat(item.count / Math.max.apply(Math, _toConsumableArray(plotDistribution.by_type.map(function (t) {
+          return t.count;
+        }))) * 100, "%")
+      }
+    })));
+  })) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-center text-gray-500 py-8"
+  }, "No type data available")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white p-6 rounded-lg shadow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: "text-xl font-bold mb-4"
+  }, "Plots by Category"), plotDistribution !== null && plotDistribution !== void 0 && plotDistribution.by_category && plotDistribution.by_category.length > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "space-y-3"
+  }, plotDistribution.by_category.map(function (item) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      key: item.category
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex justify-between text-sm mb-1"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "font-medium"
+    }, item.category), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "text-gray-600"
+    }, item.count, " plots")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "w-full bg-gray-200 rounded-full h-3"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "bg-orange-500 h-3 rounded-full",
+      style: {
+        width: "".concat(item.count / Math.max.apply(Math, _toConsumableArray(plotDistribution.by_category.map(function (c) {
+          return c.count;
+        }))) * 100, "%")
+      }
+    })));
+  })) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-center text-gray-500 py-8"
+  }, "No category data available"))));
 }
 
 // Metric Card Component
@@ -85100,7 +85154,9 @@ function AdminMapEditor() {
   var _useState43 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       plot_number: '',
       sector: '',
-      block: '',
+      street: '',
+      type: '',
+      category: '',
       area: '',
       price: '',
       status: 'available',
@@ -85454,7 +85510,9 @@ function AdminMapEditor() {
     setNewPlotData({
       plot_number: '',
       sector: '',
-      block: '',
+      street: '',
+      type: '',
+      category: '',
       area: '',
       price: '',
       status: 'available',
@@ -85526,7 +85584,7 @@ function AdminMapEditor() {
   }();
   var handleSaveCoordinates = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
-      var _plots$find, baseImageId, _t5;
+      var _plots$find, baseImageId, updateData, _t5;
       return _regenerator().w(function (_context4) {
         while (1) switch (_context4.p = _context4.n) {
           case 0:
@@ -85540,12 +85598,21 @@ function AdminMapEditor() {
             _context4.p = 1;
             baseImageId = (_plots$find = plots.find(function (p) {
               return p.base_image;
-            })) === null || _plots$find === void 0 || (_plots$find = _plots$find.base_image) === null || _plots$find === void 0 ? void 0 : _plots$find.id;
-            _context4.n = 2;
-            return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminUpdate(selectedPlot.id, _objectSpread(_objectSpread({}, selectedPlot), {}, {
+            })) === null || _plots$find === void 0 || (_plots$find = _plots$find.base_image) === null || _plots$find === void 0 ? void 0 : _plots$find.id; // Only send necessary fields with proper types
+            updateData = {
               coordinates: currentPoints,
-              base_image_id: baseImageId
-            }));
+              base_image_id: baseImageId,
+              // Ensure numeric fields are properly typed
+              area: selectedPlot.area ? parseFloat(selectedPlot.area) : undefined,
+              price: selectedPlot.price ? parseFloat(selectedPlot.price) : undefined
+            }; // Remove undefined values
+            Object.keys(updateData).forEach(function (key) {
+              if (updateData[key] === undefined) {
+                delete updateData[key];
+              }
+            });
+            _context4.n = 2;
+            return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminUpdate(selectedPlot.id, updateData);
           case 2:
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Coordinates saved successfully');
             setIsDrawing(false);
@@ -85601,9 +85668,9 @@ function AdminMapEditor() {
           case 1:
             _context5.p = 1;
             _context5.n = 2;
-            return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminUpdate(plot.id, _objectSpread(_objectSpread({}, plot), {}, {
+            return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminUpdate(plot.id, {
               coordinates: []
-            }));
+            });
           case 2:
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Coordinates cleared');
             fetchPlots();
@@ -85632,8 +85699,8 @@ function AdminMapEditor() {
     if (searchQuery.trim()) {
       var query = searchQuery.toLowerCase();
       filteredPlots = filteredPlots.filter(function (plot) {
-        var _plot$sector, _plot$block, _plot$status;
-        return plot.plot_number.toLowerCase().includes(query) || ((_plot$sector = plot.sector) === null || _plot$sector === void 0 ? void 0 : _plot$sector.toLowerCase().includes(query)) || ((_plot$block = plot.block) === null || _plot$block === void 0 ? void 0 : _plot$block.toLowerCase().includes(query)) || ((_plot$status = plot.status) === null || _plot$status === void 0 ? void 0 : _plot$status.toLowerCase().includes(query));
+        var _plot$sector, _plot$street, _plot$type, _plot$category, _plot$status;
+        return plot.plot_number.toLowerCase().includes(query) || ((_plot$sector = plot.sector) === null || _plot$sector === void 0 ? void 0 : _plot$sector.toLowerCase().includes(query)) || ((_plot$street = plot.street) === null || _plot$street === void 0 ? void 0 : _plot$street.toLowerCase().includes(query)) || ((_plot$type = plot.type) === null || _plot$type === void 0 ? void 0 : _plot$type.toLowerCase().includes(query)) || ((_plot$category = plot.category) === null || _plot$category === void 0 ? void 0 : _plot$category.toLowerCase().includes(query)) || ((_plot$status = plot.status) === null || _plot$status === void 0 ? void 0 : _plot$status.toLowerCase().includes(query));
       });
     }
 
@@ -85899,7 +85966,7 @@ function AdminMapEditor() {
       className: "font-semibold"
     }, plot.plot_number), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "text-xs text-gray-600"
-    }, plot.sector, " - ", plot.block), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    }, plot.sector && plot.street ? "".concat(plot.sector, " - ").concat(plot.street) : plot.sector || plot.street || 'No location'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "text-xs text-gray-500 mt-1"
     }, plot.coordinates && plot.coordinates.length > 0 ? "".concat(plot.coordinates.length, " points") : 'No coordinates')), plot.coordinates && plot.coordinates.length > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
       onClick: function onClick(e) {
@@ -86247,6 +86314,8 @@ function AdminMapEditor() {
   }, "Available"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "reserved"
   }, "Reserved"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "hold"
+  }, "Hold"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "sold"
   }, "Sold"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "block text-sm font-medium text-gray-700 mb-1"
@@ -86259,19 +86328,43 @@ function AdminMapEditor() {
       }));
     },
     className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
-    placeholder: "e.g., North"
+    placeholder: "e.g., Sector A"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "block text-sm font-medium text-gray-700 mb-1"
-  }, "Block"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  }, "Street"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "text",
-    value: newPlotData.block,
+    value: newPlotData.street,
     onChange: function onChange(e) {
       return setNewPlotData(_objectSpread(_objectSpread({}, newPlotData), {}, {
-        block: e.target.value
+        street: e.target.value
       }));
     },
     className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
-    placeholder: "e.g., A"
+    placeholder: "e.g., Main Street"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-sm font-medium text-gray-700 mb-1"
+  }, "Type"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    value: newPlotData.type,
+    onChange: function onChange(e) {
+      return setNewPlotData(_objectSpread(_objectSpread({}, newPlotData), {}, {
+        type: e.target.value
+      }));
+    },
+    className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+    placeholder: "e.g., Residential, Commercial"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-sm font-medium text-gray-700 mb-1"
+  }, "Category"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    value: newPlotData.category,
+    onChange: function onChange(e) {
+      return setNewPlotData(_objectSpread(_objectSpread({}, newPlotData), {}, {
+        category: e.target.value
+      }));
+    },
+    className: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+    placeholder: "e.g., Premium, Standard"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "block text-sm font-medium text-gray-700 mb-1"
   }, "Area (sq m) ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
@@ -86409,26 +86502,32 @@ function AdminPlots() {
     _useState8 = _slicedToArray(_useState7, 2),
     showModal = _useState8[0],
     setShowModal = _useState8[1];
-  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState0 = _slicedToArray(_useState9, 2),
-    editingPlot = _useState0[0],
-    setEditingPlot = _useState0[1];
-  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    showImportModal = _useState0[0],
+    setShowImportModal = _useState0[1];
+  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
     _useState10 = _slicedToArray(_useState1, 2),
-    selectedPlots = _useState10[0],
-    setSelectedPlots = _useState10[1];
-  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    editingPlot = _useState10[0],
+    setEditingPlot = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState12 = _slicedToArray(_useState11, 2),
+    selectedPlots = _useState12[0],
+    setSelectedPlots = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       search: '',
       status: '',
       sector: '',
-      block: '',
+      street: '',
+      type: '',
+      category: '',
       with_trashed: false,
       page: 1,
       per_page: 15
     }),
-    _useState12 = _slicedToArray(_useState11, 2),
-    filters = _useState12[0],
-    setFilters = _useState12[1];
+    _useState14 = _slicedToArray(_useState13, 2),
+    filters = _useState14[0],
+    setFilters = _useState14[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchPlots();
     // Clear selections when filters change
@@ -86633,6 +86732,106 @@ function AdminPlots() {
       return _ref4.apply(this, arguments);
     };
   }();
+  var handleExportCSV = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+      var _response$headers$con, exportParams, response, errorData, blob, url, link, _error$response, _t5;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
+          case 0:
+            _context5.p = 0;
+            // Only send non-empty filter values
+            exportParams = {};
+            if (filters.status) exportParams.status = filters.status;
+            if (filters.sector) exportParams.sector = filters.sector;
+            if (filters.street) exportParams.street = filters.street;
+            if (filters.type) exportParams.type = filters.type;
+            if (filters.category) exportParams.category = filters.category;
+            _context5.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminExportCsv(exportParams);
+          case 1:
+            response = _context5.v;
+            if (!((_response$headers$con = response.headers['content-type']) !== null && _response$headers$con !== void 0 && _response$headers$con.includes('application/json'))) {
+              _context5.n = 2;
+              break;
+            }
+            errorData = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error(errorData.message || 'Failed to export plots');
+            return _context5.a(2);
+          case 2:
+            blob = new Blob([response.data], {
+              type: 'text/csv'
+            });
+            url = window.URL.createObjectURL(blob);
+            link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', "plots-".concat(new Date().toISOString().split('T')[0], ".csv"));
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Plots exported to CSV successfully');
+            _context5.n = 4;
+            break;
+          case 3:
+            _context5.p = 3;
+            _t5 = _context5.v;
+            console.error('Error exporting CSV:', _t5);
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error(((_error$response = _t5.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message) || 'Failed to export plots');
+          case 4:
+            return _context5.a(2);
+        }
+      }, _callee5, null, [[0, 3]]);
+    }));
+    return function handleExportCSV() {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+  var handleExportJSON = /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+      var exportParams, response, blob, url, link, _t6;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.p = _context6.n) {
+          case 0:
+            _context6.p = 0;
+            // Only send non-empty filter values
+            exportParams = {};
+            if (filters.status) exportParams.status = filters.status;
+            if (filters.sector) exportParams.sector = filters.sector;
+            if (filters.street) exportParams.street = filters.street;
+            if (filters.type) exportParams.type = filters.type;
+            if (filters.category) exportParams.category = filters.category;
+            _context6.n = 1;
+            return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminExportJson(exportParams);
+          case 1:
+            response = _context6.v;
+            blob = new Blob([JSON.stringify(response.data, null, 2)], {
+              type: 'application/json'
+            });
+            url = window.URL.createObjectURL(blob);
+            link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', "plots-".concat(new Date().toISOString().split('T')[0], ".json"));
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Plots exported to JSON successfully');
+            _context6.n = 3;
+            break;
+          case 2:
+            _context6.p = 2;
+            _t6 = _context6.v;
+            console.error('Error exporting JSON:', _t6);
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Failed to export plots');
+          case 3:
+            return _context6.a(2);
+        }
+      }, _callee6, null, [[0, 2]]);
+    }));
+    return function handleExportJSON() {
+      return _ref6.apply(this, arguments);
+    };
+  }();
   var getStatusBadge = function getStatusBadge(status) {
     var badges = {
       available: 'bg-green-100 text-green-800',
@@ -86670,12 +86869,40 @@ function AdminPlots() {
     strokeWidth: 2,
     d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
   })), "Delete Selected (", selectedPlots.length, ")"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: function onClick() {
+      return setShowImportModal(true);
+    },
+    className: "px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition flex items-center gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+    className: "w-5 h-5",
+    fill: "none",
+    stroke: "currentColor",
+    viewBox: "0 0 24 24"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: 2,
+    d: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+  })), "Import"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: handleExportCSV,
+    className: "px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition flex items-center gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+    className: "w-5 h-5",
+    fill: "none",
+    stroke: "currentColor",
+    viewBox: "0 0 24 24"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: 2,
+    d: "M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+  })), "Export CSV"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: handleCreate,
     className: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
   }, "+ Add New Plot"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "bg-white p-4 rounded-lg shadow mb-6"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "grid grid-cols-1 md:grid-cols-5 gap-4"
+    className: "grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "text",
     placeholder: "Search by plot number...",
@@ -86697,6 +86924,8 @@ function AdminPlots() {
   }, "Available"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "reserved"
   }, "Reserved"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "hold"
+  }, "Hold"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "sold"
   }, "Sold")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "text",
@@ -86708,10 +86937,26 @@ function AdminPlots() {
     className: "px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "text",
-    placeholder: "Block...",
-    value: filters.block,
+    placeholder: "Street...",
+    value: filters.street,
     onChange: function onChange(e) {
-      return handleFilterChange('block', e.target.value);
+      return handleFilterChange('street', e.target.value);
+    },
+    className: "px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    placeholder: "Type...",
+    value: filters.type,
+    onChange: function onChange(e) {
+      return handleFilterChange('type', e.target.value);
+    },
+    className: "px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    placeholder: "Category...",
+    value: filters.category,
+    onChange: function onChange(e) {
+      return handleFilterChange('category', e.target.value);
     },
     className: "px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
@@ -86746,7 +86991,11 @@ function AdminPlots() {
     className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
   }, "Plot Number"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
     className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-  }, "Sector / Block"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+  }, "Sector / Street"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+  }, "Type"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+  }, "Category"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
     className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
   }, "Area (sq m)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
     className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -86759,7 +87008,7 @@ function AdminPlots() {
   }, "Actions"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", {
     className: "bg-white divide-y divide-gray-200"
   }, plots.length === 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
-    colSpan: "8",
+    colSpan: "10",
     className: "px-6 py-8 text-center text-gray-500"
   }, "No plots found. Create your first plot to get started.")) : plots.map(function (plot) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", {
@@ -86782,7 +87031,11 @@ function AdminPlots() {
       className: "px-6 py-4 whitespace-nowrap"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "text-sm text-gray-900"
-    }, plot.sector || '-', " / ", plot.block || '-')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+    }, plot.sector || '-', " / ", plot.street || '-')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+    }, plot.type || '-'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      className: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+    }, plot.category || '-'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
       className: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
     }, plot.area ? parseFloat(plot.area).toFixed(2) : '-'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
       className: "px-6 py-4 whitespace-nowrap text-sm text-gray-900"
@@ -86869,18 +87122,28 @@ function AdminPlots() {
       setEditingPlot(null);
       fetchPlots();
     }
+  }), showImportModal && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ImportModal, {
+    onClose: function onClose() {
+      return setShowImportModal(false);
+    },
+    onSuccess: function onSuccess() {
+      setShowImportModal(false);
+      fetchPlots();
+    }
   }));
 }
 
 // Plot Create/Edit Modal Component
-function PlotModal(_ref5) {
-  var plot = _ref5.plot,
-    onClose = _ref5.onClose,
-    onSuccess = _ref5.onSuccess;
-  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+function PlotModal(_ref7) {
+  var plot = _ref7.plot,
+    onClose = _ref7.onClose,
+    onSuccess = _ref7.onSuccess;
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       plot_number: (plot === null || plot === void 0 ? void 0 : plot.plot_number) || '',
       sector: (plot === null || plot === void 0 ? void 0 : plot.sector) || '',
-      block: (plot === null || plot === void 0 ? void 0 : plot.block) || '',
+      street: (plot === null || plot === void 0 ? void 0 : plot.street) || '',
+      type: (plot === null || plot === void 0 ? void 0 : plot.type) || '',
+      category: (plot === null || plot === void 0 ? void 0 : plot.category) || '',
       status: (plot === null || plot === void 0 ? void 0 : plot.status) || 'available',
       area: (plot === null || plot === void 0 ? void 0 : plot.area) || '',
       price: (plot === null || plot === void 0 ? void 0 : plot.price) || '',
@@ -86899,57 +87162,57 @@ function PlotModal(_ref5) {
         y: 0.9
       }]
     }),
-    _useState14 = _slicedToArray(_useState13, 2),
-    formData = _useState14[0],
-    setFormData = _useState14[1];
-  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState16 = _slicedToArray(_useState15, 2),
-    submitting = _useState16[0],
-    setSubmitting = _useState16[1];
+    formData = _useState16[0],
+    setFormData = _useState16[1];
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState18 = _slicedToArray(_useState17, 2),
+    submitting = _useState18[0],
+    setSubmitting = _useState18[1];
   var handleSubmit = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(e) {
-      var _error$response, _t5;
-      return _regenerator().w(function (_context5) {
-        while (1) switch (_context5.p = _context5.n) {
+    var _ref8 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(e) {
+      var _error$response2, _t7;
+      return _regenerator().w(function (_context7) {
+        while (1) switch (_context7.p = _context7.n) {
           case 0:
             e.preventDefault();
             setSubmitting(true);
-            _context5.p = 1;
+            _context7.p = 1;
             if (!plot) {
-              _context5.n = 3;
+              _context7.n = 3;
               break;
             }
-            _context5.n = 2;
+            _context7.n = 2;
             return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminUpdate(plot.id, formData);
           case 2:
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Plot updated successfully');
-            _context5.n = 5;
+            _context7.n = 5;
             break;
           case 3:
-            _context5.n = 4;
+            _context7.n = 4;
             return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminCreate(formData);
           case 4:
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Plot created successfully');
           case 5:
             onSuccess();
-            _context5.n = 7;
+            _context7.n = 7;
             break;
           case 6:
-            _context5.p = 6;
-            _t5 = _context5.v;
-            console.error('Error saving plot:', _t5);
-            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error(((_error$response = _t5.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message) || 'Failed to save plot');
+            _context7.p = 6;
+            _t7 = _context7.v;
+            console.error('Error saving plot:', _t7);
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error(((_error$response2 = _t7.response) === null || _error$response2 === void 0 || (_error$response2 = _error$response2.data) === null || _error$response2 === void 0 ? void 0 : _error$response2.message) || 'Failed to save plot');
           case 7:
-            _context5.p = 7;
+            _context7.p = 7;
             setSubmitting(false);
-            return _context5.f(7);
+            return _context7.f(7);
           case 8:
-            return _context5.a(2);
+            return _context7.a(2);
         }
-      }, _callee5, null, [[1, 6, 7, 8]]);
+      }, _callee7, null, [[1, 6, 7, 8]]);
     }));
     return function handleSubmit(_x3) {
-      return _ref6.apply(this, arguments);
+      return _ref8.apply(this, arguments);
     };
   }();
   var handleChange = function handleChange(field, value) {
@@ -86999,6 +87262,8 @@ function PlotModal(_ref5) {
   }, "Available"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "reserved"
   }, "Reserved"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+    value: "hold"
+  }, "Hold"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: "sold"
   }, "Sold"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "block text-sm font-medium text-gray-700 mb-1"
@@ -87011,13 +87276,33 @@ function PlotModal(_ref5) {
     className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "block text-sm font-medium text-gray-700 mb-1"
-  }, "Block"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+  }, "Street"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "text",
-    value: formData.block,
+    value: formData.street,
     onChange: function onChange(e) {
-      return handleChange('block', e.target.value);
+      return handleChange('street', e.target.value);
     },
     className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-sm font-medium text-gray-700 mb-1"
+  }, "Type"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    value: formData.type,
+    onChange: function onChange(e) {
+      return handleChange('type', e.target.value);
+    },
+    className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500",
+    placeholder: "e.g., Residential, Commercial"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-sm font-medium text-gray-700 mb-1"
+  }, "Category"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    value: formData.category,
+    onChange: function onChange(e) {
+      return handleChange('category', e.target.value);
+    },
+    className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500",
+    placeholder: "e.g., Premium, Standard"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "block text-sm font-medium text-gray-700 mb-1"
   }, "Area (sq m) *"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
@@ -87064,6 +87349,261 @@ function PlotModal(_ref5) {
     disabled: submitting,
     className: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50"
   }, submitting ? 'Saving...' : plot ? 'Update Plot' : 'Create Plot'))))));
+}
+
+// Import Modal Component
+function ImportModal(_ref9) {
+  var _importResult$data, _importResult$data2, _importResult$data3;
+  var onClose = _ref9.onClose,
+    onSuccess = _ref9.onSuccess;
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    file = _useState20[0],
+    setFile = _useState20[1];
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState22 = _slicedToArray(_useState21, 2),
+    importing = _useState22[0],
+    setImporting = _useState22[1];
+  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState24 = _slicedToArray(_useState23, 2),
+    importResult = _useState24[0],
+    setImportResult = _useState24[1];
+  var handleFileChange = function handleFileChange(e) {
+    var selectedFile = e.target.files[0];
+    if (selectedFile) {
+      // Validate file type
+      var validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+      if (!validTypes.includes(selectedFile.type) && !selectedFile.name.endsWith('.xlsx') && !selectedFile.name.endsWith('.xls')) {
+        react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Please select a valid Excel file (.xlsx or .xls)');
+        return;
+      }
+      setFile(selectedFile);
+      setImportResult(null);
+    }
+  };
+  var handleImport = /*#__PURE__*/function () {
+    var _ref0 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+      var response, _response$data, _error$response3, _responseData$errors, responseData, failures, _error$response4, _t8;
+      return _regenerator().w(function (_context8) {
+        while (1) switch (_context8.p = _context8.n) {
+          case 0:
+            if (file) {
+              _context8.n = 1;
+              break;
+            }
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Please select a file to import');
+            return _context8.a(2);
+          case 1:
+            setImporting(true);
+            _context8.p = 2;
+            _context8.n = 3;
+            return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminImport(file);
+          case 3:
+            response = _context8.v;
+            if (response.success) {
+              react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success(response.message || 'Plots imported successfully');
+              setImportResult({
+                success: true,
+                message: response.message,
+                data: response.data
+              });
+              setTimeout(function () {
+                onSuccess();
+              }, 1500);
+            } else {
+              setImportResult({
+                success: false,
+                message: response.message || 'Import failed',
+                failures: ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.failures) || []
+              });
+            }
+            _context8.n = 5;
+            break;
+          case 4:
+            _context8.p = 4;
+            _t8 = _context8.v;
+            console.error('Error importing plots:', _t8);
+
+            // Handle different error formats
+            if (((_error$response3 = _t8.response) === null || _error$response3 === void 0 ? void 0 : _error$response3.status) === 422) {
+              responseData = _t8.response.data; // Check for import validation failures (from errorResponse with failures array)
+              if (responseData !== null && responseData !== void 0 && (_responseData$errors = responseData.errors) !== null && _responseData$errors !== void 0 && _responseData$errors.failures) {
+                setImportResult({
+                  success: false,
+                  message: responseData.message || 'Import completed with errors',
+                  failures: responseData.errors.failures,
+                  successfulImports: responseData.errors.successful_imports || 0
+                });
+              }
+              // Check for standard Laravel validation errors (field-level errors)
+              else if (responseData !== null && responseData !== void 0 && responseData.errors && _typeof(responseData.errors) === 'object') {
+                // Convert errors object to failures array for display
+                failures = [];
+                Object.entries(responseData.errors).forEach(function (_ref1) {
+                  var _ref10 = _slicedToArray(_ref1, 2),
+                    field = _ref10[0],
+                    messages = _ref10[1];
+                  if (Array.isArray(messages)) {
+                    messages.forEach(function (msg) {
+                      failures.push({
+                        error: msg,
+                        attribute: field
+                      });
+                    });
+                  } else if (typeof messages === 'string') {
+                    failures.push({
+                      error: messages,
+                      attribute: field
+                    });
+                  }
+                });
+                setImportResult({
+                  success: false,
+                  message: responseData.message || 'Validation failed',
+                  failures: failures
+                });
+              } else {
+                react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error((responseData === null || responseData === void 0 ? void 0 : responseData.message) || 'Validation failed');
+              }
+            } else {
+              react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error(((_error$response4 = _t8.response) === null || _error$response4 === void 0 || (_error$response4 = _error$response4.data) === null || _error$response4 === void 0 ? void 0 : _error$response4.message) || 'Failed to import plots');
+            }
+          case 5:
+            _context8.p = 5;
+            setImporting(false);
+            return _context8.f(5);
+          case 6:
+            return _context8.a(2);
+        }
+      }, _callee8, null, [[2, 4, 5, 6]]);
+    }));
+    return function handleImport() {
+      return _ref0.apply(this, arguments);
+    };
+  }();
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "p-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex justify-between items-center mb-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: "text-2xl font-bold"
+  }, "Import Plots from Excel"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: onClose,
+    className: "text-gray-400 hover:text-gray-600 text-2xl"
+  }, "\xD7")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "space-y-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "bg-blue-50 border border-blue-200 rounded-lg p-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex justify-between items-start mb-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+    className: "font-semibold text-blue-900"
+  }, "Excel File Format"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    href: "/api/admin/plots/download-template",
+    download: true,
+    className: "text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition"
+  }, "Download Template")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-sm text-blue-800 mb-2"
+  }, "Your Excel file format (Row 1 can be a title, Row 2 must have headers):"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "grid grid-cols-2 gap-2 text-sm"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Sr No."), " - Optional serial number (ignored during import)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Name"), " - Plot number/identifier (required, unique)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Size"), " - Dimensions (25x50) or area (1250 sq m)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Sector"), " - Sector name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Street"), " - Street name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Type"), " - Plot type"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Category"), " - Plot category"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Status"), " - available/reserved/hold/sold"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Actions"), " - Description/notes")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-xs text-blue-700 mt-2 font-semibold"
+  }, "Note: The \"Name\" column is required. Empty rows will be skipped automatically.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-sm font-medium text-gray-700 mb-2"
+  }, "Select Excel File (.xlsx or .xls)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "file",
+    accept: ".xlsx,.xls",
+    onChange: handleFileChange,
+    className: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+  }), file && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "mt-2 text-sm text-gray-600"
+  }, "Selected: ", file.name, " (", (file.size / 1024).toFixed(2), " KB)")), importResult && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "rounded-lg p-4 ".concat(importResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+    className: "font-semibold mb-2 ".concat(importResult.success ? 'text-green-900' : 'text-red-900')
+  }, importResult.success ? 'Import Successful' : 'Import Failed'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-sm ".concat(importResult.success ? 'text-green-800' : 'text-red-800')
+  }, importResult.message), (((_importResult$data = importResult.data) === null || _importResult$data === void 0 ? void 0 : _importResult$data.imported_count) || ((_importResult$data2 = importResult.data) === null || _importResult$data2 === void 0 ? void 0 : _importResult$data2.newly_created) !== undefined) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-sm text-green-800 mt-1"
+  }, ((_importResult$data3 = importResult.data) === null || _importResult$data3 === void 0 ? void 0 : _importResult$data3.newly_created) !== undefined ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, importResult.data.newly_created), " new plot(s) created"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, importResult.data.total_plots), " total plots in database"), importResult.data.newly_created === 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-xs mt-1"
+  }, "All plots already existed and were updated with new data")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "Successfully imported ", importResult.data.imported_count, " plot(s)")), importResult.successfulImports > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "text-sm text-green-800 mt-1"
+  }, "Successfully imported ", importResult.successfulImports, " plot(s)"), importResult.failures && importResult.failures.length > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "mt-3"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
+    className: "font-semibold text-red-900 mb-2"
+  }, "Errors:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "max-h-48 overflow-y-auto space-y-2"
+  }, importResult.failures.map(function (failure, index) {
+    // Extract error messages safely
+    var errorMessages = [];
+    if (failure.errors) {
+      if (Array.isArray(failure.errors)) {
+        errorMessages = failure.errors;
+      } else if (_typeof(failure.errors) === 'object') {
+        // If errors is an object, extract all values
+        errorMessages = Object.values(failure.errors).flat();
+      } else {
+        errorMessages = [String(failure.errors)];
+      }
+    }
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      key: index,
+      className: "text-sm bg-white rounded p-2"
+    }, failure.row && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Row ", failure.row, ":")), failure.attribute && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-gray-700"
+    }, "Field: ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, failure.attribute)), errorMessages.length > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-red-700 mt-1"
+    }, errorMessages.map(function (msg, i) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+        key: i
+      }, "\u2022 ", msg);
+    })), failure.error && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-red-700"
+    }, failure.error), failure.values && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-xs text-gray-600 mt-1 bg-gray-50 p-1 rounded"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("strong", null, "Values:"), " ", JSON.stringify(failure.values)));
+  })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "flex justify-end gap-3 pt-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    type: "button",
+    onClick: onClose,
+    className: "px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition"
+  }, "Close"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: handleImport,
+    disabled: !file || importing,
+    className: "px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+  }, importing ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+    className: "animate-spin h-5 w-5",
+    fill: "none",
+    viewBox: "0 0 24 24"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("circle", {
+    className: "opacity-25",
+    cx: "12",
+    cy: "12",
+    r: "10",
+    stroke: "currentColor",
+    strokeWidth: "4"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+    className: "opacity-75",
+    fill: "currentColor",
+    d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+  })), "Importing...") : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+    className: "w-5 h-5",
+    fill: "none",
+    stroke: "currentColor",
+    viewBox: "0 0 24 24"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: 2,
+    d: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+  })), "Import Plots")))))));
 }
 
 /***/ }),
@@ -89836,9 +90376,9 @@ function LandingPage() {
     className: "font-semibold"
   }, selectedPlot.sector)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
     className: "text-sm text-gray-600"
-  }, "Block"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
+  }, "Street"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
     className: "font-semibold"
-  }, selectedPlot.block)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
+  }, selectedPlot.street)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
     className: "text-sm text-gray-600"
   }, "Area"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
     className: "font-semibold"
@@ -90127,15 +90667,15 @@ function PlotListPage() {
     pagination = _useState16[0],
     setPagination = _useState16[1];
 
-  // Sectors and blocks for filters
+  // Sectors and streets for filters
   var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState18 = _slicedToArray(_useState17, 2),
     sectors = _useState18[0],
     setSectors = _useState18[1];
   var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState20 = _slicedToArray(_useState19, 2),
-    blocks = _useState20[0],
-    setBlocks = _useState20[1];
+    streets = _useState20[0],
+    setStreets = _useState20[1];
 
   // All plots for map view (without pagination)
   var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
@@ -90282,7 +90822,7 @@ function PlotListPage() {
   }();
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (filters.sector) {
-      fetchBlocks(filters.sector);
+      fetchStreets(filters.sector);
     }
   }, [filters.sector]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
@@ -90318,7 +90858,7 @@ function PlotListPage() {
       return _ref5.apply(this, arguments);
     };
   }();
-  var fetchBlocks = /*#__PURE__*/function () {
+  var fetchStreets = /*#__PURE__*/function () {
     var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(sector) {
       var _response$data3, response, _t6;
       return _regenerator().w(function (_context6) {
@@ -90326,12 +90866,12 @@ function PlotListPage() {
           case 0:
             _context6.p = 0;
             _context6.n = 1;
-            return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getBlocks({
+            return _services_api__WEBPACK_IMPORTED_MODULE_3__.plotService.getStreets({
               sector: sector
             });
           case 1:
             response = _context6.v;
-            setBlocks(((_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.blocks) || []);
+            setStreets(((_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.streets) || []);
             _context6.n = 3;
             break;
           case 2:
@@ -90342,7 +90882,7 @@ function PlotListPage() {
         }
       }, _callee6, null, [[0, 2]]);
     }));
-    return function fetchBlocks(_x3) {
+    return function fetchStreets(_x3) {
       return _ref6.apply(this, arguments);
     };
   }();
@@ -90487,7 +91027,9 @@ function PlotListPage() {
       search: null,
       status: null,
       sector: null,
-      block: null,
+      street: null,
+      type: null,
+      category: null,
       min_price: null,
       max_price: null,
       min_area: null,
@@ -90495,7 +91037,7 @@ function PlotListPage() {
       sort_by: null,
       sort_order: null
     });
-    setBlocks([]);
+    setStreets([]);
     setPagination(function (prev) {
       return _objectSpread(_objectSpread({}, prev), {}, {
         current_page: 1
@@ -90653,7 +91195,7 @@ function PlotListPage() {
     onChange: function onChange(e) {
       return handleFilterChange(_objectSpread(_objectSpread({}, filters), {}, {
         sector: e.target.value || null,
-        block: null
+        street: null
       }));
     },
     className: "w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -90668,22 +91210,22 @@ function PlotListPage() {
     className: "flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_19__["default"], {
     className: "h-4 w-4"
-  }), "Block"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
-    value: filters.block || '',
+  }), "Street"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    value: filters.street || '',
     onChange: function onChange(e) {
       return handleFilterChange(_objectSpread(_objectSpread({}, filters), {}, {
-        block: e.target.value || null
+        street: e.target.value || null
       }));
     },
     className: "w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
     disabled: !filters.sector
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
     value: ""
-  }, "All Blocks"), blocks.map(function (block) {
+  }, "All Streets"), streets.map(function (street) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
-      key: block,
-      value: block
-    }, block);
+      key: street,
+      value: street
+    }, street);
   }))), showPrices && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "flex items-center gap-2 text-sm font-medium text-gray-700 mb-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_12__["default"], {
@@ -90873,7 +91415,7 @@ function PlotListPage() {
       className: "text-2xl font-bold text-gray-900"
     }, plot.plot_number), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-gray-600 mt-1"
-    }, plot.sector && "Sector ".concat(plot.sector), plot.block && ", Block ".concat(plot.block))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    }, plot.sector && "Sector ".concat(plot.sector), plot.street && ", Street ".concat(plot.street))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       className: "px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap ".concat(plot.status === 'available' ? 'bg-green-100 text-green-800' : plot.status === 'reserved' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')
     }, plot.status)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "mt-4 grid ".concat(showPrices ? 'grid-cols-2' : 'grid-cols-1', " gap-4")
@@ -90986,9 +91528,9 @@ function PlotListPage() {
     className: "font-semibold"
   }, selectedPlot.sector || 'N/A')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "text-sm text-gray-600"
-  }, "Block"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+  }, "Street"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "font-semibold"
-  }, selectedPlot.block || 'N/A')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+  }, selectedPlot.street || 'N/A')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "text-sm text-gray-600"
   }, "Area"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
     className: "font-semibold"
@@ -92648,8 +93190,8 @@ var plotService = {
   getSectors: function getSectors() {
     return api.get('/public/plots/meta/sectors');
   },
-  getBlocks: function getBlocks(params) {
-    return api.get('/public/plots/meta/blocks', {
+  getStreets: function getStreets(params) {
+    return api.get('/public/plots/meta/streets', {
       params: params
     });
   },
@@ -92684,6 +93226,27 @@ var plotService = {
   adminBulkDelete: function adminBulkDelete(ids) {
     return api.post('/admin/plots/bulk-delete', {
       ids: ids
+    });
+  },
+  adminImport: function adminImport(file) {
+    var formData = new FormData();
+    formData.append('file', file);
+    return api.post('/admin/plots/import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  adminExportCsv: function adminExportCsv(params) {
+    return api.get('/admin/plots/export/csv', {
+      params: params,
+      responseType: 'blob'
+    });
+  },
+  adminExportJson: function adminExportJson(params) {
+    return api.get('/admin/plots/export/json', {
+      params: params,
+      responseType: 'blob'
     });
   }
 };
@@ -93027,7 +93590,9 @@ var usePlotStore = (0,zustand__WEBPACK_IMPORTED_MODULE_0__.create)(function (set
     filters: {
       status: null,
       sector: null,
-      block: null,
+      street: null,
+      type: null,
+      category: null,
       search: '',
       minPrice: null,
       maxPrice: null,
@@ -93063,7 +93628,9 @@ var usePlotStore = (0,zustand__WEBPACK_IMPORTED_MODULE_0__.create)(function (set
         filters: {
           status: null,
           sector: null,
-          block: null,
+          street: null,
+          type: null,
+          category: null,
           search: '',
           minPrice: null,
           maxPrice: null,

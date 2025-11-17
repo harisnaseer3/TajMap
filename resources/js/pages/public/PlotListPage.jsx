@@ -44,9 +44,9 @@ export default function PlotListPage() {
         total: 0,
     });
 
-    // Sectors and blocks for filters
+    // Sectors and streets for filters
     const [sectors, setSectors] = useState([]);
-    const [blocks, setBlocks] = useState([]);
+    const [streets, setStreets] = useState([]);
 
     // All plots for map view (without pagination)
     const [allPlots, setAllPlots] = useState([]);
@@ -124,7 +124,7 @@ export default function PlotListPage() {
 
     useEffect(() => {
         if (filters.sector) {
-            fetchBlocks(filters.sector);
+            fetchStreets(filters.sector);
         }
     }, [filters.sector]);
 
@@ -145,10 +145,10 @@ export default function PlotListPage() {
         }
     };
 
-    const fetchBlocks = async (sector) => {
+    const fetchStreets = async (sector) => {
         try {
-            const response = await plotService.getBlocks({ sector });
-            setBlocks(response.data?.blocks || []);
+            const response = await plotService.getStreets({ sector });
+            setStreets(response.data?.streets || []);
         } catch (error) {
             // Silently fail
         }
@@ -230,7 +230,9 @@ export default function PlotListPage() {
             search: null,
             status: null,
             sector: null,
-            block: null,
+            street: null,
+            type: null,
+            category: null,
             min_price: null,
             max_price: null,
             min_area: null,
@@ -238,7 +240,7 @@ export default function PlotListPage() {
             sort_by: null,
             sort_order: null
         });
-        setBlocks([]);
+        setStreets([]);
         setPagination(prev => ({ ...prev, current_page: 1 }));
     };
 
@@ -369,7 +371,7 @@ export default function PlotListPage() {
                                     </label>
                                     <select
                                         value={filters.sector || ''}
-                                        onChange={(e) => handleFilterChange({ ...filters, sector: e.target.value || null, block: null })}
+                                        onChange={(e) => handleFilterChange({ ...filters, sector: e.target.value || null, street: null })}
                                         className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
                                         <option value="">All Sectors</option>
@@ -379,21 +381,21 @@ export default function PlotListPage() {
                                     </select>
                                 </div>
 
-                                {/* Block Filter */}
+                                {/* Street Filter */}
                                 <div>
                                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                                         <Squares2X2Icon className="h-4 w-4" />
-                                        Block
+                                        Street
                                     </label>
                                     <select
-                                        value={filters.block || ''}
-                                        onChange={(e) => handleFilterChange({ ...filters, block: e.target.value || null })}
+                                        value={filters.street || ''}
+                                        onChange={(e) => handleFilterChange({ ...filters, street: e.target.value || null })}
                                         className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         disabled={!filters.sector}
                                     >
-                                        <option value="">All Blocks</option>
-                                        {blocks.map(block => (
-                                            <option key={block} value={block}>{block}</option>
+                                        <option value="">All Streets</option>
+                                        {streets.map(street => (
+                                            <option key={street} value={street}>{street}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -602,7 +604,7 @@ export default function PlotListPage() {
                                                                 <h3 className="text-2xl font-bold text-gray-900">{plot.plot_number}</h3>
                                                                 <p className="text-gray-600 mt-1">
                                                                     {plot.sector && `Sector ${plot.sector}`}
-                                                                    {plot.block && `, Block ${plot.block}`}
+                                                                    {plot.street && `, Street ${plot.street}`}
                                                                 </p>
                                                             </div>
                                                             <span className={`px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap ${
@@ -781,8 +783,8 @@ export default function PlotListPage() {
                                         <p className="font-semibold">{selectedPlot.sector || 'N/A'}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600">Block</p>
-                                        <p className="font-semibold">{selectedPlot.block || 'N/A'}</p>
+                                        <p className="text-sm text-gray-600">Street</p>
+                                        <p className="font-semibold">{selectedPlot.street || 'N/A'}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600">Area</p>

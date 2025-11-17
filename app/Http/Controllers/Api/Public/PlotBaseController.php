@@ -27,9 +27,19 @@ class PlotBaseController extends BaseController
             $query->where('sector', $request->sector);
         }
 
-        // Filter by block
-        if ($request->has('block')) {
-            $query->where('block', $request->block);
+        // Filter by street
+        if ($request->has('street')) {
+            $query->where('street', $request->street);
+        }
+
+        // Filter by type
+        if ($request->has('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Filter by category
+        if ($request->has('category')) {
+            $query->where('category', $request->category);
         }
 
         // Search by plot number
@@ -90,18 +100,18 @@ class PlotBaseController extends BaseController
     }
 
     /**
-     * Get unique blocks
+     * Get unique streets
      */
-    public function blocks(Request $request)
+    public function streets(Request $request)
     {
-        $query = Plot::whereNotNull('block')->distinct();
+        $query = Plot::whereNotNull('street')->distinct();
 
         if ($request->has('sector')) {
             $query->where('sector', $request->sector);
         }
 
-        $blocks = $query->pluck('block')->filter()->values();
+        $streets = $query->pluck('street')->filter()->values();
 
-        return $this->successResponse(['blocks' => $blocks]);
+        return $this->successResponse(['streets' => $streets]);
     }
 }

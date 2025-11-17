@@ -307,8 +307,8 @@ export default function LandingPage() {
                                         <p className="font-semibold">{selectedPlot.sector}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600">Block</p>
-                                        <p className="font-semibold">{selectedPlot.block}</p>
+                                        <p className="text-sm text-gray-600">Street</p>
+                                        <p className="font-semibold">{selectedPlot.street}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600">Area</p>

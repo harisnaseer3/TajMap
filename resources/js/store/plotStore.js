@@ -6,7 +6,9 @@ export const usePlotStore = create((set, get) => ({
     filters: {
         status: null,
         sector: null,
-        block: null,
+        street: null,
+        type: null,
+        category: null,
         search: '',
         minPrice: null,
         maxPrice: null,
@@ -33,7 +35,9 @@ export const usePlotStore = create((set, get) => ({
         filters: {
             status: null,
             sector: null,
-            block: null,
+            street: null,
+            type: null,
+            category: null,
             search: '',
             minPrice: null,
             maxPrice: null,

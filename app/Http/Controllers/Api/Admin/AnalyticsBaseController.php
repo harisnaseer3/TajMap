@@ -157,7 +157,7 @@ class AnalyticsBaseController extends BaseController
     }
 
     /**
-     * Get plot distribution by sector
+     * Get plot distribution by sector, street, type, and category
      */
     public function plotDistribution(): JsonResponse
     {
@@ -166,15 +166,28 @@ class AnalyticsBaseController extends BaseController
             ->groupBy('sector')
             ->get();
 
-        $byBlock = Plot::select('block', DB::raw('count(*) as count'))
-            ->whereNotNull('block')
-            ->groupBy('block')
+        $byStreet = Plot::select('street', DB::raw('count(*) as count'))
+            ->whereNotNull('street')
+            ->groupBy('street')
+            ->orderBy('count', 'desc')
             ->limit(10)
+            ->get();
+
+        $byType = Plot::select('type', DB::raw('count(*) as count'))
+            ->whereNotNull('type')
+            ->groupBy('type')
+            ->get();
+
+        $byCategory = Plot::select('category', DB::raw('count(*) as count'))
+            ->whereNotNull('category')
+            ->groupBy('category')
             ->get();
 
         return $this->successResponse([
             'by_sector' => $bySector,
-            'by_block' => $byBlock,
+            'by_street' => $byStreet,
+            'by_type' => $byType,
+            'by_category' => $byCategory,
         ], 'Plot distribution retrieved successfully');
     }
 }

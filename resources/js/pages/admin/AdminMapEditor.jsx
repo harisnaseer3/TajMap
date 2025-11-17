@@ -32,7 +32,9 @@ export default function AdminMapEditor() {
     const [newPlotData, setNewPlotData] = useState({
         plot_number: '',
         sector: '',
-        block: '',
+        street: '',
+        type: '',
+        category: '',
         area: '',
         price: '',
         status: 'available',
@@ -314,7 +316,9 @@ export default function AdminMapEditor() {
         setNewPlotData({
             plot_number: '',
             sector: '',
-            block: '',
+            street: '',
+            type: '',
+            category: '',
             area: '',
             price: '',
             status: 'available',
@@ -376,11 +380,23 @@ export default function AdminMapEditor() {
         try {
             const baseImageId = plots.find(p => p.base_image)?.base_image?.id;
 
-            await plotService.adminUpdate(selectedPlot.id, {
-                ...selectedPlot,
+            // Only send necessary fields with proper types
+            const updateData = {
                 coordinates: currentPoints,
-                base_image_id: baseImageId
+                base_image_id: baseImageId,
+                // Ensure numeric fields are properly typed
+                area: selectedPlot.area ? parseFloat(selectedPlot.area) : undefined,
+                price: selectedPlot.price ? parseFloat(selectedPlot.price) : undefined,
+            };
+
+            // Remove undefined values
+            Object.keys(updateData).forEach(key => {
+                if (updateData[key] === undefined) {
+                    delete updateData[key];
+                }
             });
+
+            await plotService.adminUpdate(selectedPlot.id, updateData);
 
             toast.success('Coordinates saved successfully');
             setIsDrawing(false);
@@ -414,8 +430,8 @@ export default function AdminMapEditor() {
         if (!confirm(`Clear coordinates for plot ${plot.plot_number}?`)) return;
 
         try {
+            // Only send coordinates field
             await plotService.adminUpdate(plot.id, {
-                ...plot,
                 coordinates: []
             });
 
@@ -437,7 +453,9 @@ export default function AdminMapEditor() {
             filteredPlots = filteredPlots.filter(plot =>
                 plot.plot_number.toLowerCase().includes(query) ||
                 plot.sector?.toLowerCase().includes(query) ||
-                plot.block?.toLowerCase().includes(query) ||
+                plot.street?.toLowerCase().includes(query) ||
+                plot.type?.toLowerCase().includes(query) ||
+                plot.category?.toLowerCase().includes(query) ||
                 plot.status?.toLowerCase().includes(query)
             );
         }
@@ -696,7 +714,7 @@ export default function AdminMapEditor() {
                                             <div>
                                                 <div className="font-semibold">{plot.plot_number}</div>
                                                 <div className="text-xs text-gray-600">
-                                                    {plot.sector} - {plot.block}
+                                                    {plot.sector && plot.street ? `${plot.sector} - ${plot.street}` : plot.sector || plot.street || 'No location'}
                                                 </div>
                                                 <div className="text-xs text-gray-500 mt-1">
                                                     {plot.coordinates && plot.coordinates.length > 0
@@ -1086,6 +1104,7 @@ export default function AdminMapEditor() {
                                         >
                                             <option value="available">Available</option>
                                             <option value="reserved">Reserved</option>
+                                            <option value="hold">Hold</option>
                                             <option value="sold">Sold</option>
                                         </select>
                                     </div>
@@ -1096,17 +1115,37 @@ export default function AdminMapEditor() {
                                             value={newPlotData.sector}
                                             onChange={(e) => setNewPlotData({ ...newPlotData, sector: e.target.value })}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="e.g., North"
+                                            placeholder="e.g., Sector A"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Block</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Street</label>
                                         <input
                                             type="text"
-                                            value={newPlotData.block}
-                                            onChange={(e) => setNewPlotData({ ...newPlotData, block: e.target.value })}
+                                            value={newPlotData.street}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, street: e.target.value })}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="e.g., A"
+                                            placeholder="e.g., Main Street"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                        <input
+                                            type="text"
+                                            value={newPlotData.type}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, type: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., Residential, Commercial"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                        <input
+                                            type="text"
+                                            value={newPlotData.category}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, category: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., Premium, Standard"
                                         />
                                     </div>
                                     <div>
