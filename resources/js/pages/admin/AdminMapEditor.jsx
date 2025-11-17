@@ -593,6 +593,36 @@ export default function AdminMapEditor() {
         return 'default';
     };
 
+    const getStatusColor = (status) => {
+        switch (status?.toLowerCase()) {
+            case 'available':
+                return 'rgba(34, 197, 94, 0.2)'; // green
+            case 'reserved':
+                return 'rgba(251, 191, 36, 0.2)'; // yellow
+            case 'hold':
+                return 'rgba(156, 163, 175, 0.2)'; // gray
+            case 'sold':
+                return 'rgba(239, 68, 68, 0.2)'; // red
+            default:
+                return 'rgba(156, 163, 175, 0.2)'; // gray
+        }
+    };
+
+    const getStatusBorderColor = (status) => {
+        switch (status?.toLowerCase()) {
+            case 'available':
+                return 'rgba(34, 197, 94, 0.8)';
+            case 'reserved':
+                return 'rgba(251, 191, 36, 0.8)';
+            case 'hold':
+                return 'rgba(156, 163, 175, 0.8)';
+            case 'sold':
+                return 'rgba(239, 68, 68, 0.8)';
+            default:
+                return 'rgba(156, 163, 175, 0.8)';
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -988,7 +1018,7 @@ export default function AdminMapEditor() {
                                         style={{
                                             width: dimensions.width,
                                             height: dimensions.height,
-                                            pointerEvents: currentTool === 'edit' ? 'auto' : 'none'
+                                            pointerEvents: (currentTool === 'edit' || (!isDrawing && !isCreatingNewPlot)) ? 'auto' : 'none'
                                         }}
                                     >
                                         {/* Existing plots */}
@@ -998,9 +1028,27 @@ export default function AdminMapEditor() {
                                                 <polygon
                                                     key={plot.id}
                                                     points={createPolygonPoints(plot.coordinates)}
-                                                    fill="rgba(34, 197, 94, 0.2)"
-                                                    stroke="rgba(34, 197, 94, 0.8)"
+                                                    fill={getStatusColor(plot.status)}
+                                                    stroke={getStatusBorderColor(plot.status)}
                                                     strokeWidth="2"
+                                                    style={{
+                                                        cursor: (!isDrawing && !isCreatingNewPlot) ? 'pointer' : 'default',
+                                                        pointerEvents: (!isDrawing && !isCreatingNewPlot) ? 'auto' : 'none'
+                                                    }}
+                                                    onClick={(e) => {
+                                                        if (!isDrawing && !isCreatingNewPlot) {
+                                                            e.stopPropagation();
+                                                            handleStartDrawing(plot);
+                                                        }
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (!isDrawing && !isCreatingNewPlot) {
+                                                            e.target.style.opacity = '0.7';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.opacity = '1';
+                                                    }}
                                                 />
                                             ))}
 
