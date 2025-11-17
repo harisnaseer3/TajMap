@@ -50,6 +50,7 @@ export default function AdminMapEditor() {
     const imageRef = useRef(null);
     const fileInputRef = useRef(null);
     const svgRef = useRef(null);
+    const plotItemRefs = useRef({});
 
     useEffect(() => {
         fetchPlots();
@@ -175,6 +176,25 @@ export default function AdminMapEditor() {
         }
     };
 
+    const handleImageDoubleClick = (e) => {
+        if (!isDrawing && !isCreatingNewPlot) return;
+
+        // Prevent adding point from click event
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Check if we have enough points to create a polygon
+        if (currentPoints.length < 3) {
+            toast.error('Please draw at least 3 points to create a polygon');
+            return;
+        }
+
+        // Stop drawing by switching to edit mode - keeps the points
+        // User can then manually save or adjust the polygon
+        setCurrentTool('edit');
+        toast.success('Drawing completed. You can now edit points or click Save.');
+    };
+
     const handleMouseDown = (e) => {
         if (!isDrawing && !isCreatingNewPlot) return;
 
@@ -298,6 +318,16 @@ export default function AdminMapEditor() {
         setRectangleStart(null);
         setRectangleEnd(null);
         setCurrentMousePos(null);
+
+        // Scroll the selected plot into view in the sidebar
+        setTimeout(() => {
+            if (plotItemRefs.current[plot.id]) {
+                plotItemRefs.current[plot.id].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
+            }
+        }, 100);
     };
 
     const handleStartNewPlot = () => {
@@ -731,6 +761,7 @@ export default function AdminMapEditor() {
                                 getFilteredAndSortedPlots().map((plot) => (
                                     <div
                                         key={plot.id}
+                                        ref={(el) => (plotItemRefs.current[plot.id] = el)}
                                         className={`p-3 rounded border-2 cursor-pointer transition ${
                                             selectedPlot?.id === plot.id
                                                 ? 'border-blue-500 bg-blue-50'
@@ -979,6 +1010,7 @@ export default function AdminMapEditor() {
                                     cursor: getCursorStyle()
                                 }}
                                 onClick={handleImageClick}
+                                onDoubleClick={handleImageDoubleClick}
                                 onMouseDown={handleMouseDown}
                                 onMouseMove={handleMouseMove}
                                 onMouseUp={handleMouseUp}
@@ -1281,12 +1313,13 @@ export default function AdminMapEditor() {
                     <div>
                         <h4 className="font-semibold mb-1">Tools:</h4>
                         <ul className="list-disc list-inside space-y-1">
-                            <li><strong>Polygon:</strong> Click to add points</li>
+                            <li><strong>Polygon:</strong> Click to add points, double-click to finish</li>
                             <li><strong>Rectangle:</strong> Click and drag</li>
                             <li><strong>Edit:</strong> Drag points, Delete key to remove</li>
                             <li><strong>Pan:</strong> Drag to move view</li>
                             <li><strong>Zoom:</strong> +/- buttons or mouse wheel</li>
                             <li><strong>Undo/Redo:</strong> Ctrl+Z / Ctrl+Y</li>
+                            <li><strong>Double-click:</strong> Finish drawing and switch to edit mode</li>
                         </ul>
                     </div>
                 </div>
