@@ -28,6 +28,19 @@ class GoogleSheetsService
             $this->client->setApplicationName(config('app.name'));
             $this->client->setScopes([Sheets::SPREADSHEETS_READONLY]);
 
+            // Configure HTTP client with better timeout and DNS settings for Windows
+            $httpClient = new \GuzzleHttp\Client([
+                'verify' => true,
+                'timeout' => 30,
+                'connect_timeout' => 10,
+                'curl' => [
+                    CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4, // Force IPv4 to avoid DNS issues
+                    CURLOPT_DNS_CACHE_TIMEOUT => 120,
+                    CURLOPT_CONNECTTIMEOUT => 10,
+                ],
+            ]);
+            $this->client->setHttpClient($httpClient);
+
             // Set up authentication using service account JSON
             $credentialsPath = storage_path('app/google-credentials.json');
 
