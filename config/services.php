@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'google_sheets' => [
+        'spreadsheet_id' => env('GOOGLE_SHEETS_SPREADSHEET_ID'),
+        'range' => env('GOOGLE_SHEETS_RANGE', 'Sheet1!A2:Z'),
+        'sync_enabled' => env('GOOGLE_SHEETS_SYNC_ENABLED', false),
+        'sync_interval' => env('GOOGLE_SHEETS_SYNC_INTERVAL', 60), // minutes
+    ],
+
 ];
