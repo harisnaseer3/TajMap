@@ -89944,11 +89944,7 @@ function LoginPage() {
   }, "Don't have an account? Register"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
     to: "/",
     className: "text-gray-600 hover:underline text-sm"
-  }, "Back to Home")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "mt-6 p-4 bg-gray-100 rounded text-sm"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
-    className: "font-semibold mb-2"
-  }, "Demo Credentials:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "Admin: admin@tajmap.com / password"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "User: user@tajmap.com / password"))));
+  }, "Back to Home"))));
 }
 
 /***/ }),

@@ -75,11 +75,11 @@ export default function LoginPage() {
                     <Link to="/" className="text-gray-600 hover:underline text-sm">Back to Home</Link>
                 </div>
 
-                <div className="mt-6 p-4 bg-gray-100 rounded text-sm">
-                    <p className="font-semibold mb-2">Demo Credentials:</p>
-                    <p>Admin: admin@tajmap.com / password</p>
-                    <p>User: user@tajmap.com / password</p>
-                </div>
+                {/*<div className="mt-6 p-4 bg-gray-100 rounded text-sm">*/}
+                {/*    <p className="font-semibold mb-2">Demo Credentials:</p>*/}
+                {/*    <p>Admin: admin@tajmap.com / password</p>*/}
+                {/*    <p>User: user@tajmap.com / password</p>*/}
+                {/*</div>*/}
             </div>
         </div>
     );
