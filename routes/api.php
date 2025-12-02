@@ -27,7 +27,7 @@ Route::prefix('public')->group(function () {
     Route::get('/plots', [PublicPlotController::class, 'index']);
     Route::get('/plots/{plot}', [PublicPlotController::class, 'show']);
     Route::get('/plots/meta/sectors', [PublicPlotController::class, 'sectors']);
-    Route::get('/plots/meta/blocks', [PublicPlotController::class, 'blocks']);
+    Route::get('/plots/meta/streets', [PublicPlotController::class, 'streets']);
 
     // Leads
     Route::post('/leads', [PublicLeadController::class, 'store'])
@@ -83,9 +83,14 @@ Route::middleware('auth:sanctum')->prefix('user')->group(function () {
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
-    // Plots
-    Route::apiResource('plots', AdminPlotController::class);
+    // Plots - Custom routes must be defined BEFORE apiResource
+    Route::post('/plots/bulk-delete', [AdminPlotController::class, 'bulkDelete']);
+    Route::get('/plots/download-template', [AdminPlotController::class, 'downloadTemplate']);
+    Route::post('/plots/import', [AdminPlotController::class, 'import']);
+    Route::get('/plots/export/csv', [AdminPlotController::class, 'exportCsv']);
+    Route::get('/plots/export/json', [AdminPlotController::class, 'exportJson']);
     Route::post('/plots/{id}/restore', [AdminPlotController::class, 'restore']);
+    Route::apiResource('plots', AdminPlotController::class);
 
     // Leads
     Route::apiResource('leads', AdminLeadController::class)->except(['store']);

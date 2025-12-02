@@ -101,7 +101,7 @@ export const plotService = {
     },
     getOne: (id) => api.get(`/public/plots/${id}`),
     getSectors: () => api.get('/public/plots/meta/sectors'),
-    getBlocks: (params) => api.get('/public/plots/meta/blocks', { params }),
+    getStreets: (params) => api.get('/public/plots/meta/streets', { params }),
 
     // Admin
     adminGetAll: (params) => {
@@ -118,6 +118,16 @@ export const plotService = {
     adminUpdate: (id, data) => api.put(`/admin/plots/${id}`, data),
     adminDelete: (id) => api.delete(`/admin/plots/${id}`),
     adminRestore: (id) => api.post(`/admin/plots/${id}/restore`),
+    adminBulkDelete: (ids) => api.post('/admin/plots/bulk-delete', { ids }),
+    adminImport: (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return api.post('/admin/plots/import', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    },
+    adminExportCsv: (params) => api.get('/admin/plots/export/csv', { params, responseType: 'blob' }),
+    adminExportJson: (params) => api.get('/admin/plots/export/json', { params, responseType: 'blob' }),
 };
 
 export const leadService = {

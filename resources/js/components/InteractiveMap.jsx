@@ -20,7 +20,9 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
         filters?.search,
         filters?.status,
         filters?.sector,
-        filters?.block,
+        filters?.street,
+        filters?.type,
+        filters?.category,
         filters?.min_price,
         filters?.max_price,
         filters?.min_area,
@@ -281,7 +283,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                     >
                         <div className="font-bold mb-1">{hoveredPlot.plot_number}</div>
                         <div className="text-xs space-y-1">
-                            <div>Sector: {hoveredPlot.sector} | Block: {hoveredPlot.block}</div>
+                            <div>Sector: {hoveredPlot.sector} | Street: {hoveredPlot.street}</div>
                             <div>Area: {hoveredPlot.area} sq. units</div>
                             {showPrices && (
                                 <div>Price: PKR {parseFloat(hoveredPlot.price).toLocaleString()}</div>
@@ -310,7 +312,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                         <div>
                             <h3 className="font-bold text-lg">{hoveredPlot.plot_number}</h3>
                             <p className="text-sm text-gray-600">
-                                Sector: {hoveredPlot.sector} | Block: {hoveredPlot.block}
+                                Sector: {hoveredPlot.sector} | Street: {hoveredPlot.street}
                             </p>
                             <p className="text-sm text-gray-600">
                                 Area: {hoveredPlot.area} sq. units

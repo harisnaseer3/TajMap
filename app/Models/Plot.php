@@ -16,7 +16,9 @@ class Plot extends Model
     protected $fillable = [
         'plot_number',
         'sector',
-        'block',
+        'street',
+        'type',
+        'category',
         'coordinates',
         'status',
         'area',
@@ -80,11 +82,11 @@ class Plot extends Model
     }
 
     /**
-     * Scope for filtering by block
+     * Scope for filtering by street
      */
-    public function scopeBlock($query, $block)
+    public function scopeStreet($query, $street)
     {
-        return $query->where('block', $block);
+        return $query->where('street', $street);
     }
 
     /**

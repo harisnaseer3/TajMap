@@ -17,9 +17,11 @@ class UpdatePlotRequest extends FormRequest
         $rules = [
             'plot_number' => ['sometimes', 'string', Rule::unique('plots')->ignore($this->plot), 'max:255'],
             'sector' => ['nullable', 'string', 'max:255'],
-            'block' => ['nullable', 'string', 'max:255'],
+            'street' => ['nullable', 'string', 'max:255'],
+            'type' => ['nullable', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
             'coordinates' => ['nullable', 'array'],
-            'status' => ['sometimes', 'in:available,reserved,sold'],
+            'status' => ['sometimes', 'in:available,reserved,hold,sold'],
             'area' => ['sometimes', 'numeric', 'min:0'],
             'price' => ['sometimes', 'numeric', 'min:0'],
             'base_image_id' => ['nullable', 'exists:media,id'],

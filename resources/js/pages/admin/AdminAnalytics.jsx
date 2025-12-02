@@ -250,20 +250,20 @@ export default function AdminAnalytics() {
                 </div>
 
                 <div className="bg-white p-6 rounded-lg shadow">
-                    <h2 className="text-xl font-bold mb-4">Plots by Block (Top 10)</h2>
-                    {plotDistribution?.by_block && plotDistribution.by_block.length > 0 ? (
+                    <h2 className="text-xl font-bold mb-4">Plots by Street (Top 10)</h2>
+                    {plotDistribution?.by_street && plotDistribution.by_street.length > 0 ? (
                         <div className="space-y-3">
-                            {plotDistribution.by_block.map((item) => (
-                                <div key={item.block}>
+                            {plotDistribution.by_street.map((item) => (
+                                <div key={item.street}>
                                     <div className="flex justify-between text-sm mb-1">
-                                        <span className="font-medium">Block {item.block}</span>
+                                        <span className="font-medium">Street {item.street}</span>
                                         <span className="text-gray-600">{item.count} plots</span>
                                     </div>
                                     <div className="w-full bg-gray-200 rounded-full h-3">
                                         <div
                                             className="bg-blue-500 h-3 rounded-full"
                                             style={{
-                                                width: `${(item.count / Math.max(...plotDistribution.by_block.map(b => b.count))) * 100}%`,
+                                                width: `${(item.count / Math.max(...plotDistribution.by_street.map(b => b.count))) * 100}%`,
                                             }}
                                         />
                                     </div>
@@ -271,7 +271,59 @@ export default function AdminAnalytics() {
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center text-gray-500 py-8">No block data available</div>
+                        <div className="text-center text-gray-500 py-8">No street data available</div>
+                    )}
+                </div>
+
+                <div className="bg-white p-6 rounded-lg shadow">
+                    <h2 className="text-xl font-bold mb-4">Plots by Type</h2>
+                    {plotDistribution?.by_type && plotDistribution.by_type.length > 0 ? (
+                        <div className="space-y-3">
+                            {plotDistribution.by_type.map((item) => (
+                                <div key={item.type}>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="font-medium">{item.type}</span>
+                                        <span className="text-gray-600">{item.count} plots</span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-3">
+                                        <div
+                                            className="bg-purple-500 h-3 rounded-full"
+                                            style={{
+                                                width: `${(item.count / Math.max(...plotDistribution.by_type.map(t => t.count))) * 100}%`,
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center text-gray-500 py-8">No type data available</div>
+                    )}
+                </div>
+
+                <div className="bg-white p-6 rounded-lg shadow">
+                    <h2 className="text-xl font-bold mb-4">Plots by Category</h2>
+                    {plotDistribution?.by_category && plotDistribution.by_category.length > 0 ? (
+                        <div className="space-y-3">
+                            {plotDistribution.by_category.map((item) => (
+                                <div key={item.category}>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="font-medium">{item.category}</span>
+                                        <span className="text-gray-600">{item.count} plots</span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-3">
+                                        <div
+                                            className="bg-orange-500 h-3 rounded-full"
+                                            style={{
+                                                width: `${(item.count / Math.max(...plotDistribution.by_category.map(c => c.count))) * 100}%`,
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center text-gray-500 py-8">No category data available</div>
                     )}
                 </div>
             </div>

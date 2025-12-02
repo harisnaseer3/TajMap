@@ -32,7 +32,9 @@ export default function AdminMapEditor() {
     const [newPlotData, setNewPlotData] = useState({
         plot_number: '',
         sector: '',
-        block: '',
+        street: '',
+        type: '',
+        category: '',
         area: '',
         price: '',
         status: 'available',
@@ -48,6 +50,7 @@ export default function AdminMapEditor() {
     const imageRef = useRef(null);
     const fileInputRef = useRef(null);
     const svgRef = useRef(null);
+    const plotItemRefs = useRef({});
 
     useEffect(() => {
         fetchPlots();
@@ -173,6 +176,25 @@ export default function AdminMapEditor() {
         }
     };
 
+    const handleImageDoubleClick = (e) => {
+        if (!isDrawing && !isCreatingNewPlot) return;
+
+        // Prevent adding point from click event
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Check if we have enough points to create a polygon
+        if (currentPoints.length < 3) {
+            toast.error('Please draw at least 3 points to create a polygon');
+            return;
+        }
+
+        // Stop drawing by switching to edit mode - keeps the points
+        // User can then manually save or adjust the polygon
+        setCurrentTool('edit');
+        toast.success('Drawing completed. You can now edit points or click Save.');
+    };
+
     const handleMouseDown = (e) => {
         if (!isDrawing && !isCreatingNewPlot) return;
 
@@ -296,6 +318,16 @@ export default function AdminMapEditor() {
         setRectangleStart(null);
         setRectangleEnd(null);
         setCurrentMousePos(null);
+
+        // Scroll the selected plot into view in the sidebar
+        setTimeout(() => {
+            if (plotItemRefs.current[plot.id]) {
+                plotItemRefs.current[plot.id].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
+            }
+        }, 100);
     };
 
     const handleStartNewPlot = () => {
@@ -314,7 +346,9 @@ export default function AdminMapEditor() {
         setNewPlotData({
             plot_number: '',
             sector: '',
-            block: '',
+            street: '',
+            type: '',
+            category: '',
             area: '',
             price: '',
             status: 'available',
@@ -376,11 +410,23 @@ export default function AdminMapEditor() {
         try {
             const baseImageId = plots.find(p => p.base_image)?.base_image?.id;
 
-            await plotService.adminUpdate(selectedPlot.id, {
-                ...selectedPlot,
+            // Only send necessary fields with proper types
+            const updateData = {
                 coordinates: currentPoints,
-                base_image_id: baseImageId
+                base_image_id: baseImageId,
+                // Ensure numeric fields are properly typed
+                area: selectedPlot.area ? parseFloat(selectedPlot.area) : undefined,
+                price: selectedPlot.price ? parseFloat(selectedPlot.price) : undefined,
+            };
+
+            // Remove undefined values
+            Object.keys(updateData).forEach(key => {
+                if (updateData[key] === undefined) {
+                    delete updateData[key];
+                }
             });
+
+            await plotService.adminUpdate(selectedPlot.id, updateData);
 
             toast.success('Coordinates saved successfully');
             setIsDrawing(false);
@@ -414,8 +460,8 @@ export default function AdminMapEditor() {
         if (!confirm(`Clear coordinates for plot ${plot.plot_number}?`)) return;
 
         try {
+            // Only send coordinates field
             await plotService.adminUpdate(plot.id, {
-                ...plot,
                 coordinates: []
             });
 
@@ -437,7 +483,9 @@ export default function AdminMapEditor() {
             filteredPlots = filteredPlots.filter(plot =>
                 plot.plot_number.toLowerCase().includes(query) ||
                 plot.sector?.toLowerCase().includes(query) ||
-                plot.block?.toLowerCase().includes(query) ||
+                plot.street?.toLowerCase().includes(query) ||
+                plot.type?.toLowerCase().includes(query) ||
+                plot.category?.toLowerCase().includes(query) ||
                 plot.status?.toLowerCase().includes(query)
             );
         }
@@ -575,6 +623,36 @@ export default function AdminMapEditor() {
         return 'default';
     };
 
+    const getStatusColor = (status) => {
+        switch (status?.toLowerCase()) {
+            case 'available':
+                return 'rgba(34, 197, 94, 0.2)'; // green
+            case 'reserved':
+                return 'rgba(251, 191, 36, 0.2)'; // yellow
+            case 'hold':
+                return 'rgba(156, 163, 175, 0.2)'; // gray
+            case 'sold':
+                return 'rgba(239, 68, 68, 0.2)'; // red
+            default:
+                return 'rgba(156, 163, 175, 0.2)'; // gray
+        }
+    };
+
+    const getStatusBorderColor = (status) => {
+        switch (status?.toLowerCase()) {
+            case 'available':
+                return 'rgba(34, 197, 94, 0.8)';
+            case 'reserved':
+                return 'rgba(251, 191, 36, 0.8)';
+            case 'hold':
+                return 'rgba(156, 163, 175, 0.8)';
+            case 'sold':
+                return 'rgba(239, 68, 68, 0.8)';
+            default:
+                return 'rgba(156, 163, 175, 0.8)';
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -683,6 +761,7 @@ export default function AdminMapEditor() {
                                 getFilteredAndSortedPlots().map((plot) => (
                                     <div
                                         key={plot.id}
+                                        ref={(el) => (plotItemRefs.current[plot.id] = el)}
                                         className={`p-3 rounded border-2 cursor-pointer transition ${
                                             selectedPlot?.id === plot.id
                                                 ? 'border-blue-500 bg-blue-50'
@@ -696,7 +775,7 @@ export default function AdminMapEditor() {
                                             <div>
                                                 <div className="font-semibold">{plot.plot_number}</div>
                                                 <div className="text-xs text-gray-600">
-                                                    {plot.sector} - {plot.block}
+                                                    {plot.sector && plot.street ? `${plot.sector} - ${plot.street}` : plot.sector || plot.street || 'No location'}
                                                 </div>
                                                 <div className="text-xs text-gray-500 mt-1">
                                                     {plot.coordinates && plot.coordinates.length > 0
@@ -930,6 +1009,8 @@ export default function AdminMapEditor() {
                                     transform: `translate(${panOffset.x}px, ${panOffset.y}px)`,
                                     cursor: getCursorStyle()
                                 }}
+                                onClick={handleImageClick}
+                                onDoubleClick={handleImageDoubleClick}
                                 onMouseDown={handleMouseDown}
                                 onMouseMove={handleMouseMove}
                                 onMouseUp={handleMouseUp}
@@ -948,7 +1029,6 @@ export default function AdminMapEditor() {
                                         width: `${100 * zoom}%`,
                                         pointerEvents: (isDrawing || isCreatingNewPlot) ? 'none' : 'auto'
                                     }}
-                                    onClick={handleImageClick}
                                     onLoad={() => {
                                         if (imageRef.current) {
                                             setDimensions({
@@ -970,7 +1050,7 @@ export default function AdminMapEditor() {
                                         style={{
                                             width: dimensions.width,
                                             height: dimensions.height,
-                                            pointerEvents: currentTool === 'edit' ? 'auto' : 'none'
+                                            pointerEvents: (currentTool === 'edit' || (!isDrawing && !isCreatingNewPlot)) ? 'auto' : 'none'
                                         }}
                                     >
                                         {/* Existing plots */}
@@ -980,9 +1060,27 @@ export default function AdminMapEditor() {
                                                 <polygon
                                                     key={plot.id}
                                                     points={createPolygonPoints(plot.coordinates)}
-                                                    fill="rgba(34, 197, 94, 0.2)"
-                                                    stroke="rgba(34, 197, 94, 0.8)"
+                                                    fill={getStatusColor(plot.status)}
+                                                    stroke={getStatusBorderColor(plot.status)}
                                                     strokeWidth="2"
+                                                    style={{
+                                                        cursor: (!isDrawing && !isCreatingNewPlot) ? 'pointer' : 'default',
+                                                        pointerEvents: (!isDrawing && !isCreatingNewPlot) ? 'auto' : 'none'
+                                                    }}
+                                                    onClick={(e) => {
+                                                        if (!isDrawing && !isCreatingNewPlot) {
+                                                            e.stopPropagation();
+                                                            handleStartDrawing(plot);
+                                                        }
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (!isDrawing && !isCreatingNewPlot) {
+                                                            e.target.style.opacity = '0.7';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.opacity = '1';
+                                                    }}
                                                 />
                                             ))}
 
@@ -1086,6 +1184,7 @@ export default function AdminMapEditor() {
                                         >
                                             <option value="available">Available</option>
                                             <option value="reserved">Reserved</option>
+                                            <option value="hold">Hold</option>
                                             <option value="sold">Sold</option>
                                         </select>
                                     </div>
@@ -1096,17 +1195,37 @@ export default function AdminMapEditor() {
                                             value={newPlotData.sector}
                                             onChange={(e) => setNewPlotData({ ...newPlotData, sector: e.target.value })}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="e.g., North"
+                                            placeholder="e.g., Sector A"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Block</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Street</label>
                                         <input
                                             type="text"
-                                            value={newPlotData.block}
-                                            onChange={(e) => setNewPlotData({ ...newPlotData, block: e.target.value })}
+                                            value={newPlotData.street}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, street: e.target.value })}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="e.g., A"
+                                            placeholder="e.g., Main Street"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                        <input
+                                            type="text"
+                                            value={newPlotData.type}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, type: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., Residential, Commercial"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                        <input
+                                            type="text"
+                                            value={newPlotData.category}
+                                            onChange={(e) => setNewPlotData({ ...newPlotData, category: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., Premium, Standard"
                                         />
                                     </div>
                                     <div>
@@ -1194,12 +1313,13 @@ export default function AdminMapEditor() {
                     <div>
                         <h4 className="font-semibold mb-1">Tools:</h4>
                         <ul className="list-disc list-inside space-y-1">
-                            <li><strong>Polygon:</strong> Click to add points</li>
+                            <li><strong>Polygon:</strong> Click to add points, double-click to finish</li>
                             <li><strong>Rectangle:</strong> Click and drag</li>
                             <li><strong>Edit:</strong> Drag points, Delete key to remove</li>
                             <li><strong>Pan:</strong> Drag to move view</li>
                             <li><strong>Zoom:</strong> +/- buttons or mouse wheel</li>
                             <li><strong>Undo/Redo:</strong> Ctrl+Z / Ctrl+Y</li>
+                            <li><strong>Double-click:</strong> Finish drawing and switch to edit mode</li>
                         </ul>
                     </div>
                 </div>
