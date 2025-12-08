@@ -2447,7 +2447,7 @@ body {
   }
 }
 .popup-image-fadeout {
-  animation: imageFadeOut 1s ease-out forwards;
+  animation: imageFadeOut 0.5s ease-out forwards;
 }
 @keyframes fadeZoomIn {
   0% {
@@ -2460,7 +2460,7 @@ body {
   }
 }
 .popup-image-2-animation {
-  animation: fadeZoomIn 3s ease-in-out forwards;
+  animation: fadeZoomIn 1.5s ease-in-out forwards;
 }
 @property --tw-translate-x {
   syntax: "*";

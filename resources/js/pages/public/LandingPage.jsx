@@ -89,14 +89,29 @@ export default function LandingPage() {
         fetchPopupSettings();
     }, []);
 
+    // Preload second image when first image loads
+    useEffect(() => {
+        if (imageLoaded && popupImage2Url && !image2Loaded) {
+            // Preload second image in background
+            const img = new Image();
+            img.onload = () => {
+                setImage2Loaded(true);
+            };
+            img.onerror = () => {
+                console.error('Failed to preload second popup image');
+                setImage2Loaded(true); // Still mark as loaded to continue
+            };
+            img.src = popupImage2Url;
+        }
+    }, [imageLoaded, popupImage2Url, image2Loaded]);
+
     // Handle transition from first image to second image
     useEffect(() => {
         if (imageLoaded && popupImage2Url && !showingSecondImage) {
-            // Wait for first image animation to complete (approximately 3-4 seconds)
-            // Then transition to second image
+            // Wait 5 seconds, then transition to second image
             const transitionTimer = setTimeout(() => {
                 setShowingSecondImage(true);
-            }, 4000); // 4 seconds after first image loads
+            }, 5000); // 5 seconds after first image loads
 
             return () => clearTimeout(transitionTimer);
         }
@@ -494,28 +509,15 @@ export default function LandingPage() {
                                 onLoad={() => setImageLoaded(true)}
                             />
 
-                            {/* Second Image - only show if exists */}
-                            {popupImage2Url && showingSecondImage && (
-                                <>
-                                    {!image2Loaded && (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
-                                            <div className="flex flex-col items-center gap-3">
-                                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-blue-600"></div>
-                                                <p className="text-gray-600 text-base font-medium">Loading next image...</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <img
-                                        src={popupImage2Url}
-                                        alt="Welcome 2"
-                                        className={`absolute inset-0 w-full h-full object-cover cursor-pointer ${
-                                            image2Loaded ? 'popup-image-2-animation' : 'opacity-0'
-                                        }`}
-                                        style={{ transformOrigin: 'center' }}
-                                        onLoad={() => setImage2Loaded(true)}
-                                        onClick={handleClosePopup}
-                                    />
-                                </>
+                            {/* Second Image - only show if exists and preloaded */}
+                            {popupImage2Url && showingSecondImage && image2Loaded && (
+                                <img
+                                    src={popupImage2Url}
+                                    alt="Welcome 2"
+                                    className="absolute inset-0 w-full h-full object-cover cursor-pointer popup-image-2-animation"
+                                    style={{ transformOrigin: 'center' }}
+                                    onClick={handleClosePopup}
+                                />
                             )}
                         </div>
                     </div>
