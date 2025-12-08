@@ -515,8 +515,9 @@ export default function LandingPage() {
                                     src={popupImage2Url}
                                     alt="Welcome 2"
                                     className="absolute inset-0 w-full h-full object-cover cursor-pointer popup-image-2-animation"
-                                    style={{ transformOrigin: 'center' }}
+                                    style={{ transformOrigin: '75% 25%' }}
                                     onClick={handleClosePopup}
+                                    onAnimationEnd={handleClosePopup}
                                 />
                             )}
                         </div>

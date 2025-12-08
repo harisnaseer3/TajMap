@@ -2451,16 +2451,27 @@ body {
 }
 @keyframes fadeZoomIn {
   0% {
-    transform: scale(0.8);
+    transform: scale(1) translateX(0);
     opacity: 0;
   }
-  100% {
-    transform: scale(1);
+  4% {
     opacity: 1;
+  }
+  40% {
+    transform: scale(3) translateX(-15%);
+    opacity: 1;
+  }
+  90% {
+    transform: scale(3) translateX(-15%);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3) translateX(-15%);
+    opacity: 0;
   }
 }
 .popup-image-2-animation {
-  animation: fadeZoomIn 1.5s ease-in-out forwards;
+  animation: fadeZoomIn 4s ease-in-out forwards;
 }
 @property --tw-translate-x {
   syntax: "*";
