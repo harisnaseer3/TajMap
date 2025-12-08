@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     MapIcon,
     ChartBarIcon,
@@ -12,7 +12,8 @@ import {
 import InteractiveMap from '../../components/InteractiveMap';
 import Logo from '../../components/Logo';
 import toast from 'react-hot-toast';
-import { leadService } from '../../services/api';
+import { leadService, settingService } from '../../services/api';
+import axios from 'axios';
 
 export default function LandingPage() {
     const [selectedPlot, setSelectedPlot] = useState(null);
@@ -24,6 +25,10 @@ export default function LandingPage() {
         message: ''
     });
     const [submitting, setSubmitting] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupImageUrl, setPopupImageUrl] = useState('');
+    const [popupEnabled, setPopupEnabled] = useState(false);
+    const [popupClosing, setPopupClosing] = useState(false);
 
     const features = [
         {
@@ -48,12 +53,42 @@ export default function LandingPage() {
         }
     ];
 
-    const stats = [
-        { value: '500+', label: 'Available Plots' },
-        { value: '1000+', label: 'Happy Customers' },
-        { value: '50+', label: 'Projects' },
-        { value: '24/7', label: 'Support' }
-    ];
+    // Fetch popup settings on component mount
+    useEffect(() => {
+        const fetchPopupSettings = async () => {
+            try {
+                // Fetch public settings for the appearance group
+                const response = await axios.get('/api/public/settings/group/appearance');
+                const settings = response.data?.data || response.data || {};
+
+                // Extract popup-related settings (settings is a key-value object)
+                const popupImageUrl = settings.landing_popup_image_url;
+                const popupEnabled = settings.landing_popup_enabled;
+
+                if (popupImageUrl && popupEnabled === true) {
+                    setPopupImageUrl(popupImageUrl);
+                    setPopupEnabled(true);
+
+                    // Show popup after a short delay
+                    setTimeout(() => {
+                        setShowPopup(true);
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('Error fetching popup settings:', error);
+            }
+        };
+
+        fetchPopupSettings();
+    }, []);
+
+    const handleClosePopup = () => {
+        setPopupClosing(true);
+        setTimeout(() => {
+            setShowPopup(false);
+            setPopupClosing(false);
+        }, 300);
+    };
 
     const handlePlotClick = (plot) => {
         setSelectedPlot(plot);
@@ -116,53 +151,8 @@ export default function LandingPage() {
                 </div>
             </nav>
 
-            {/* Hero Section */}
-            <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center">
-                        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-                            Find Your Perfect
-                            <span className="block text-blue-600">Plot of Land</span>
-                        </h1>
-                        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                            Discover, explore, and manage real estate plots with our comprehensive platform.
-                            From browsing available properties to managing leads, we've got you covered.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a
-                                href="#map"
-                                className="inline-flex items-center justify-center px-8 py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition shadow-lg"
-                            >
-                                View Interactive Map
-                                <ArrowRightIcon className="ml-2 h-5 w-5" />
-                            </a>
-                            <Link
-                                to="/plots"
-                                className="inline-flex items-center justify-center px-8 py-3 bg-white text-blue-600 text-lg font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition"
-                            >
-                                Browse All Plots
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Stats Section */}
-            <section className="py-16 bg-blue-600">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {stats.map((stat, index) => (
-                            <div key={index} className="text-center">
-                                <div className="text-4xl font-bold text-white mb-2">{stat.value}</div>
-                                <div className="text-blue-100">{stat.label}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
             {/* Interactive Map Section */}
-            <section id="map" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+            <section id="map" className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-12">
                         <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -431,6 +421,41 @@ export default function LandingPage() {
                                     </button>
                                 </div>
                             )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Landing Page Popup */}
+            {showPopup && popupEnabled && popupImageUrl && (
+                <div
+                    className={`fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 ${
+                        popupClosing ? 'popup-overlay-out' : 'popup-overlay-in'
+                    }`}
+                    style={{ zIndex: 9999 }}
+                    onClick={handleClosePopup}
+                >
+                    <div
+                        className="relative max-w-4xl w-full bg-white rounded-lg shadow-2xl overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Close Button */}
+                        <button
+                            onClick={handleClosePopup}
+                            className="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all hover:scale-110"
+                            aria-label="Close popup"
+                        >
+                            <XMarkIcon className="w-6 h-6 text-gray-700" />
+                        </button>
+
+                        {/* Animated Image */}
+                        <div className="relative w-full h-[70vh] flex items-center justify-center overflow-hidden bg-gray-100">
+                            <img
+                                src={popupImageUrl}
+                                alt="Welcome"
+                                className="popup-image-animation w-full h-full object-cover"
+                                style={{ transformOrigin: 'top left' }}
+                            />
                         </div>
                     </div>
                 </div>
