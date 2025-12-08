@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import InteractiveMap from '../../components/InteractiveMap';
+import Logo from '../../components/Logo';
 import { plotService, leadService, settingService, savedPlotService } from '../../services/api';
 import { usePlotStore } from '../../store/plotStore';
 import { useAuthStore } from '../../store/authStore';
@@ -265,9 +266,12 @@ export default function PlotListPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center gap-4">
-                            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
-                                <MapIcon className="h-8 w-8 text-blue-600" />
-                                <span className="text-xl font-bold text-gray-900">TajMap</span>
+                            <Link to="/" className="hover:opacity-80 transition">
+                                <Logo
+                                    text="TajMap"
+                                    iconClassName="h-8 w-8"
+                                    textClassName="ml-2 text-xl font-bold text-gray-900"
+                                />
                             </Link>
                             <span className="text-gray-300">|</span>
                             <h1 className="text-xl font-semibold text-gray-900">Browse Plots</h1>
@@ -400,32 +404,6 @@ export default function PlotListPage() {
                                     </select>
                                 </div>
 
-                                {/* Price Range */}
-                                {showPrices && (
-                                    <div>
-                                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                            <CurrencyDollarIcon className="h-4 w-4" />
-                                            Price Range
-                                        </label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <input
-                                                type="number"
-                                                placeholder="Min"
-                                                value={filters.min_price || ''}
-                                                onChange={(e) => handleFilterChange({ ...filters, min_price: e.target.value })}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                            <input
-                                                type="number"
-                                                placeholder="Max"
-                                                value={filters.max_price || ''}
-                                                onChange={(e) => handleFilterChange({ ...filters, max_price: e.target.value })}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-
                                 {/* Area Range */}
                                 <div>
                                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
@@ -466,8 +444,6 @@ export default function PlotListPage() {
                                     >
                                         <option value="created_at-desc">Newest First</option>
                                         <option value="created_at-asc">Oldest First</option>
-                                        {showPrices && <option value="price-asc">Price: Low to High</option>}
-                                        {showPrices && <option value="price-desc">Price: High to Low</option>}
                                         <option value="area-asc">Area: Small to Large</option>
                                         <option value="area-desc">Area: Large to Small</option>
                                         <option value="plot_number-asc">Plot Number: A-Z</option>
@@ -616,17 +592,15 @@ export default function PlotListPage() {
                                                             </span>
                                                         </div>
 
-                                                        <div className={`mt-4 grid ${showPrices ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
+                                                        <div className="mt-4 grid grid-cols-2 gap-4">
                                                             <div>
                                                                 <p className="text-sm text-gray-600">Area</p>
                                                                 <p className="text-lg font-semibold text-gray-900">{plot.area} sq. units</p>
                                                             </div>
-                                                            {showPrices && (
-                                                                <div>
-                                                                    <p className="text-sm text-gray-600">Price</p>
-                                                                    <p className="text-lg font-semibold text-gray-900">PKR {parseFloat(plot.price).toLocaleString()}</p>
-                                                                </div>
-                                                            )}
+                                                            <div>
+                                                                <p className="text-sm text-gray-600">Price</p>
+                                                                <p className="text-lg font-semibold text-blue-600">Contact for price</p>
+                                                            </div>
                                                         </div>
 
                                                         {plot.description && (
@@ -790,12 +764,10 @@ export default function PlotListPage() {
                                         <p className="text-sm text-gray-600">Area</p>
                                         <p className="font-semibold">{selectedPlot.area} sq. units</p>
                                     </div>
-                                    {showPrices && (
-                                        <div>
-                                            <p className="text-sm text-gray-600">Price</p>
-                                            <p className="font-semibold">PKR {parseFloat(selectedPlot.price).toLocaleString()}</p>
-                                        </div>
-                                    )}
+                                    <div>
+                                        <p className="text-sm text-gray-600">Price</p>
+                                        <p className="font-semibold text-blue-600">Contact for price</p>
+                                    </div>
                                 </div>
                                 {selectedPlot.description && (
                                     <div className="mt-4">

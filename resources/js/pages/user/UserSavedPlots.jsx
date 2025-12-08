@@ -277,17 +277,15 @@ export default function UserSavedPlots() {
                                                 <p className="text-sm font-semibold text-gray-800">{plot.area} sq. units</p>
                                             </div>
                                         </div>
-                                        {showPrices && plot.price && (
-                                            <div className="flex items-center gap-3">
-                                                <CurrencyDollarIcon className="h-5 w-5 text-gray-400" />
-                                                <div>
-                                                    <p className="text-xs text-gray-500">Price</p>
-                                                    <p className="text-sm font-semibold text-gray-800">
-                                                        PKR {parseFloat(plot.price).toLocaleString()}
-                                                    </p>
-                                                </div>
+                                        <div className="flex items-center gap-3">
+                                            <CurrencyDollarIcon className="h-5 w-5 text-gray-400" />
+                                            <div>
+                                                <p className="text-xs text-gray-500">Price</p>
+                                                <p className="text-sm font-semibold text-blue-600">
+                                                    Contact for price
+                                                </p>
                                             </div>
-                                        )}
+                                        </div>
                                         {plot.description && (
                                             <div className="mt-3 pt-3 border-t border-gray-200">
                                                 <p className="text-xs text-gray-500 mb-1">Description</p>

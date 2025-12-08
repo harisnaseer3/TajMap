@@ -285,9 +285,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                         <div className="text-xs space-y-1">
                             <div>Sector: {hoveredPlot.sector} | Street: {hoveredPlot.street}</div>
                             <div>Area: {hoveredPlot.area} sq. units</div>
-                            {showPrices && (
-                                <div>Price: PKR {parseFloat(hoveredPlot.price).toLocaleString()}</div>
-                            )}
+                            <div>Price: Contact for price</div>
                             <div className="mt-1">
                                 <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
                                     hoveredPlot.status.toLowerCase() === 'available' ? 'bg-green-500' :
@@ -315,8 +313,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                                 Sector: {hoveredPlot.sector} | Street: {hoveredPlot.street}
                             </p>
                             <p className="text-sm text-gray-600">
-                                Area: {hoveredPlot.area} sq. units
-                                {showPrices && ` | Price: PKR ${parseFloat(hoveredPlot.price).toLocaleString()}`}
+                                Area: {hoveredPlot.area} sq. units | Price: Contact for price
                             </p>
                         </div>
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${

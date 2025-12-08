@@ -27,8 +27,13 @@ export default function LandingPage() {
     const [submitting, setSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupImageUrl, setPopupImageUrl] = useState('');
+    const [popupImage2Url, setPopupImage2Url] = useState('');
     const [popupEnabled, setPopupEnabled] = useState(false);
     const [popupClosing, setPopupClosing] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [image2Loaded, setImage2Loaded] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(1);
+    const [showingSecondImage, setShowingSecondImage] = useState(false);
 
     const features = [
         {
@@ -63,13 +68,15 @@ export default function LandingPage() {
 
                 // Extract popup-related settings (settings is a key-value object)
                 const popupImageUrl = settings.landing_popup_image_url;
+                const popupImage2Url = settings.landing_popup_image_2_url;
                 const popupEnabled = settings.landing_popup_enabled;
 
                 if (popupImageUrl && popupEnabled === true) {
                     setPopupImageUrl(popupImageUrl);
+                    setPopupImage2Url(popupImage2Url || '');
                     setPopupEnabled(true);
 
-                    // Show popup after a short delay
+                    // Show popup immediately
                     setTimeout(() => {
                         setShowPopup(true);
                     }, 500);
@@ -82,11 +89,27 @@ export default function LandingPage() {
         fetchPopupSettings();
     }, []);
 
+    // Handle transition from first image to second image
+    useEffect(() => {
+        if (imageLoaded && popupImage2Url && !showingSecondImage) {
+            // Wait for first image animation to complete (approximately 3-4 seconds)
+            // Then transition to second image
+            const transitionTimer = setTimeout(() => {
+                setShowingSecondImage(true);
+            }, 4000); // 4 seconds after first image loads
+
+            return () => clearTimeout(transitionTimer);
+        }
+    }, [imageLoaded, popupImage2Url, showingSecondImage]);
+
     const handleClosePopup = () => {
         setPopupClosing(true);
         setTimeout(() => {
             setShowPopup(false);
             setPopupClosing(false);
+            setImageLoaded(false);
+            setImage2Loaded(false);
+            setShowingSecondImage(false);
         }, 300);
     };
 
@@ -306,7 +329,7 @@ export default function LandingPage() {
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600">Price</p>
-                                        <p className="font-semibold">PKR {parseFloat(selectedPlot.price).toLocaleString()}</p>
+                                        <p className="font-semibold text-blue-600">Contact for price</p>
                                     </div>
                                 </div>
                                 {selectedPlot.description && (
@@ -448,14 +471,52 @@ export default function LandingPage() {
                             <XMarkIcon className="w-6 h-6 text-gray-700" />
                         </button>
 
-                        {/* Animated Image */}
+                        {/* Animated Images */}
                         <div className="relative w-full h-[70vh] flex items-center justify-center overflow-hidden bg-gray-100">
+                            {!imageLoaded && !showingSecondImage && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
+                                    <div className="flex flex-col items-center gap-3">
+                                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-blue-600"></div>
+                                        <p className="text-gray-600 text-base font-medium">Loading image...</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* First Image */}
                             <img
                                 src={popupImageUrl}
                                 alt="Welcome"
-                                className="popup-image-animation w-full h-full object-cover"
+                                className={`absolute inset-0 w-full h-full object-cover ${
+                                    imageLoaded && !showingSecondImage ? 'popup-image-animation' :
+                                    showingSecondImage ? 'popup-image-fadeout' : 'opacity-0'
+                                }`}
                                 style={{ transformOrigin: 'top left' }}
+                                onLoad={() => setImageLoaded(true)}
                             />
+
+                            {/* Second Image - only show if exists */}
+                            {popupImage2Url && showingSecondImage && (
+                                <>
+                                    {!image2Loaded && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
+                                            <div className="flex flex-col items-center gap-3">
+                                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-blue-600"></div>
+                                                <p className="text-gray-600 text-base font-medium">Loading next image...</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <img
+                                        src={popupImage2Url}
+                                        alt="Welcome 2"
+                                        className={`absolute inset-0 w-full h-full object-cover cursor-pointer ${
+                                            image2Loaded ? 'popup-image-2-animation' : 'opacity-0'
+                                        }`}
+                                        style={{ transformOrigin: 'center' }}
+                                        onLoad={() => setImage2Loaded(true)}
+                                        onClick={handleClosePopup}
+                                    />
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

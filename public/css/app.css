@@ -597,6 +597,9 @@
   .z-10 {
     z-index: 10;
   }
+  .z-20 {
+    z-index: 20;
+  }
   .z-40 {
     z-index: 40;
   }
@@ -1538,6 +1541,10 @@
     font-size: var(--text-6xl);
     line-height: var(--tw-leading, var(--text-6xl--line-height));
   }
+  .text-base {
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+  }
   .text-lg {
     font-size: var(--text-lg);
     line-height: var(--tw-leading, var(--text-lg--line-height));
@@ -1710,6 +1717,9 @@
   }
   .underline {
     text-decoration-line: underline;
+  }
+  .opacity-0 {
+    opacity: 0%;
   }
   .opacity-25 {
     opacity: 25%;
@@ -2427,6 +2437,30 @@ body {
 }
 .popup-overlay-out {
   animation: popupFadeOut 0.3s ease-out forwards;
+}
+@keyframes imageFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.popup-image-fadeout {
+  animation: imageFadeOut 1s ease-out forwards;
+}
+@keyframes fadeZoomIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.popup-image-2-animation {
+  animation: fadeZoomIn 3s ease-in-out forwards;
 }
 @property --tw-translate-x {
   syntax: "*";

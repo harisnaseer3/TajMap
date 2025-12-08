@@ -79,3 +79,33 @@ body {
 .popup-overlay-out {
     animation: popupFadeOut 0.3s ease-out forwards;
 }
+
+/* First image fade out animation */
+@keyframes imageFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.popup-image-fadeout {
+    animation: imageFadeOut 1s ease-out forwards;
+}
+
+/* Second image fade zoom in animation (3 seconds) */
+@keyframes fadeZoomIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.popup-image-2-animation {
+    animation: fadeZoomIn 3s ease-in-out forwards;
+}

@@ -12,9 +12,12 @@ export default function AdminSettings() {
     const [logoUrl, setLogoUrl] = useState('');
     const [uploadingPopupImage, setUploadingPopupImage] = useState(false);
     const [popupImageUrl, setPopupImageUrl] = useState('');
+    const [uploadingPopupImage2, setUploadingPopupImage2] = useState(false);
+    const [popupImage2Url, setPopupImage2Url] = useState('');
     const [expandedGroups, setExpandedGroups] = useState({});
     const logoFileInputRef = useRef(null);
     const popupImageFileInputRef = useRef(null);
+    const popupImage2FileInputRef = useRef(null);
 
     useEffect(() => {
         fetchSettings();
@@ -56,6 +59,10 @@ export default function AdminSettings() {
                 // Get popup image URL if it exists
                 if (setting.key === 'landing_popup_image_url') {
                     setPopupImageUrl(setting.value || '');
+                }
+                // Get popup image 2 URL if it exists
+                if (setting.key === 'landing_popup_image_2_url') {
+                    setPopupImage2Url(setting.value || '');
                 }
             });
             setEditedSettings(initialEdits);
@@ -179,6 +186,56 @@ export default function AdminSettings() {
             toast.error('Failed to upload popup image');
         } finally {
             setUploadingPopupImage(false);
+        }
+    };
+
+    const handlePopupImage2Upload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            toast.error('Please upload an image file');
+            return;
+        }
+
+        try {
+            setUploadingPopupImage2(true);
+            const response = await mediaService.upload(file, 'popup');
+            const uploadedImage = response.data?.data || response.data;
+
+            if (uploadedImage && uploadedImage.url) {
+                // Save popup image 2 URL to settings
+                await settingService.bulkUpdate([
+                    {
+                        key: 'landing_popup_image_2_url',
+                        value: uploadedImage.url,
+                        type: 'string',
+                        group: 'appearance',
+                        subsection: 'landing_page',
+                        label: 'Landing Page Popup Image 2 URL',
+                        description: 'Second image displayed in the animated popup on landing page'
+                    },
+                    {
+                        key: 'landing_popup_image_2_id',
+                        value: uploadedImage.id.toString(),
+                        type: 'integer',
+                        group: 'appearance',
+                        subsection: 'landing_page',
+                        label: 'Landing Page Popup Image 2 Media ID',
+                        description: 'Media ID of the landing page popup image 2'
+                    }
+                ]);
+
+                setPopupImage2Url(uploadedImage.url);
+                toast.success('Popup image 2 uploaded successfully');
+                await fetchSettings();
+            } else {
+                toast.error('Upload succeeded but no URL returned');
+            }
+        } catch (error) {
+            toast.error('Failed to upload popup image 2');
+        } finally {
+            setUploadingPopupImage2(false);
         }
     };
 
@@ -604,6 +661,98 @@ export default function AdminSettings() {
                             type="file"
                             accept="image/*"
                             onChange={handlePopupImageUpload}
+                            className="hidden"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Landing Page Popup Image 2 Upload Section */}
+            <div className="bg-white p-6 rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4 text-gray-800 border-b pb-3">Landing Page Popup Image 2</h2>
+                <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0">
+                        {popupImage2Url ? (
+                            <img
+                                src={popupImage2Url}
+                                alt="Popup Image 2"
+                                className="w-48 h-48 object-cover border-2 border-gray-200 rounded-lg bg-gray-50"
+                            />
+                        ) : (
+                            <div className="w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                                <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-2">Upload Second Popup Image</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Upload a second image to display alongside the first popup image on the landing page.
+                            This allows for multiple promotional images or announcements.
+                            Recommended size: 1200x800px or larger. Supported formats: JPG, PNG, GIF, WEBP.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => popupImage2FileInputRef.current?.click()}
+                                disabled={uploadingPopupImage2}
+                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 transition"
+                            >
+                                {uploadingPopupImage2 ? 'Uploading...' : popupImage2Url ? 'Change Image' : 'Upload Image'}
+                            </button>
+                            {popupImage2Url && (
+                                <button
+                                    onClick={async () => {
+                                        if (confirm('Are you sure you want to remove popup image 2?')) {
+                                            try {
+                                                const popupUrl2Setting = settings.find(s => s.key === 'landing_popup_image_2_url');
+                                                const popupId2Setting = settings.find(s => s.key === 'landing_popup_image_2_id');
+
+                                                const updatePayload = [];
+                                                if (popupUrl2Setting) {
+                                                    updatePayload.push({
+                                                        key: 'landing_popup_image_2_url',
+                                                        value: '',
+                                                        type: popupUrl2Setting.type,
+                                                        group: popupUrl2Setting.group,
+                                                        subsection: popupUrl2Setting.subsection,
+                                                        label: popupUrl2Setting.label,
+                                                        description: popupUrl2Setting.description,
+                                                    });
+                                                }
+                                                if (popupId2Setting) {
+                                                    updatePayload.push({
+                                                        key: 'landing_popup_image_2_id',
+                                                        value: '',
+                                                        type: popupId2Setting.type,
+                                                        group: popupId2Setting.group,
+                                                        subsection: popupId2Setting.subsection,
+                                                        label: popupId2Setting.label,
+                                                        description: popupId2Setting.description,
+                                                    });
+                                                }
+
+                                                await settingService.bulkUpdate(updatePayload);
+                                                setPopupImage2Url('');
+                                                toast.success('Popup image 2 removed successfully');
+                                                await fetchSettings();
+                                            } catch (error) {
+                                                toast.error('Failed to remove popup image 2');
+                                            }
+                                        }
+                                    }}
+                                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                                >
+                                    Remove Image
+                                </button>
+                            )}
+                        </div>
+                        <input
+                            ref={popupImage2FileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePopupImage2Upload}
                             className="hidden"
                         />
                     </div>
