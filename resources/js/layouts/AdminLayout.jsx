@@ -35,6 +35,14 @@ export default function AdminLayout() {
         { path: '/admin/settings', label: 'Settings', icon: '⚙️' },
     ];
 
+    // Filter nav items - only show Settings for specific email
+    const filteredNavItems = navItems.filter(item => {
+        if (item.path === '/admin/settings') {
+            return user?.email === 'harisnaseer3@gmail.com';
+        }
+        return true;
+    });
+
     return (
         <div className="flex h-screen bg-gray-100">
             {/* Sidebar */}
@@ -52,7 +60,7 @@ export default function AdminLayout() {
                 </div>
 
                 <nav className="mt-6">
-                    {navItems.map(item => (
+                    {filteredNavItems.map(item => (
                         <Link
                             key={item.path}
                             to={item.path}
@@ -73,7 +81,7 @@ export default function AdminLayout() {
                 <header className="bg-white shadow-sm border-b border-gray-200">
                     <div className="px-6 py-4 flex items-center justify-between">
                         <h2 className="text-2xl font-semibold text-gray-800">
-                            {navItems.find(item => item.path === location.pathname)?.label || 'Admin Panel'}
+                            {filteredNavItems.find(item => item.path === location.pathname)?.label || 'Admin Panel'}
                         </h2>
 
                         <div className="flex items-center gap-4">

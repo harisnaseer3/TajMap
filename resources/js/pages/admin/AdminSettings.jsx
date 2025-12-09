@@ -1,8 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { settingService, mediaService } from '../../services/api';
+import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
 
 export default function AdminSettings() {
+    const navigate = useNavigate();
+    const { user } = useAuthStore();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState([]);
@@ -21,6 +25,14 @@ export default function AdminSettings() {
     const popupImageFileInputRef = useRef(null);
     const popupImage2FileInputRef = useRef(null);
     const faviconFileInputRef = useRef(null);
+
+    // Check authorization
+    useEffect(() => {
+        if (user?.email !== 'harisnaseer3@gmail.com') {
+            toast.error('Access denied: You do not have permission to view this page');
+            navigate('/admin/dashboard');
+        }
+    }, [user, navigate]);
 
     useEffect(() => {
         fetchSettings();
