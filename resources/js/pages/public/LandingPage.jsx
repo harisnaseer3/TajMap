@@ -108,10 +108,10 @@ export default function LandingPage() {
     // Handle transition from first image to second image
     useEffect(() => {
         if (imageLoaded && popupImage2Url && !showingSecondImage) {
-            // Wait 5 seconds, then transition to second image
+            // Wait 6 seconds (when first image stops at second-last tween)
             const transitionTimer = setTimeout(() => {
                 setShowingSecondImage(true);
-            }, 5000); // 5 seconds after first image loads
+            }, 6000); // 6 seconds - first image animation completes
 
             return () => clearTimeout(transitionTimer);
         }
@@ -497,25 +497,24 @@ export default function LandingPage() {
                                 </div>
                             )}
 
-                            {/* First Image */}
+                            {/* First Image - stays frozen at second-last tween */}
                             <img
                                 src={popupImageUrl}
                                 alt="Welcome"
                                 className={`absolute inset-0 w-full h-full object-cover ${
-                                    imageLoaded && !showingSecondImage ? 'popup-image-animation' :
-                                    showingSecondImage ? 'popup-image-fadeout' : 'opacity-0'
+                                    imageLoaded ? 'popup-image-animation' : 'opacity-0'
                                 }`}
-                                style={{ transformOrigin: 'top left' }}
+                                style={{ transformOrigin: 'top left', zIndex: 1 }}
                                 onLoad={() => setImageLoaded(true)}
                             />
 
-                            {/* Second Image - only show if exists and preloaded */}
+                            {/* Second Image - plays on top of frozen first image */}
                             {popupImage2Url && showingSecondImage && image2Loaded && (
                                 <img
                                     src={popupImage2Url}
                                     alt="Welcome 2"
                                     className="absolute inset-0 w-full h-full object-cover cursor-pointer popup-image-2-animation"
-                                    style={{ transformOrigin: '75% 25%' }}
+                                    style={{ transformOrigin: '75% 25%', zIndex: 2 }}
                                     onClick={handleClosePopup}
                                     onAnimationEnd={handleClosePopup}
                                 />
