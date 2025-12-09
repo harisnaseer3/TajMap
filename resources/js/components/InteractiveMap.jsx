@@ -117,13 +117,13 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
             case 'available':
-                return 'rgba(34, 197, 94, 0.3)'; // green
+                return 'rgba(34, 197, 94, 0.6)'; // green
             case 'reserved':
-                return 'rgba(251, 191, 36, 0.3)'; // yellow
+                return 'rgba(251, 191, 36, 0.6)'; // yellow
             case 'sold':
-                return 'rgba(239, 68, 68, 0.3)'; // red
+                return 'rgba(239, 68, 68, 0.6)'; // red
             default:
-                return 'rgba(156, 163, 175, 0.3)'; // gray
+                return 'rgba(156, 163, 175, 0.6)'; // gray
         }
     };
 
@@ -196,15 +196,15 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
             {/* Legend */}
             <div className="flex flex-wrap gap-4 bg-white p-4 rounded-lg shadow">
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(34, 197, 94, 0.5)' }}></div>
+                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(34, 197, 94, 0.7)' }}></div>
                     <span className="text-sm text-gray-700">Available</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(251, 191, 36, 0.5)' }}></div>
+                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(251, 191, 36, 0.7)' }}></div>
                     <span className="text-sm text-gray-700">Reserved</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(239, 68, 68, 0.5)' }}></div>
+                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(239, 68, 68, 0.7)' }}></div>
                     <span className="text-sm text-gray-700">Sold</span>
                 </div>
             </div>
@@ -241,7 +241,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                                     <polygon
                                         points={createPolygonPoints(plot.coordinates)}
                                         fill={hoveredPlot?.id === plot.id
-                                            ? getStatusColor(plot.status).replace('0.3', '0.6')
+                                            ? getStatusColor(plot.status).replace('0.6', '0.85')
                                             : getStatusColor(plot.status)
                                         }
                                         stroke={getStatusBorderColor(plot.status)}
