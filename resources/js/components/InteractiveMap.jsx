@@ -117,7 +117,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
             case 'available':
-                return 'rgba(34, 197, 94, 0.6)'; // green
+                return 'rgba(34, 197, 94, 0.1)'; // green
             case 'reserved':
                 return 'rgba(251, 191, 36, 0.6)'; // yellow
             case 'sold':
@@ -130,7 +130,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const getStatusBorderColor = (status) => {
         switch (status.toLowerCase()) {
             case 'available':
-                return 'rgba(34, 197, 94, 0.8)';
+                return 'rgba(34, 197, 94, 0.1)';
             case 'reserved':
                 return 'rgba(251, 191, 36, 0.8)';
             case 'sold':

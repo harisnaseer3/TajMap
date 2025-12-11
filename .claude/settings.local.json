@@ -4,7 +4,10 @@
       "Bash(curl:*)",
       "Bash(npm run build:*)",
       "Bash(cat:*)",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Bash(php -v:*)",
+      "Bash(chmod:*)",
+      "Bash(icacls:*)"
     ],
     "deny": [],
     "ask": []

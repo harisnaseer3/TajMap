@@ -42,6 +42,12 @@ Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthBaseController::class, 'register']);
     Route::post('/login', [AuthBaseController::class, 'login']);
 
+    // Password Reset Routes
+    Route::post('/forgot-password', [AuthBaseController::class, 'forgotPassword'])
+        ->middleware('throttle:5,60'); // 5 attempts per 60 minutes
+    Route::post('/reset-password', [AuthBaseController::class, 'resetPassword'])
+        ->middleware('throttle:5,60'); // 5 attempts per 60 minutes
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthBaseController::class, 'logout']);
         Route::get('/me', [AuthBaseController::class, 'me']);
@@ -54,6 +60,89 @@ Route::get('/test-auth', function () {
         'message' => 'Public endpoint - No auth required',
         'timestamp' => now(),
     ]);
+});
+
+// Test email configuration
+Route::get('/test-email-config', function () {
+    return response()->json([
+        'mail_driver' => config('mail.default'),
+        'mail_mailers' => config('mail.mailers'),
+        'from_address' => config('mail.from.address'),
+        'from_name' => config('mail.from.name'),
+        'frontend_url' => config('app.frontend_url', config('app.url')),
+        'env_mail_mailer' => env('MAIL_MAILER'),
+    ]);
+});
+
+// Test password reset directly
+Route::post('/test-password-reset', function (\Illuminate\Http\Request $request) {
+    try {
+        $email = $request->input('email');
+
+        // Find user
+        $user = \App\Models\User::where('email', $email)->first();
+        if (!$user) {
+            return response()->json(['error' => 'User not found', 'email' => $email], 404);
+        }
+
+        // Generate token
+        $token = \Illuminate\Support\Str::random(64);
+
+        // Save to password_reset_tokens table
+        \Illuminate\Support\Facades\DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $email],
+            [
+                'email' => $email,
+                'token' => hash('sha256', $token),
+                'created_at' => now()
+            ]
+        );
+
+        // Generate reset URL
+        $resetUrl = config('app.frontend_url', config('app.url'))
+            . '/reset-password?token=' . $token
+            . '&email=' . urlencode($email);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Token created successfully',
+            'user' => $user->name,
+            'reset_url' => $resetUrl,
+            'token' => $token,
+            'note' => 'In production, this would be sent via email'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+
+// Clear cache route (for development only)
+Route::get('/clear-cache', function () {
+    try {
+        \Illuminate\Support\Facades\Cache::flush();
+        \Illuminate\Support\Facades\DB::table('cache')->truncate();
+        \Illuminate\Support\Facades\DB::table('cache_locks')->truncate();
+
+        // Clear config cache files
+        $configPath = base_path('bootstrap/cache/config.php');
+        if (file_exists($configPath)) {
+            unlink($configPath);
+        }
+
+        return response()->json([
+            'message' => 'Cache cleared successfully! Rate limits reset. Config cache cleared.',
+            'timestamp' => now(),
+            'mail_driver' => config('mail.default'),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Cache cleared (some errors occurred but rate limits should be reset)',
+            'error' => $e->getMessage(),
+        ]);
+    }
 });
 
 Route::middleware('auth:sanctum')->get('/test-auth-protected', function () {

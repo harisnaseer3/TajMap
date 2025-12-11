@@ -626,22 +626,22 @@ export default function AdminMapEditor() {
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'available':
-                return 'rgba(34, 197, 94, 0.2)'; // green
+                return 'rgba(34, 197, 94, 0.1)'; // green
             case 'reserved':
-                return 'rgba(251, 191, 36, 0.2)'; // yellow
+                return 'rgba(251, 191, 36, 0.3)'; // yellow
             case 'hold':
-                return 'rgba(156, 163, 175, 0.2)'; // gray
+                return 'rgba(156, 163, 175, 0.3)'; // gray
             case 'sold':
-                return 'rgba(239, 68, 68, 0.2)'; // red
+                return 'rgba(239, 68, 68, 0.3)'; // red
             default:
-                return 'rgba(156, 163, 175, 0.2)'; // gray
+                return 'rgba(156, 163, 175, 0.3)'; // gray
         }
     };
 
     const getStatusBorderColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'available':
-                return 'rgba(34, 197, 94, 0.8)';
+                return 'rgba(34, 197, 94, 0.1)';
             case 'reserved':
                 return 'rgba(251, 191, 36, 0.8)';
             case 'hold':

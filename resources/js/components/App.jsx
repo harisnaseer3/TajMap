@@ -8,6 +8,8 @@ import PlotListPage from '../pages/public/PlotListPage';
 import MapView from '../pages/MapView';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
 
 // User Pages
 import UserDashboard from '../pages/user/UserDashboard';
@@ -43,6 +45,8 @@ export default function App() {
                 <Route path="/map" element={<MapView />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
 
                 {/* User Routes */}
                 <Route path="/user" element={<ProtectedRoute />}>
