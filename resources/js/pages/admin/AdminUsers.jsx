@@ -8,6 +8,9 @@ export default function AdminUsers() {
     const [pagination, setPagination] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
+    const [showResetTokenModal, setShowResetTokenModal] = useState(false);
+    const [showTempPasswordModal, setShowTempPasswordModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [filters, setFilters] = useState({
         search: '',
         role: '',
@@ -66,6 +69,16 @@ export default function AdminUsers() {
     const handleCreate = () => {
         setEditingUser(null);
         setShowModal(true);
+    };
+
+    const handleGenerateResetToken = (user) => {
+        setSelectedUser(user);
+        setShowResetTokenModal(true);
+    };
+
+    const handleSetTempPassword = (user) => {
+        setSelectedUser(user);
+        setShowTempPasswordModal(true);
     };
 
     const handleFilterChange = (key, value) => {
@@ -194,12 +207,26 @@ export default function AdminUsers() {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {new Date(user.created_at).toLocaleDateString()}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                             <button
                                                 onClick={() => handleEdit(user)}
-                                                className="text-blue-600 hover:text-blue-900 mr-3"
+                                                className="text-blue-600 hover:text-blue-900"
                                             >
                                                 Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleGenerateResetToken(user)}
+                                                className="text-green-600 hover:text-green-900"
+                                                title="Generate Reset Token"
+                                            >
+                                                Reset Link
+                                            </button>
+                                            <button
+                                                onClick={() => handleSetTempPassword(user)}
+                                                className="text-purple-600 hover:text-purple-900"
+                                                title="Set Temporary Password"
+                                            >
+                                                Temp Pass
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(user.id)}
@@ -276,6 +303,28 @@ export default function AdminUsers() {
                         setShowModal(false);
                         setEditingUser(null);
                         fetchUsers();
+                    }}
+                />
+            )}
+
+            {/* Generate Reset Token Modal */}
+            {showResetTokenModal && selectedUser && (
+                <GenerateResetTokenModal
+                    user={selectedUser}
+                    onClose={() => {
+                        setShowResetTokenModal(false);
+                        setSelectedUser(null);
+                    }}
+                />
+            )}
+
+            {/* Set Temporary Password Modal */}
+            {showTempPasswordModal && selectedUser && (
+                <SetTempPasswordModal
+                    user={selectedUser}
+                    onClose={() => {
+                        setShowTempPasswordModal(false);
+                        setSelectedUser(null);
                     }}
                 />
             )}
@@ -479,6 +528,308 @@ function UserModal({ user, onClose, onSuccess }) {
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Generate Reset Token Modal Component
+function GenerateResetTokenModal({ user, onClose }) {
+    const [loading, setLoading] = useState(false);
+    const [resetData, setResetData] = useState(null);
+
+    const handleGenerate = async () => {
+        setLoading(true);
+        try {
+            const response = await userService.generateResetToken(user.id);
+            setResetData(response.data);
+            toast.success('Reset token generated successfully!');
+        } catch (error) {
+            console.error('Error generating reset token:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const copyToClipboard = (text, label) => {
+        navigator.clipboard.writeText(text);
+        toast.success(`${label} copied to clipboard!`);
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold">Generate Password Reset Token</h2>
+                        <button
+                            onClick={onClose}
+                            className="text-gray-400 hover:text-gray-600 text-2xl"
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    {!resetData ? (
+                        <div>
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                <p className="text-sm text-gray-700 mb-2">
+                                    <strong>User:</strong> {user.name} ({user.email})
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    This will generate a secure reset token that you can share with the user.
+                                    The token will expire in 24 hours.
+                                </p>
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleGenerate}
+                                    disabled={loading}
+                                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50"
+                                >
+                                    {loading ? 'Generating...' : 'Generate Reset Token'}
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                                <p className="text-sm font-semibold text-green-800 mb-2">
+                                    Reset token generated successfully!
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Share the reset URL or token with {user.name} via phone, WhatsApp, or in-person.
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Reset URL (Recommended)
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={resetData.reset_url}
+                                            readOnly
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded bg-gray-50 text-sm"
+                                        />
+                                        <button
+                                            onClick={() => copyToClipboard(resetData.reset_url, 'Reset URL')}
+                                            className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                                        >
+                                            Copy
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Token (Alternative)
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={resetData.token}
+                                            readOnly
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded bg-gray-50 text-sm font-mono"
+                                        />
+                                        <button
+                                            onClick={() => copyToClipboard(resetData.token, 'Token')}
+                                            className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                                        >
+                                            Copy
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                    <p className="text-sm text-gray-700">
+                                        <strong>Expires:</strong> {resetData.expires_at}
+                                    </p>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                        {resetData.note}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 mt-4 border-t">
+                                <button
+                                    onClick={onClose}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                >
+                                    Done
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Set Temporary Password Modal Component
+function SetTempPasswordModal({ user, onClose }) {
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+
+    const generateRandomPassword = () => {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+        let pass = '';
+        for (let i = 0; i < 12; i++) {
+            pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        setPassword(pass);
+    };
+
+    const handleSubmit = async () => {
+        if (!password || password.length < 8) {
+            toast.error('Password must be at least 8 characters');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await userService.setTemporaryPassword(user.id, password);
+            toast.success('Temporary password set successfully!');
+            setSuccess(true);
+        } catch (error) {
+            console.error('Error setting temporary password:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(password);
+        toast.success('Password copied to clipboard!');
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold">Set Temporary Password</h2>
+                        <button
+                            onClick={onClose}
+                            className="text-gray-400 hover:text-gray-600 text-2xl"
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    {!success ? (
+                        <div>
+                            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                                <p className="text-sm text-gray-700 mb-2">
+                                    <strong>User:</strong> {user.name} ({user.email})
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Set a temporary password for this user. They will be required to change it on first login.
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Temporary Password (min. 8 characters)
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            placeholder="Enter temporary password"
+                                        />
+                                        <button
+                                            onClick={generateRandomPassword}
+                                            className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm"
+                                        >
+                                            Generate
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 mt-4 border-t">
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={loading}
+                                    className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition disabled:opacity-50"
+                                >
+                                    {loading ? 'Setting...' : 'Set Temporary Password'}
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                                <p className="text-sm font-semibold text-green-800 mb-2">
+                                    Temporary password set successfully!
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Share this password with {user.name} securely. They must change it on first login.
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Temporary Password
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={password}
+                                            readOnly
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded bg-gray-50 font-mono text-lg"
+                                        />
+                                        <button
+                                            onClick={copyToClipboard}
+                                            className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                                        >
+                                            Copy
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                    <p className="text-sm text-gray-700">
+                                        <strong>Important:</strong> User will be forced to change this password on next login.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 mt-4 border-t">
+                                <button
+                                    onClick={onClose}
+                                    className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
+                                >
+                                    Done
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -59,6 +59,7 @@ class AuthBaseController extends BaseController
         return response()->json([
             'user' => new UserResource($user),
             'token' => $token,
+            'password_reset_required' => $user->password_reset_required,
         ]);
     }
 
@@ -85,32 +86,20 @@ class AuthBaseController extends BaseController
     }
 
     /**
-     * Send password reset link via email
+     * Forgot password - Returns admin contact instructions
      */
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
-        // Attempt to send the password reset link
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        // Verify user exists (optional - for better UX, but reduces security)
+        $user = User::where('email', $request->email)->first();
 
         // Always return the same response for security (don't reveal if email exists)
-        if ($status === Password::RESET_LINK_SENT) {
-            return response()->json([
-                'message' => 'If the email exists in our system, you will receive a password reset link shortly.',
-            ]);
-        }
-
-        // For throttled attempts
-        if ($status === Password::RESET_THROTTLED) {
-            throw ValidationException::withMessages([
-                'email' => ['Please wait before retrying.'],
-            ]);
-        }
-
-        // For any other status, return the same generic message
         return response()->json([
-            'message' => 'If the email exists in our system, you will receive a password reset link shortly.',
+            'message' => 'To reset your password, please contact the administrator with your registered email address.',
+            'contact_info' => [
+                'method' => 'Please contact support for password reset assistance.',
+                'note' => 'Have your registered email ready for verification.',
+            ],
         ]);
     }
 
@@ -125,6 +114,7 @@ class AuthBaseController extends BaseController
             function ($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password),
+                    'password_reset_required' => false,
                 ])->save();
 
                 // Revoke all existing tokens for security
@@ -142,6 +132,40 @@ class AuthBaseController extends BaseController
         // Handle invalid or expired token
         throw ValidationException::withMessages([
             'email' => [__($status)],
+        ]);
+    }
+
+    /**
+     * Change password for authenticated user
+     * Used when user has a temporary password or wants to change password
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'string'],
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = $request->user();
+
+        // Verify current password
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => ['The current password is incorrect.'],
+            ]);
+        }
+
+        // Update password and clear reset required flag
+        $user->update([
+            'password' => Hash::make($validated['new_password']),
+            'password_reset_required' => false,
+        ]);
+
+        // Revoke all existing tokens for security
+        $user->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Password changed successfully. Please login with your new password.',
         ]);
     }
 }

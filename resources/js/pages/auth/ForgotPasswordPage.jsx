@@ -14,7 +14,6 @@ export default function ForgotPasswordPage() {
 
         try {
             const response = await authService.forgotPassword({ email });
-            toast.success(response.message || 'Password reset link sent! Check your email.');
             setSubmitted(true);
         } catch (error) {
             console.error('Forgot password error:', error);
@@ -41,15 +40,23 @@ export default function ForgotPasswordPage() {
             <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
                 <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
                     <div className="text-center">
-                        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                            <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+                            <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Check Your Email</h2>
-                        <p className="text-gray-600 mb-6">
-                            If an account exists for {email}, you will receive a password reset link shortly.
+                        <h2 className="text-2xl font-bold text-gray-900 mb-3">Contact Administrator</h2>
+                        <p className="text-gray-700 mb-4 font-medium">
+                            To reset your password, please contact the administrator with your registered email address.
                         </p>
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                            <p className="text-sm text-gray-700 mb-2">
+                                <strong>Your email:</strong> {email}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                Please contact support for password reset assistance. Have your registered email ready for verification.
+                            </p>
+                        </div>
                         <Link
                             to="/login"
                             className="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
@@ -67,7 +74,7 @@ export default function ForgotPasswordPage() {
             <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h1>
                 <p className="text-gray-600 mb-6">
-                    Enter your email address and we'll send you a link to reset your password.
+                    Enter your email address to request a password reset from the administrator.
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -88,7 +95,7 @@ export default function ForgotPasswordPage() {
                         disabled={loading}
                         className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {loading ? 'Sending...' : 'Send Reset Link'}
+                        {loading ? 'Submitting...' : 'Request Password Reset'}
                     </button>
                 </form>
 

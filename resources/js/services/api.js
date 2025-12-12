@@ -88,6 +88,7 @@ export const authService = {
     me: () => api.get('/auth/me'),
     forgotPassword: (data) => api.post('/auth/forgot-password', data),
     resetPassword: (data) => api.post('/auth/reset-password', data),
+    changePassword: (data) => api.post('/auth/change-password', data),
 };
 
 export const plotService = {
@@ -211,6 +212,9 @@ export const userService = {
     create: (data) => api.post('/admin/users', data),
     update: (id, data) => api.put(`/admin/users/${id}`, data),
     delete: (id) => api.delete(`/admin/users/${id}`),
+    generateResetToken: (id) => api.post(`/admin/users/${id}/generate-reset-token`),
+    setTemporaryPassword: (id, password) => api.post(`/admin/users/${id}/set-temporary-password`, { temporary_password: password }),
+    getPendingResets: () => api.get('/admin/users/password-resets/pending'),
 };
 
 export const ticketService = {

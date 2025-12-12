@@ -51,6 +51,7 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthBaseController::class, 'logout']);
         Route::get('/me', [AuthBaseController::class, 'me']);
+        Route::post('/change-password', [AuthBaseController::class, 'changePassword']);
     });
 });
 
@@ -207,6 +208,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // Users
     Route::apiResource('users', UserBaseController::class);
+    Route::post('/users/{user}/generate-reset-token', [UserBaseController::class, 'generateResetToken']);
+    Route::post('/users/{user}/set-temporary-password', [UserBaseController::class, 'setTemporaryPassword']);
+    Route::get('/users/password-resets/pending', [UserBaseController::class, 'getPendingResets']);
 
     // Tickets
     Route::get('/tickets', [AdminTicketController::class, 'index']);

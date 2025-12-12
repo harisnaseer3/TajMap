@@ -28,6 +28,7 @@ class User extends Authenticatable
         'phone',
         'role',
         'last_active_at',
+        'password_reset_required',
     ];
 
     /**
@@ -51,6 +52,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'last_active_at' => 'datetime',
+            'password_reset_required' => 'boolean',
         ];
     }
 

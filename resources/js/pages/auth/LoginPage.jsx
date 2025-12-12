@@ -17,6 +17,14 @@ export default function LoginPage() {
         try {
             const { data } = await authService.login(formData);
             setAuth(data.user, data.token);
+
+            // Check if password reset is required
+            if (data.password_reset_required) {
+                toast('You must change your temporary password', { icon: '🔒' });
+                navigate('/change-password');
+                return;
+            }
+
             toast.success('Login successful!');
 
             // Redirect based on role

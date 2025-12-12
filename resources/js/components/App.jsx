@@ -10,6 +10,7 @@ import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
+import ChangePasswordPage from '../pages/auth/ChangePasswordPage';
 
 // User Pages
 import UserDashboard from '../pages/user/UserDashboard';
@@ -47,6 +48,7 @@ export default function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/change-password" element={<ChangePasswordPage />} />
 
                 {/* User Routes */}
                 <Route path="/user" element={<ProtectedRoute />}>
