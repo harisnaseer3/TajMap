@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { plotService, mediaService, settingService } from '../../services/api';
 import toast from 'react-hot-toast';
+import { MagnifyingGlassMinusIcon, MagnifyingGlassPlusIcon, ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 
 export default function AdminMapEditor() {
     const [loading, setLoading] = useState(true);
@@ -196,11 +197,18 @@ export default function AdminMapEditor() {
     };
 
     const handleMouseDown = (e) => {
-        if (!isDrawing && !isCreatingNewPlot) return;
-
         const rect = imageRef.current.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
+
+        // Enable drag-to-pan when zoomed in (even when drawing/creating)
+        if (zoom > 1 && e.button === 0) {
+            setIsPanning(true);
+            setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+            return; // Don't process other interactions while panning
+        }
+
+        if (!isDrawing && !isCreatingNewPlot) return;
 
         if (currentTool === 'pan') {
             setIsPanning(true);
@@ -221,24 +229,29 @@ export default function AdminMapEditor() {
     };
 
     const handleMouseMove = (e) => {
-        if (!isDrawing && !isCreatingNewPlot) return;
         if (!imageRef.current) return;
 
         const rect = imageRef.current.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
+        // Handle panning when zoomed in
+        if (isPanning) {
+            setPanOffset({
+                x: e.clientX - panStart.x,
+                y: e.clientY - panStart.y
+            });
+            return; // Don't process other interactions while panning
+        }
+
+        if (!isDrawing && !isCreatingNewPlot) return;
+
         // Update current mouse position for preview - rect.width already includes zoom
         const x = (mouseX - panOffset.x) / rect.width;
         const y = (mouseY - panOffset.y) / rect.height;
         setCurrentMousePos({ x, y });
 
-        if (isPanning && currentTool === 'pan') {
-            setPanOffset({
-                x: mouseX - panStart.x,
-                y: mouseY - panStart.y
-            });
-        } else if (isDraggingPoint && currentTool === 'edit' && selectedPointIndex !== null) {
+        if (isDraggingPoint && currentTool === 'edit' && selectedPointIndex !== null) {
             const newPoints = [...currentPoints];
             newPoints[selectedPointIndex] = { x, y };
             setCurrentPoints(newPoints);
@@ -249,9 +262,12 @@ export default function AdminMapEditor() {
     };
 
     const handleMouseUp = (e) => {
-        if (currentTool === 'pan') {
+        // Always stop panning when mouse is released
+        if (isPanning) {
             setIsPanning(false);
-        } else if (currentTool === 'edit' && isDraggingPoint) {
+        }
+
+        if (currentTool === 'edit' && isDraggingPoint) {
             setIsDraggingPoint(false);
             addToHistory(currentPoints);
         } else if (currentTool === 'rectangle' && rectangleStart && rectangleEnd) {
@@ -531,6 +547,12 @@ export default function AdminMapEditor() {
         setPanOffset({ x: 0, y: 0 });
     };
 
+    const handleWheel = (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        setZoom(prev => Math.max(0.25, Math.min(5, prev + delta)));
+    };
+
     const convertCoordinates = (coords) => {
         if (!dimensions.width || !dimensions.height) return [];
         // dimensions already include zoom (from clientWidth/Height), so don't multiply by zoom again
@@ -616,6 +638,10 @@ export default function AdminMapEditor() {
     }
 
     const getCursorStyle = () => {
+        // When zoomed in, always show grab cursor for panning
+        if (zoom > 1 && isPanning) return 'grabbing';
+        if (zoom > 1) return 'grab';
+
         if (!isDrawing && !isCreatingNewPlot) return 'default';
         if (currentTool === 'pan') return isPanning ? 'grabbing' : 'grab';
         if (currentTool === 'polygon' || currentTool === 'rectangle') return 'crosshair';
@@ -1002,12 +1028,45 @@ export default function AdminMapEditor() {
                             ref={containerRef}
                             className="relative bg-white p-4 rounded-lg shadow overflow-auto"
                             style={{ maxHeight: '700px' }}
+                            onWheel={handleWheel}
                         >
+                            {/* Floating Zoom Controls */}
+                            <div className="absolute top-4 right-4 z-50 flex flex-col gap-2">
+                                <button
+                                    onClick={handleZoomIn}
+                                    disabled={zoom >= 5}
+                                    className="bg-white hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed rounded-lg p-2 shadow-lg transition-all"
+                                    title="Zoom In"
+                                >
+                                    <MagnifyingGlassPlusIcon className="w-6 h-6 text-gray-700" />
+                                </button>
+                                <button
+                                    onClick={handleZoomOut}
+                                    disabled={zoom <= 0.25}
+                                    className="bg-white hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed rounded-lg p-2 shadow-lg transition-all"
+                                    title="Zoom Out"
+                                >
+                                    <MagnifyingGlassMinusIcon className="w-6 h-6 text-gray-700" />
+                                </button>
+                                <button
+                                    onClick={handleResetView}
+                                    className="bg-white hover:bg-gray-100 rounded-lg p-2 shadow-lg transition-all"
+                                    title="Reset View"
+                                >
+                                    <ArrowsPointingOutIcon className="w-6 h-6 text-gray-700" />
+                                </button>
+                                <div className="bg-white rounded-lg px-2 py-1 shadow-lg text-xs font-semibold text-gray-700 text-center">
+                                    {Math.round(zoom * 100)}%
+                                </div>
+                            </div>
+
                             <div
                                 className="relative inline-block"
                                 style={{
-                                    transform: `translate(${panOffset.x}px, ${panOffset.y}px)`,
-                                    cursor: getCursorStyle()
+                                    transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`,
+                                    transformOrigin: 'center center',
+                                    cursor: getCursorStyle(),
+                                    transition: 'transform 0.2s ease-out'
                                 }}
                                 onClick={handleImageClick}
                                 onDoubleClick={handleImageDoubleClick}
@@ -1026,7 +1085,6 @@ export default function AdminMapEditor() {
                                     alt="Master Plan"
                                     className="max-w-full h-auto select-none"
                                     style={{
-                                        width: `${100 * zoom}%`,
                                         pointerEvents: (isDrawing || isCreatingNewPlot) ? 'none' : 'auto'
                                     }}
                                     onLoad={() => {

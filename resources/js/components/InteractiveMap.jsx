@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { plotService, settingService } from '../services/api';
 import toast from 'react-hot-toast';
+import { MagnifyingGlassMinusIcon, MagnifyingGlassPlusIcon, ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 
 export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const [loading, setLoading] = useState(true);
@@ -11,6 +12,10 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
     const [showPrices, setShowPrices] = useState(true);
+    const [zoom, setZoom] = useState(1);
+    const [pan, setPan] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
     const containerRef = useRef(null);
     const imageRef = useRef(null);
@@ -117,7 +122,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
             case 'available':
-                return 'rgba(34, 197, 94, 0.1)'; // green
+                return 'rgba(34, 197, 94, 0.05)'; // green
             case 'reserved':
                 return 'rgba(251, 191, 36, 0.6)'; // yellow
             case 'sold':
@@ -130,7 +135,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const getStatusBorderColor = (status) => {
         switch (status.toLowerCase()) {
             case 'available':
-                return 'rgba(34, 197, 94, 0.1)';
+                return 'rgba(34, 197, 94, 0.05)';
             case 'reserved':
                 return 'rgba(251, 191, 36, 0.8)';
             case 'sold':
@@ -147,15 +152,6 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
         }
     };
 
-    const handleMouseMove = (e) => {
-        if (hoveredPlot && containerRef.current) {
-            const rect = containerRef.current.getBoundingClientRect();
-            setTooltipPosition({
-                x: e.clientX - rect.left + 15,
-                y: e.clientY - rect.top + 15
-            });
-        }
-    };
 
     const convertCoordinates = (coords) => {
         return coords.map(coord => ({
@@ -167,6 +163,55 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const createPolygonPoints = (coords) => {
         const converted = convertCoordinates(coords);
         return converted.map(c => `${c.x},${c.y}`).join(' ');
+    };
+
+    const handleZoomIn = () => {
+        setZoom(prev => Math.min(prev + 0.25, 3));
+    };
+
+    const handleZoomOut = () => {
+        setZoom(prev => Math.max(prev - 0.25, 0.5));
+    };
+
+    const handleResetZoom = () => {
+        setZoom(1);
+        setPan({ x: 0, y: 0 });
+    };
+
+    const handleMouseDown = (e) => {
+        if (e.button === 0 && zoom > 1) { // Left mouse button and zoomed in
+            setIsDragging(true);
+            setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+        }
+    };
+
+    const handleMouseMoveContainer = (e) => {
+        // Handle tooltip
+        if (hoveredPlot && containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            setTooltipPosition({
+                x: e.clientX - rect.left + 15,
+                y: e.clientY - rect.top + 15
+            });
+        }
+
+        // Handle panning
+        if (isDragging) {
+            setPan({
+                x: e.clientX - dragStart.x,
+                y: e.clientY - dragStart.y
+            });
+        }
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const handleWheel = (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        setZoom(prev => Math.max(0.5, Math.min(3, prev + delta)));
     };
 
     if (loading) {
@@ -196,15 +241,19 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
             {/* Legend */}
             <div className="flex flex-wrap gap-4 bg-white p-4 rounded-lg shadow">
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(34, 197, 94, 0.7)' }}></div>
+                    <div className="w-4 h-4 rounded" style={{backgroundColor: 'rgba(34, 197, 94, 0.05)'}}></div>
                     <span className="text-sm text-gray-700">Available</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(251, 191, 36, 0.7)' }}></div>
+                    <div className="w-4 h-4 rounded" style={{backgroundColor: 'rgba(251, 191, 36, 0.7)'}}></div>
                     <span className="text-sm text-gray-700">Reserved</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgba(239, 68, 68, 0.7)' }}></div>
+                    <div className="w-4 h-4 rounded" style={{backgroundColor: 'rgba(156, 163, 175, 0.7)'}}></div>
+                    <span className="text-sm text-gray-700">Hold</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded" style={{backgroundColor: 'rgba(239, 68, 68, 0.7)'}}></div>
                     <span className="text-sm text-gray-700">Sold</span>
                 </div>
             </div>
@@ -212,15 +261,58 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
             {/* Interactive Map */}
             <div
                 ref={containerRef}
-                className="relative bg-white p-4 rounded-lg shadow overflow-auto flex justify-center items-center"
-                onMouseMove={handleMouseMove}
+                className="relative bg-white p-4 rounded-lg shadow overflow-hidden flex justify-center items-center"
+                style={{height: '70vh', cursor: isDragging ? 'grabbing' : zoom > 1 ? 'grab' : 'default' }}
+                onMouseMove={handleMouseMoveContainer}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                onWheel={handleWheel}
             >
-                <div className="relative inline-block">
+                {/* Zoom Controls */}
+                <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+                    <button
+                        onClick={handleZoomIn}
+                        disabled={zoom >= 3}
+                        className="bg-white hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed rounded-lg p-2 shadow-lg transition-all"
+                        title="Zoom In"
+                    >
+                        <MagnifyingGlassPlusIcon className="w-6 h-6 text-gray-700" />
+                    </button>
+                    <button
+                        onClick={handleZoomOut}
+                        disabled={zoom <= 0.5}
+                        className="bg-white hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed rounded-lg p-2 shadow-lg transition-all"
+                        title="Zoom Out"
+                    >
+                        <MagnifyingGlassMinusIcon className="w-6 h-6 text-gray-700" />
+                    </button>
+                    <button
+                        onClick={handleResetZoom}
+                        className="bg-white hover:bg-gray-100 rounded-lg p-2 shadow-lg transition-all"
+                        title="Reset View"
+                    >
+                        <ArrowsPointingOutIcon className="w-6 h-6 text-gray-700" />
+                    </button>
+                    <div className="bg-white rounded-lg px-2 py-1 shadow-lg text-xs font-semibold text-gray-700 text-center">
+                        {Math.round(zoom * 100)}%
+                    </div>
+                </div>
+
+                <div
+                    className="relative inline-block"
+                    style={{
+                        transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                        transformOrigin: 'center center',
+                        transition: isDragging ? 'none' : 'transform 0.2s ease-out'
+                    }}
+                >
                     <img
                         ref={imageRef}
                         src={baseImage}
                         alt="Master Plan"
-                        className="max-w-full h-auto mx-auto"
+                        className="max-w-full h-auto mx-auto select-none"
+                        draggable={false}
                         onLoad={() => {
                             if (imageRef.current) {
                                 setDimensions({
