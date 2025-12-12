@@ -620,6 +620,88 @@ const ForwardRef = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(M
 
 /***/ }),
 
+/***/ "./node_modules/@heroicons/react/24/outline/esm/PauseIcon.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@heroicons/react/24/outline/esm/PauseIcon.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+function PauseIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", Object.assign({
+    xmlns: "http://www.w3.org/2000/svg",
+    fill: "none",
+    viewBox: "0 0 24 24",
+    strokeWidth: 1.5,
+    stroke: "currentColor",
+    "aria-hidden": "true",
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("title", {
+    id: titleId
+  }, title) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    d: "M15.75 5.25v13.5m-7.5-13.5v13.5"
+  }));
+}
+const ForwardRef = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(PauseIcon);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ForwardRef);
+
+/***/ }),
+
+/***/ "./node_modules/@heroicons/react/24/outline/esm/PlayIcon.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@heroicons/react/24/outline/esm/PlayIcon.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+function PlayIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", Object.assign({
+    xmlns: "http://www.w3.org/2000/svg",
+    fill: "none",
+    viewBox: "0 0 24 24",
+    strokeWidth: 1.5,
+    stroke: "currentColor",
+    "aria-hidden": "true",
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("title", {
+    id: titleId
+  }, title) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    d: "M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+  }));
+}
+const ForwardRef = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(PlayIcon);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ForwardRef);
+
+/***/ }),
+
 /***/ "./node_modules/@heroicons/react/24/outline/esm/PlusCircleIcon.js":
 /*!************************************************************************!*\
   !*** ./node_modules/@heroicons/react/24/outline/esm/PlusCircleIcon.js ***!
@@ -91529,12 +91611,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/development/chunk-OIYGIGL5.mjs");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @heroicons/react/24/outline */ "./node_modules/@heroicons/react/24/outline/esm/XMarkIcon.js");
-/* harmony import */ var _components_InteractiveMap__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../components/InteractiveMap */ "./resources/js/components/InteractiveMap.jsx");
-/* harmony import */ var _components_Logo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../components/Logo */ "./resources/js/components/Logo.jsx");
-/* harmony import */ var react_hot_toast__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-hot-toast */ "./node_modules/react-hot-toast/dist/index.mjs");
-/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var _heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @heroicons/react/24/outline */ "./node_modules/@heroicons/react/24/outline/esm/PauseIcon.js");
+/* harmony import */ var _heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @heroicons/react/24/outline */ "./node_modules/@heroicons/react/24/outline/esm/PlayIcon.js");
+/* harmony import */ var _heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @heroicons/react/24/outline */ "./node_modules/@heroicons/react/24/outline/esm/XMarkIcon.js");
+/* harmony import */ var _components_InteractiveMap__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../components/InteractiveMap */ "./resources/js/components/InteractiveMap.jsx");
+/* harmony import */ var _components_Logo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../components/Logo */ "./resources/js/components/Logo.jsx");
+/* harmony import */ var react_hot_toast__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-hot-toast */ "./node_modules/react-hot-toast/dist/index.mjs");
+/* harmony import */ var _services_api__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../services/api */ "./resources/js/services/api.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -91617,6 +91701,10 @@ function LandingPage() {
     _useState24 = _slicedToArray(_useState23, 2),
     showingSecondImage = _useState24[0],
     setShowingSecondImage = _useState24[1];
+  var _useState25 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+    _useState26 = _slicedToArray(_useState25, 2),
+    isPaused = _useState26[0],
+    setIsPaused = _useState26[1];
 
   // Fetch popup settings on component mount
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
@@ -91628,7 +91716,7 @@ function LandingPage() {
             case 0:
               _context.p = 0;
               _context.n = 1;
-              return axios__WEBPACK_IMPORTED_MODULE_7__["default"].get('/api/public/settings/group/appearance');
+              return axios__WEBPACK_IMPORTED_MODULE_9__["default"].get('/api/public/settings/group/appearance');
             case 1:
               response = _context.v;
               settings = ((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.data) || response.data || {}; // Extract popup-related settings (settings is a key-value object)
@@ -91700,7 +91788,11 @@ function LandingPage() {
       setImageLoaded(false);
       setImage2Loaded(false);
       setShowingSecondImage(false);
+      setIsPaused(false);
     }, 300);
+  };
+  var togglePause = function togglePause() {
+    setIsPaused(!isPaused);
   };
   var handlePlotClick = function handlePlotClick(plot) {
     setSelectedPlot(plot);
@@ -91722,11 +91814,11 @@ function LandingPage() {
             _context2.p = 1;
             setSubmitting(true);
             _context2.n = 2;
-            return _services_api__WEBPACK_IMPORTED_MODULE_6__.leadService.submit(_objectSpread(_objectSpread({}, inquiryData), {}, {
+            return _services_api__WEBPACK_IMPORTED_MODULE_8__.leadService.submit(_objectSpread(_objectSpread({}, inquiryData), {}, {
               plot_id: selectedPlot.id
             }));
           case 2:
-            react_hot_toast__WEBPACK_IMPORTED_MODULE_5__["default"].success('Inquiry submitted successfully! We will contact you soon.');
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_7__["default"].success('Inquiry submitted successfully! We will contact you soon.');
             setShowInquiryModal(false);
             setInquiryData({
               name: '',
@@ -91741,7 +91833,7 @@ function LandingPage() {
             _context2.p = 3;
             _t2 = _context2.v;
             console.error('Error submitting inquiry:', _t2);
-            react_hot_toast__WEBPACK_IMPORTED_MODULE_5__["default"].error(((_error$response = _t2.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message) || 'Failed to submit inquiry');
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_7__["default"].error(((_error$response = _t2.response) === null || _error$response === void 0 || (_error$response = _error$response.data) === null || _error$response === void 0 ? void 0 : _error$response.message) || 'Failed to submit inquiry');
           case 4:
             _context2.p = 4;
             setSubmitting(false);
@@ -91763,7 +91855,7 @@ function LandingPage() {
     className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
     className: "flex justify-between items-center h-16"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_components_Logo__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_components_Logo__WEBPACK_IMPORTED_MODULE_6__["default"], {
     text: "TajMap",
     iconClassName: "h-8 w-8",
     textClassName: "ml-2 text-xl font-bold text-gray-900"
@@ -91792,7 +91884,7 @@ function LandingPage() {
     className: "text-4xl font-bold text-gray-900 mb-4"
   }, "Explore Our Interactive Map"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
     className: "text-xl text-gray-600 max-w-2xl mx-auto"
-  }, "Click on any plot to view details and submit an inquiry. Available plots are highlighted in green.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_components_InteractiveMap__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, "Click on any plot to view details and submit an inquiry. Available plots are highlighted in green.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_components_InteractiveMap__WEBPACK_IMPORTED_MODULE_5__["default"], {
     onPlotClick: handlePlotClick
   }))), showInquiryModal && selectedPlot && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
     className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
@@ -91816,7 +91908,7 @@ function LandingPage() {
       setSelectedPlot(null);
     },
     className: "text-gray-400 hover:text-gray-600"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_4__["default"], {
     className: "h-6 w-6"
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
     className: "bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6"
@@ -91941,18 +92033,28 @@ function LandingPage() {
     },
     onClick: handleClosePopup
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
-    className: "relative max-w-4xl w-full bg-white rounded-lg shadow-2xl overflow-hidden",
+    className: "relative max-w-6xl w-full bg-white rounded-lg shadow-2xl overflow-hidden",
     onClick: function onClick(e) {
       return e.stopPropagation();
     }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+    className: "absolute top-4 right-4 z-10 flex gap-2"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("button", {
+    onClick: togglePause,
+    className: "".concat(isPaused ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600', " rounded-full p-2 shadow-lg transition-all hover:scale-110"),
+    "aria-label": isPaused ? "Resume animation" : "Pause animation"
+  }, isPaused ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    className: "w-6 h-6 text-white"
+  }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    className: "w-6 h-6 text-white"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("button", {
     onClick: handleClosePopup,
-    className: "absolute top-4 right-4 z-10 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all hover:scale-110",
+    className: "bg-red-500 hover:bg-red-600 rounded-full p-2 shadow-lg transition-all hover:scale-110",
     "aria-label": "Close popup"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    className: "w-6 h-6 text-gray-700"
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
-    className: "relative w-full h-[70vh] flex items-center justify-center overflow-hidden bg-gray-100"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    className: "w-6 h-6 text-white"
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+    className: "relative w-full aspect-[16/9] overflow-hidden bg-gray-100"
   }, !imageLoaded && !showingSecondImage && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
     className: "absolute inset-0 flex items-center justify-center bg-gray-100 z-20"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
@@ -91967,7 +92069,8 @@ function LandingPage() {
     className: "absolute inset-0 w-full h-full object-cover ".concat(imageLoaded ? 'popup-image-animation' : 'opacity-0'),
     style: {
       transformOrigin: 'top left',
-      zIndex: 1
+      zIndex: 1,
+      animationPlayState: isPaused ? 'paused' : 'running'
     },
     onLoad: function onLoad() {
       return setImageLoaded(true);
@@ -91978,7 +92081,8 @@ function LandingPage() {
     className: "absolute inset-0 w-full h-full object-cover cursor-pointer popup-image-2-animation",
     style: {
       transformOrigin: '75% 25%',
-      zIndex: 2
+      zIndex: 2,
+      animationPlayState: isPaused ? 'paused' : 'running'
     },
     onClick: handleClosePopup,
     onAnimationEnd: handleClosePopup
@@ -91992,7 +92096,7 @@ function LandingPage() {
     className: "md:col-span-1"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
     className: "mb-6"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_components_Logo__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_components_Logo__WEBPACK_IMPORTED_MODULE_6__["default"], {
     text: "TajMap",
     iconClassName: "h-10 w-10",
     textClassName: "ml-2 text-2xl font-bold text-white"

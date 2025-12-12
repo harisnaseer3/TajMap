@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
 import {
-    XMarkIcon
+    XMarkIcon,
+    PauseIcon,
+    PlayIcon
 } from '@heroicons/react/24/outline';
 import InteractiveMap from '../../components/InteractiveMap';
 import Logo from '../../components/Logo';
@@ -28,6 +30,7 @@ export default function LandingPage() {
     const [image2Loaded, setImage2Loaded] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(1);
     const [showingSecondImage, setShowingSecondImage] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
 
     // Fetch popup settings on component mount
     useEffect(() => {
@@ -96,7 +99,12 @@ export default function LandingPage() {
             setImageLoaded(false);
             setImage2Loaded(false);
             setShowingSecondImage(false);
+            setIsPaused(false);
         }, 300);
+    };
+
+    const togglePause = () => {
+        setIsPaused(!isPaused);
     };
 
     const handlePlotClick = (plot) => {
@@ -354,20 +362,40 @@ export default function LandingPage() {
                     onClick={handleClosePopup}
                 >
                     <div
-                        className="relative max-w-4xl w-full bg-white rounded-lg shadow-2xl overflow-hidden"
+                        className="relative max-w-6xl w-full bg-white rounded-lg shadow-2xl overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Close Button */}
-                        <button
-                            onClick={handleClosePopup}
-                            className="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all hover:scale-110"
-                            aria-label="Close popup"
-                        >
-                            <XMarkIcon className="w-6 h-6 text-gray-700" />
-                        </button>
+                        {/* Control Buttons */}
+                        <div className="absolute top-4 right-4 z-10 flex gap-2">
+                            {/* Pause/Play Button */}
+                            <button
+                                onClick={togglePause}
+                                className={`${
+                                    isPaused
+                                        ? 'bg-green-500 hover:bg-green-600'
+                                        : 'bg-blue-500 hover:bg-blue-600'
+                                } rounded-full p-2 shadow-lg transition-all hover:scale-110`}
+                                aria-label={isPaused ? "Resume animation" : "Pause animation"}
+                            >
+                                {isPaused ? (
+                                    <PlayIcon className="w-6 h-6 text-white" />
+                                ) : (
+                                    <PauseIcon className="w-6 h-6 text-white" />
+                                )}
+                            </button>
+
+                            {/* Close Button */}
+                            <button
+                                onClick={handleClosePopup}
+                                className="bg-red-500 hover:bg-red-600 rounded-full p-2 shadow-lg transition-all hover:scale-110"
+                                aria-label="Close popup"
+                            >
+                                <XMarkIcon className="w-6 h-6 text-white" />
+                            </button>
+                        </div>
 
                         {/* Animated Images */}
-                        <div className="relative w-full h-[70vh] flex items-center justify-center overflow-hidden bg-gray-100">
+                        <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-100">
                             {!imageLoaded && !showingSecondImage && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
                                     <div className="flex flex-col items-center gap-3">
@@ -384,7 +412,11 @@ export default function LandingPage() {
                                 className={`absolute inset-0 w-full h-full object-cover ${
                                     imageLoaded ? 'popup-image-animation' : 'opacity-0'
                                 }`}
-                                style={{ transformOrigin: 'top left', zIndex: 1 }}
+                                style={{
+                                    transformOrigin: 'top left',
+                                    zIndex: 1,
+                                    animationPlayState: isPaused ? 'paused' : 'running'
+                                }}
                                 onLoad={() => setImageLoaded(true)}
                             />
 
@@ -394,7 +426,11 @@ export default function LandingPage() {
                                     src={popupImage2Url}
                                     alt="Welcome 2"
                                     className="absolute inset-0 w-full h-full object-cover cursor-pointer popup-image-2-animation"
-                                    style={{ transformOrigin: '75% 25%', zIndex: 2 }}
+                                    style={{
+                                        transformOrigin: '75% 25%',
+                                        zIndex: 2,
+                                        animationPlayState: isPaused ? 'paused' : 'running'
+                                    }}
                                     onClick={handleClosePopup}
                                     onAnimationEnd={handleClosePopup}
                                 />
