@@ -28,7 +28,8 @@ class PlotPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_CREATE_PLOTS));
     }
 
     /**
@@ -36,7 +37,8 @@ class PlotPolicy
      */
     public function update(User $user, Plot $plot): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_EDIT_PLOTS));
     }
 
     /**
@@ -44,7 +46,8 @@ class PlotPolicy
      */
     public function delete(User $user, Plot $plot): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_DELETE_PLOTS));
     }
 
     /**
@@ -52,7 +55,8 @@ class PlotPolicy
      */
     public function restore(User $user, Plot $plot): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_EDIT_PLOTS));
     }
 
     /**
@@ -60,6 +64,7 @@ class PlotPolicy
      */
     public function forceDelete(User $user, Plot $plot): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_DELETE_PLOTS));
     }
 }

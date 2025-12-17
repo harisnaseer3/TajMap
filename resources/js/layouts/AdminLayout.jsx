@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore, PERMISSIONS } from '../store/authStore';
 import { authService } from '../services/api';
 import toast from 'react-hot-toast';
 import Logo from '../components/Logo';
@@ -8,7 +8,7 @@ import Logo from '../components/Logo';
 export default function AdminLayout() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { user, clearAuth } = useAuthStore();
+    const { user, clearAuth, hasPermission, isSuperAdmin } = useAuthStore();
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     const handleLogout = async () => {
@@ -25,22 +25,66 @@ export default function AdminLayout() {
     };
 
     const navItems = [
-        { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
-        { path: '/admin/plots', label: 'Plots', icon: '🗺️' },
-        { path: '/admin/leads', label: 'Leads', icon: '👥' },
-        { path: '/admin/tickets', label: 'Tickets', icon: '🎫' },
-        { path: '/admin/analytics', label: 'Analytics', icon: '📈' },
-        { path: '/admin/map-editor', label: 'Map Editor', icon: '🗺️' },
-        { path: '/admin/users', label: 'Users', icon: '👤' },
-        { path: '/admin/settings', label: 'Settings', icon: '⚙️' },
+        {
+            path: '/admin/dashboard',
+            label: 'Dashboard',
+            icon: '📊',
+            permission: null // Available to all admins
+        },
+        {
+            path: '/admin/plots',
+            label: 'Plots',
+            icon: '🗺️',
+            permission: PERMISSIONS.VIEW_PLOTS
+        },
+        {
+            path: '/admin/leads',
+            label: 'Leads',
+            icon: '👥',
+            permission: PERMISSIONS.VIEW_LEADS
+        },
+        {
+            path: '/admin/tickets',
+            label: 'Tickets',
+            icon: '🎫',
+            permission: null // Available to all admins
+        },
+        {
+            path: '/admin/analytics',
+            label: 'Analytics',
+            icon: '📈',
+            permission: null // Available to all admins
+        },
+        {
+            path: '/admin/map-editor',
+            label: 'Map Editor',
+            icon: '🗺️',
+            permission: PERMISSIONS.VIEW_PLOTS
+        },
+        {
+            path: '/admin/users',
+            label: 'Users',
+            icon: '👤',
+            permission: PERMISSIONS.VIEW_USERS
+        },
+        {
+            path: '/admin/settings',
+            label: 'Settings',
+            icon: '⚙️',
+            permission: PERMISSIONS.VIEW_SETTINGS
+        },
     ];
 
-    // Filter nav items - only show Settings for specific email
+    // Filter nav items based on permissions
     const filteredNavItems = navItems.filter(item => {
-        if (item.path === '/admin/settings') {
-            return user?.email === 'harisnaseer3@gmail.com';
-        }
-        return true;
+        // If no permission required, show to all admins
+        if (!item.permission) return true;
+
+        // Super admins see everything
+        if (isSuperAdmin()) return true;
+
+        // Check if user has required permission
+        return hasPermission(item.permission);
     });
 
     return (

@@ -12,7 +12,8 @@ class LeadPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_VIEW_LEADS));
     }
 
     /**
@@ -20,7 +21,8 @@ class LeadPolicy
      */
     public function view(User $user, Lead $lead): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_VIEW_LEADS));
     }
 
     /**
@@ -36,7 +38,8 @@ class LeadPolicy
      */
     public function update(User $user, Lead $lead): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_EDIT_LEADS));
     }
 
     /**
@@ -44,7 +47,8 @@ class LeadPolicy
      */
     public function delete(User $user, Lead $lead): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_DELETE_LEADS));
     }
 
     /**
@@ -52,7 +56,8 @@ class LeadPolicy
      */
     public function assign(User $user, Lead $lead): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_ASSIGN_LEADS));
     }
 
     /**
@@ -60,6 +65,7 @@ class LeadPolicy
      */
     public function export(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_EXPORT_LEADS));
     }
 }

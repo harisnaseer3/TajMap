@@ -222,4 +222,88 @@ class UserBaseController extends BaseController
             'users_with_reset_token' => $usersWithTokens,
         ], 'Pending password resets retrieved successfully');
     }
+
+    /**
+     * Get all admin users with their permissions
+     * Only accessible by super admins
+     */
+    public function indexWithPermissions(Request $request): JsonResponse
+    {
+        // Only super admins can view this
+        if (!$request->user()->isSuperAdmin()) {
+            return $this->errorResponse('Only super administrators can view permissions', 403);
+        }
+
+        $admins = User::where('role', 'admin')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'is_super_admin' => $user->isSuperAdmin(),
+                    'permissions' => $user->getPermissions(),
+                    'created_at' => $user->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
+
+        return $this->successResponse([
+            'admins' => $admins,
+            'available_permissions' => User::ALL_PERMISSIONS,
+        ], 'Admin users with permissions retrieved successfully');
+    }
+
+    /**
+     * Get permissions for a specific user
+     */
+    public function getPermissions(User $user): JsonResponse
+    {
+        $this->authorize('view', $user);
+
+        return $this->successResponse([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_super_admin' => $user->isSuperAdmin(),
+            ],
+            'permissions' => $user->getPermissions(),
+            'available_permissions' => User::ALL_PERMISSIONS,
+        ], 'User permissions retrieved successfully');
+    }
+
+    /**
+     * Update permissions for a user
+     * Only super admins can manage permissions
+     */
+    public function updatePermissions(Request $request, User $user): JsonResponse
+    {
+        // Only super admins can manage permissions
+        if (!$request->user()->isSuperAdmin()) {
+            return $this->errorResponse('Only super administrators can manage permissions', 403);
+        }
+
+        // Cannot modify super admin permissions
+        if ($user->isSuperAdmin()) {
+            return $this->errorResponse('Cannot modify super admin permissions', 403);
+        }
+
+        // Cannot modify own permissions
+        if ($user->id === $request->user()->id) {
+            return $this->errorResponse('Cannot modify your own permissions', 403);
+        }
+
+        $validated = $request->validate([
+            'permissions' => ['required', 'array'],
+            'permissions.*' => ['string', 'in:' . implode(',', User::ALL_PERMISSIONS)],
+        ]);
+
+        $user->syncPermissions($validated['permissions']);
+
+        return $this->successResponse([
+            'user' => new UserResource($user),
+            'permissions' => $user->getPermissions(),
+        ], 'Permissions updated successfully');
+    }
 }

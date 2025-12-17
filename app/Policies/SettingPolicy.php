@@ -12,7 +12,8 @@ class SettingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_VIEW_SETTINGS));
     }
 
     /**
@@ -20,7 +21,8 @@ class SettingPolicy
      */
     public function view(User $user, Setting $setting): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_VIEW_SETTINGS));
     }
 
     /**
@@ -28,7 +30,8 @@ class SettingPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_EDIT_SETTINGS));
     }
 
     /**
@@ -36,7 +39,8 @@ class SettingPolicy
      */
     public function update(User $user, Setting $setting): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_EDIT_SETTINGS));
     }
 
     /**
@@ -44,6 +48,7 @@ class SettingPolicy
      */
     public function delete(User $user, Setting $setting): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() &&
+               ($user->isSuperAdmin() || $user->hasPermission(User::PERMISSION_EDIT_SETTINGS));
     }
 }

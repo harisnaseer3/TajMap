@@ -173,24 +173,104 @@ Route::middleware('auth:sanctum')->prefix('user')->group(function () {
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
-    // Plots - Custom routes must be defined BEFORE apiResource
-    Route::post('/plots/bulk-delete', [AdminPlotController::class, 'bulkDelete']);
-    Route::get('/plots/download-template', [AdminPlotController::class, 'downloadTemplate']);
-    Route::post('/plots/import', [AdminPlotController::class, 'import']);
-    Route::get('/plots/export/csv', [AdminPlotController::class, 'exportCsv']);
-    Route::get('/plots/export/json', [AdminPlotController::class, 'exportJson']);
-    Route::post('/plots/{id}/restore', [AdminPlotController::class, 'restore']);
-    Route::apiResource('plots', AdminPlotController::class);
+    // Plot Management - Action-level permissions
+    Route::middleware(['permission:view_plots'])->group(function () {
+        Route::get('/plots', [AdminPlotController::class, 'index']);
+        Route::get('/plots/{plot}', [AdminPlotController::class, 'show']);
+    });
 
-    // Leads
-    Route::apiResource('leads', AdminLeadController::class)->except(['store']);
-    Route::post('/leads/{lead}/assign', [AdminLeadController::class, 'assign']);
-    Route::post('/leads/{lead}/status', [AdminLeadController::class, 'updateStatus']);
-    Route::post('/leads/{lead}/notes', [AdminLeadController::class, 'addNote']);
-    Route::get('/leads/export/csv', [AdminLeadController::class, 'exportCsv']);
-    Route::get('/leads/export/json', [AdminLeadController::class, 'exportJson']);
+    Route::middleware(['permission:create_plots'])->group(function () {
+        Route::post('/plots', [AdminPlotController::class, 'store']);
+    });
 
-    // Analytics
+    Route::middleware(['permission:edit_plots'])->group(function () {
+        Route::put('/plots/{plot}', [AdminPlotController::class, 'update']);
+        Route::post('/plots/{id}/restore', [AdminPlotController::class, 'restore']);
+    });
+
+    Route::middleware(['permission:delete_plots'])->group(function () {
+        Route::delete('/plots/{plot}', [AdminPlotController::class, 'destroy']);
+        Route::post('/plots/bulk-delete', [AdminPlotController::class, 'bulkDelete']);
+    });
+
+    Route::middleware(['permission:import_plots'])->group(function () {
+        Route::post('/plots/import', [AdminPlotController::class, 'import']);
+        Route::get('/plots/download-template', [AdminPlotController::class, 'downloadTemplate']);
+    });
+
+    Route::middleware(['permission:export_plots'])->group(function () {
+        Route::get('/plots/export/csv', [AdminPlotController::class, 'exportCsv']);
+        Route::get('/plots/export/json', [AdminPlotController::class, 'exportJson']);
+    });
+
+    // Lead Management - Action-level permissions
+    Route::middleware(['permission:view_leads'])->group(function () {
+        Route::get('/leads', [AdminLeadController::class, 'index']);
+        Route::get('/leads/{lead}', [AdminLeadController::class, 'show']);
+    });
+
+    Route::middleware(['permission:edit_leads'])->group(function () {
+        Route::put('/leads/{lead}', [AdminLeadController::class, 'update']);
+        Route::post('/leads/{lead}/status', [AdminLeadController::class, 'updateStatus']);
+        Route::post('/leads/{lead}/notes', [AdminLeadController::class, 'addNote']);
+    });
+
+    Route::middleware(['permission:delete_leads'])->group(function () {
+        Route::delete('/leads/{lead}', [AdminLeadController::class, 'destroy']);
+    });
+
+    Route::middleware(['permission:assign_leads'])->group(function () {
+        Route::post('/leads/{lead}/assign', [AdminLeadController::class, 'assign']);
+    });
+
+    Route::middleware(['permission:export_leads'])->group(function () {
+        Route::get('/leads/export/csv', [AdminLeadController::class, 'exportCsv']);
+        Route::get('/leads/export/json', [AdminLeadController::class, 'exportJson']);
+    });
+
+    // User Management - Action-level permissions
+    Route::middleware(['permission:view_users'])->group(function () {
+        Route::get('/users', [UserBaseController::class, 'index']);
+        Route::get('/users/{user}', [UserBaseController::class, 'show']);
+        Route::get('/users/password-resets/pending', [UserBaseController::class, 'getPendingResets']);
+    });
+
+    Route::middleware(['permission:create_users'])->group(function () {
+        Route::post('/users', [UserBaseController::class, 'store']);
+    });
+
+    Route::middleware(['permission:edit_users'])->group(function () {
+        Route::put('/users/{user}', [UserBaseController::class, 'update']);
+        Route::post('/users/{user}/generate-reset-token', [UserBaseController::class, 'generateResetToken']);
+        Route::post('/users/{user}/set-temporary-password', [UserBaseController::class, 'setTemporaryPassword']);
+    });
+
+    Route::middleware(['permission:delete_users'])->group(function () {
+        Route::delete('/users/{user}', [UserBaseController::class, 'destroy']);
+    });
+
+    // Permission management endpoints (super admin only, checked in controller)
+    Route::middleware(['permission:manage_user_permissions'])->group(function () {
+        Route::get('/users/permissions/list', [UserBaseController::class, 'indexWithPermissions']);
+        Route::get('/users/{user}/permissions', [UserBaseController::class, 'getPermissions']);
+        Route::put('/users/{user}/permissions', [UserBaseController::class, 'updatePermissions']);
+    });
+
+    // Settings Management - Action-level permissions
+    Route::middleware(['permission:view_settings'])->group(function () {
+        Route::get('/settings', [SettingBaseController::class, 'index']);
+        Route::get('/settings/{setting}', [SettingBaseController::class, 'show']);
+        Route::get('/settings/group/{group}', [SettingBaseController::class, 'byGroup']);
+    });
+
+    Route::middleware(['permission:edit_settings'])->group(function () {
+        Route::post('/settings', [SettingBaseController::class, 'store']);
+        Route::put('/settings/{setting}', [SettingBaseController::class, 'update']);
+        Route::delete('/settings/{setting}', [SettingBaseController::class, 'destroy']);
+        Route::post('/settings/bulk-update', [SettingBaseController::class, 'bulkUpdate']);
+    });
+
+    // Analytics - Available to all admins (no permission required)
     Route::prefix('analytics')->group(function () {
         Route::get('/dashboard', [AnalyticsBaseController::class, 'dashboard']);
         Route::get('/monthly-trends', [AnalyticsBaseController::class, 'monthlyTrends']);
@@ -198,21 +278,10 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         Route::get('/plot-distribution', [AnalyticsBaseController::class, 'plotDistribution']);
     });
 
-    // Media
+    // Media - Available to all admins (no permission required)
     Route::apiResource('media', MediaBaseController::class)->except(['update']);
 
-    // Settings
-    Route::apiResource('settings', SettingBaseController::class);
-    Route::get('/settings/group/{group}', [SettingBaseController::class, 'byGroup']);
-    Route::post('/settings/bulk-update', [SettingBaseController::class, 'bulkUpdate']);
-
-    // Users
-    Route::apiResource('users', UserBaseController::class);
-    Route::post('/users/{user}/generate-reset-token', [UserBaseController::class, 'generateResetToken']);
-    Route::post('/users/{user}/set-temporary-password', [UserBaseController::class, 'setTemporaryPassword']);
-    Route::get('/users/password-resets/pending', [UserBaseController::class, 'getPendingResets']);
-
-    // Tickets
+    // Tickets - Available to all admins (no permission required)
     Route::get('/tickets', [AdminTicketController::class, 'index']);
     Route::get('/tickets/statistics', [AdminTicketController::class, 'statistics']);
     Route::get('/tickets/{ticket}', [AdminTicketController::class, 'show']);

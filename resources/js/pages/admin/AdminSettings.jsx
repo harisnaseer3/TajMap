@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { settingService, mediaService } from '../../services/api';
-import { useAuthStore } from '../../store/authStore';
+import { settingService, mediaService, userService } from '../../services/api';
+import { useAuthStore, PERMISSIONS, PERMISSION_GROUPS } from '../../store/authStore';
 import toast from 'react-hot-toast';
 
 export default function AdminSettings() {
     const navigate = useNavigate();
-    const { user } = useAuthStore();
+    const { user, isSuperAdmin } = useAuthStore();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState([]);
@@ -26,17 +26,21 @@ export default function AdminSettings() {
     const popupImage2FileInputRef = useRef(null);
     const faviconFileInputRef = useRef(null);
 
-    // Check authorization
+    // Permissions management state
+    const [adminUsers, setAdminUsers] = useState([]);
+    const [loadingPermissions, setLoadingPermissions] = useState(false);
+    const [editingPermissions, setEditingPermissions] = useState({});
+
+    // Check authorization and load data
     useEffect(() => {
-        if (user?.email !== 'harisnaseer3@gmail.com') {
-            toast.error('Access denied: You do not have permission to view this page');
+        if (!isSuperAdmin()) {
+            toast.error('Access denied: Only super administrators can view this page');
             navigate('/admin/dashboard');
+        } else {
+            fetchSettings();
+            fetchAdminUsers();
         }
     }, [user, navigate]);
-
-    useEffect(() => {
-        fetchSettings();
-    }, []);
 
     const fetchSettings = async () => {
         try {
@@ -308,6 +312,68 @@ export default function AdminSettings() {
         }
     };
 
+    // Fetch admin users with permissions
+    const fetchAdminUsers = async () => {
+        try {
+            setLoadingPermissions(true);
+            const response = await userService.getAdminsWithPermissions();
+            const data = response.data || response;
+            setAdminUsers(data.admins || []);
+        } catch (error) {
+            toast.error('Failed to load admin users');
+        } finally {
+            setLoadingPermissions(false);
+        }
+    };
+
+    // Handle permission toggle
+    const handlePermissionToggle = (userId, permission) => {
+        setAdminUsers(prev => prev.map(admin => {
+            if (admin.id === userId) {
+                const currentPermissions = admin.permissions || [];
+                const hasPermission = currentPermissions.includes(permission);
+
+                const newPermissions = hasPermission
+                    ? currentPermissions.filter(p => p !== permission)
+                    : [...currentPermissions, permission];
+
+                // Track changes for saving
+                setEditingPermissions(prev => ({
+                    ...prev,
+                    [userId]: newPermissions
+                }));
+
+                return { ...admin, permissions: newPermissions };
+            }
+            return admin;
+        }));
+    };
+
+    // Save permission changes
+    const handleSavePermissions = async (userId) => {
+        if (!editingPermissions[userId]) {
+            toast.error('No changes to save');
+            return;
+        }
+
+        try {
+            await userService.updateUserPermissions(userId, editingPermissions[userId]);
+            toast.success('Permissions updated successfully');
+
+            // Remove from editing state
+            setEditingPermissions(prev => {
+                const updated = { ...prev };
+                delete updated[userId];
+                return updated;
+            });
+
+            // Refresh list
+            await fetchAdminUsers();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update permissions');
+        }
+    };
+
     const handleSaveAll = async () => {
         try {
             setSaving(true);
@@ -539,6 +605,178 @@ export default function AdminSettings() {
                     </button>
                 </div>
             </div>
+
+            {/* Permissions Management Section - Only for Super Admin */}
+            {isSuperAdmin() && (
+                <div className="bg-white p-6 rounded-lg shadow mb-6">
+                    <div className="border-b pb-4 mb-6">
+                        <h2 className="text-2xl font-bold text-gray-800">User Permissions Management</h2>
+                        <p className="text-sm text-gray-600 mt-2">
+                            Manage module-level permissions for admin users. Super administrators have all permissions by default.
+                        </p>
+                    </div>
+
+                    {loadingPermissions ? (
+                        <div className="flex justify-center py-8">
+                            <div className="text-gray-600">Loading admin users...</div>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {adminUsers
+                                .filter(admin => !admin.is_super_admin) // Don't show super admins
+                                .map(admin => (
+                                    <div
+                                        key={admin.id}
+                                        className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
+                                    >
+                                        {/* Admin User Header */}
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
+                                                    {admin.name.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-semibold text-gray-900 text-lg">{admin.name}</h3>
+                                                    <p className="text-sm text-gray-600">{admin.email}</p>
+                                                </div>
+                                            </div>
+
+                                            {editingPermissions[admin.id] && (
+                                                <button
+                                                    onClick={() => handleSavePermissions(admin.id)}
+                                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+                                                >
+                                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                    </svg>
+                                                    Save Changes
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {/* Permissions Grid - Grouped by Module */}
+                                        <div className="space-y-4">
+                                            {Object.entries(PERMISSION_GROUPS).map(([groupName, groupPermissions]) => {
+                                                const groupIcons = {
+                                                    'Plots': '🗺️',
+                                                    'Leads': '👥',
+                                                    'Users': '👤',
+                                                    'Settings': '⚙️',
+                                                };
+
+                                                const groupPermissionsArray = Object.keys(groupPermissions);
+                                                const hasAllGroupPermissions = groupPermissionsArray.every(perm =>
+                                                    (admin.permissions || []).includes(perm)
+                                                );
+
+                                                return (
+                                                    <div key={groupName} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                                        {/* Group Header with Select All */}
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-2xl">{groupIcons[groupName]}</span>
+                                                                <h4 className="font-bold text-gray-800">{groupName}</h4>
+                                                                <span className="text-xs text-gray-500">
+                                                                    ({groupPermissionsArray.filter(p => (admin.permissions || []).includes(p)).length}/{groupPermissionsArray.length})
+                                                                </span>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => {
+                                                                    const newPermissions = hasAllGroupPermissions
+                                                                        ? (admin.permissions || []).filter(p => !groupPermissionsArray.includes(p))
+                                                                        : [...new Set([...(admin.permissions || []), ...groupPermissionsArray])];
+
+                                                                    setAdminUsers(prev => prev.map(a => {
+                                                                        if (a.id === admin.id) {
+                                                                            setEditingPermissions(prev => ({
+                                                                                ...prev,
+                                                                                [admin.id]: newPermissions
+                                                                            }));
+                                                                            return { ...a, permissions: newPermissions };
+                                                                        }
+                                                                        return a;
+                                                                    }));
+                                                                }}
+                                                                className="text-xs px-3 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
+                                                            >
+                                                                {hasAllGroupPermissions ? 'Deselect All' : 'Select All'}
+                                                            </button>
+                                                        </div>
+
+                                                        {/* Group Permissions */}
+                                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                                            {Object.entries(groupPermissions).map(([permission, label]) => {
+                                                                const hasPermission = (admin.permissions || []).includes(permission);
+
+                                                                return (
+                                                                    <label
+                                                                        key={permission}
+                                                                        className={`
+                                                                            flex items-center gap-2 p-2 rounded border cursor-pointer transition text-sm
+                                                                            ${hasPermission
+                                                                                ? 'border-green-400 bg-green-50 text-green-900'
+                                                                                : 'border-gray-300 bg-white hover:border-gray-400'
+                                                                            }
+                                                                        `}
+                                                                    >
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={hasPermission}
+                                                                            onChange={() => handlePermissionToggle(admin.id, permission)}
+                                                                            className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                                                                        />
+                                                                        <span className="font-medium text-xs">{label}</span>
+                                                                        {hasPermission && (
+                                                                            <svg className="w-4 h-4 text-green-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                                                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                                            </svg>
+                                                                        )}
+                                                                    </label>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {/* Permission Summary */}
+                                        <div className="mt-4 pt-4 border-t border-gray-200">
+                                            <p className="text-xs text-gray-500">
+                                                {admin.permissions?.length || 0} of {Object.values(PERMISSION_GROUPS).reduce((acc, group) => acc + Object.keys(group).length, 0)} permissions granted
+                                                {editingPermissions[admin.id] && (
+                                                    <span className="ml-2 text-orange-600 font-medium">• Unsaved changes</span>
+                                                )}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+
+                            {adminUsers.filter(admin => !admin.is_super_admin).length === 0 && (
+                                <div className="text-center py-8 text-gray-500">
+                                    No admin users to manage. Only super administrators are shown here.
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Super Admin Notice */}
+                    <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-start">
+                            <svg className="w-5 h-5 text-blue-600 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                            </svg>
+                            <div>
+                                <h4 className="text-sm font-semibold text-blue-900">About Permissions</h4>
+                                <p className="text-sm text-blue-800 mt-1">
+                                    Super administrators (like you) always have access to all modules and cannot be restricted.
+                                    Regular admin users can be granted specific module permissions. Changes take effect immediately.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Logo Upload Section */}
             <div className="bg-white p-6 rounded-lg shadow">

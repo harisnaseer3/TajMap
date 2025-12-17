@@ -34,6 +34,7 @@ import AdminTicketDetails from '../pages/admin/AdminTicketDetails';
 // Components
 import ProtectedRoute from './ProtectedRoute';
 import AdminRoute from './AdminRoute';
+import { PERMISSIONS } from '../store/authStore';
 
 export default function App() {
     return (
@@ -59,19 +60,43 @@ export default function App() {
                     <Route path="tickets/:id" element={<UserTicketDetails />} />
                 </Route>
 
-                {/* Admin Routes */}
+                {/* Admin Routes - No specific permission required */}
                 <Route path="/admin" element={<AdminRoute />}>
                     <Route element={<AdminLayout />}>
                         <Route index element={<Navigate to="/admin/dashboard" replace />} />
                         <Route path="dashboard" element={<AdminDashboard />} />
-                        <Route path="plots" element={<AdminPlots />} />
-                        <Route path="leads" element={<AdminLeads />} />
+                        <Route path="analytics" element={<AdminAnalytics />} />
                         <Route path="tickets" element={<AdminTickets />} />
                         <Route path="tickets/:id" element={<AdminTicketDetails />} />
-                        <Route path="analytics" element={<AdminAnalytics />} />
+                    </Route>
+                </Route>
+
+                {/* Admin Routes - Plots View Permission */}
+                <Route path="/admin" element={<AdminRoute requiredPermission={PERMISSIONS.VIEW_PLOTS} />}>
+                    <Route element={<AdminLayout />}>
+                        <Route path="plots" element={<AdminPlots />} />
                         <Route path="map-editor" element={<AdminMapEditor />} />
-                        <Route path="settings" element={<AdminSettings />} />
+                    </Route>
+                </Route>
+
+                {/* Admin Routes - Leads View Permission */}
+                <Route path="/admin" element={<AdminRoute requiredPermission={PERMISSIONS.VIEW_LEADS} />}>
+                    <Route element={<AdminLayout />}>
+                        <Route path="leads" element={<AdminLeads />} />
+                    </Route>
+                </Route>
+
+                {/* Admin Routes - Users View Permission */}
+                <Route path="/admin" element={<AdminRoute requiredPermission={PERMISSIONS.VIEW_USERS} />}>
+                    <Route element={<AdminLayout />}>
                         <Route path="users" element={<AdminUsers />} />
+                    </Route>
+                </Route>
+
+                {/* Admin Routes - Settings View Permission */}
+                <Route path="/admin" element={<AdminRoute requiredPermission={PERMISSIONS.VIEW_SETTINGS} />}>
+                    <Route element={<AdminLayout />}>
+                        <Route path="settings" element={<AdminSettings />} />
                     </Route>
                 </Route>
 

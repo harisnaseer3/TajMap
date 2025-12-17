@@ -215,6 +215,11 @@ export const userService = {
     generateResetToken: (id) => api.post(`/admin/users/${id}/generate-reset-token`),
     setTemporaryPassword: (id, password) => api.post(`/admin/users/${id}/set-temporary-password`, { temporary_password: password }),
     getPendingResets: () => api.get('/admin/users/password-resets/pending'),
+
+    // Permission management
+    getAdminsWithPermissions: () => api.get('/admin/users/permissions/list'),
+    getUserPermissions: (userId) => api.get(`/admin/users/${userId}/permissions`),
+    updateUserPermissions: (userId, permissions) => api.put(`/admin/users/${userId}/permissions`, { permissions }),
 };
 
 export const ticketService = {
