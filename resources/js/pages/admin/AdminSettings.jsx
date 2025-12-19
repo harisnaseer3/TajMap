@@ -30,6 +30,7 @@ export default function AdminSettings() {
     const [adminUsers, setAdminUsers] = useState([]);
     const [loadingPermissions, setLoadingPermissions] = useState(false);
     const [editingPermissions, setEditingPermissions] = useState({});
+    const [expandedUserPermissions, setExpandedUserPermissions] = useState({});
 
     // Check authorization and load data
     useEffect(() => {
@@ -374,6 +375,14 @@ export default function AdminSettings() {
         }
     };
 
+    // Toggle user permissions section
+    const toggleUserPermissions = (userId) => {
+        setExpandedUserPermissions(prev => ({
+            ...prev,
+            [userId]: !prev[userId]
+        }));
+    };
+
     const handleSaveAll = async () => {
         try {
             setSaving(true);
@@ -624,53 +633,86 @@ export default function AdminSettings() {
                         <div className="space-y-4">
                             {adminUsers
                                 .filter(admin => !admin.is_super_admin) // Don't show super admins
-                                .map(admin => (
-                                    <div
-                                        key={admin.id}
-                                        className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
-                                    >
-                                        {/* Admin User Header */}
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
-                                                    {admin.name.charAt(0).toUpperCase()}
+                                .map(admin => {
+                                    const isExpanded = expandedUserPermissions[admin.id] ?? false;
+                                    return (
+                                        <div
+                                            key={admin.id}
+                                            className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition"
+                                        >
+                                            {/* Admin User Header - Clickable */}
+                                            <button
+                                                onClick={() => toggleUserPermissions(admin.id)}
+                                                className="w-full p-5 flex items-center justify-between hover:bg-gray-50 transition text-left"
+                                            >
+                                                <div className="flex items-center gap-3 flex-1">
+                                                    <div className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                                                        {admin.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h3 className="font-semibold text-gray-900 text-lg">{admin.name}</h3>
+                                                        <p className="text-sm text-gray-600">{admin.email}</p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <h3 className="font-semibold text-gray-900 text-lg">{admin.name}</h3>
-                                                    <p className="text-sm text-gray-600">{admin.email}</p>
-                                                </div>
-                                            </div>
 
-                                            {editingPermissions[admin.id] && (
-                                                <button
-                                                    onClick={() => handleSavePermissions(admin.id)}
-                                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
-                                                >
-                                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                <div className="flex items-center gap-3">
+                                                    {/* Permission Summary Badge */}
+                                                    <div className="text-right">
+                                                        <span className="text-xs text-gray-500">
+                                                            {admin.permissions?.length || 0} of {Object.values(PERMISSION_GROUPS).reduce((acc, group) => acc + Object.keys(group).length, 0)} permissions
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Expand/Collapse Icon */}
+                                                    <svg
+                                                        className={`w-5 h-5 text-gray-500 transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                                     </svg>
-                                                    Save Changes
-                                                </button>
-                                            )}
-                                        </div>
+                                                </div>
+                                            </button>
 
-                                        {/* Permissions Grid - Grouped by Module */}
-                                        <div className="space-y-4">
-                                            {Object.entries(PERMISSION_GROUPS).map(([groupName, groupPermissions]) => {
-                                                const groupIcons = {
-                                                    'Plots': '🗺️',
-                                                    'Leads': '👥',
-                                                    'Users': '👤',
-                                                    'Settings': '⚙️',
-                                                };
+                                            {/* Permissions Grid - Grouped by Module - Expandable */}
+                                            {isExpanded && (
+                                                <div className="px-5 pb-5 space-y-4 border-t border-gray-200 pt-4">
+                                                    {/* Save Changes Button - Shown when editing */}
+                                                    {editingPermissions[admin.id] && (
+                                                        <div className="mb-4 flex justify-end">
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleSavePermissions(admin.id);
+                                                                }}
+                                                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+                                                            >
+                                                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                                </svg>
+                                                                Save Changes
+                                                            </button>
+                                                        </div>
+                                                    )}
 
-                                                const groupPermissionsArray = Object.keys(groupPermissions);
-                                                const hasAllGroupPermissions = groupPermissionsArray.every(perm =>
-                                                    (admin.permissions || []).includes(perm)
-                                                );
+                                                    {/* Permissions Groups */}
+                                                    <div className="space-y-4">
+                                                        {Object.entries(PERMISSION_GROUPS).map(([groupName, groupPermissions]) => {
+                                                            const groupIcons = {
+                                                                'Plots': '🗺️',
+                                                                'Leads': '👥',
+                                                                'Users': '👤',
+                                                                'Settings': '⚙️',
+                                                            };
 
-                                                return (
-                                                    <div key={groupName} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                                            const groupPermissionsArray = Object.keys(groupPermissions);
+                                                            const hasAllGroupPermissions = groupPermissionsArray.every(perm =>
+                                                                (admin.permissions || []).includes(perm)
+                                                            );
+
+                                                            return (
+                                                                <div key={groupName} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                                                         {/* Group Header with Select All */}
                                                         <div className="flex items-center justify-between mb-3">
                                                             <div className="flex items-center gap-2">
@@ -734,23 +776,26 @@ export default function AdminSettings() {
                                                                     </label>
                                                                 );
                                                             })}
-                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
                                                     </div>
-                                                );
-                                            })}
-                                        </div>
 
-                                        {/* Permission Summary */}
-                                        <div className="mt-4 pt-4 border-t border-gray-200">
-                                            <p className="text-xs text-gray-500">
-                                                {admin.permissions?.length || 0} of {Object.values(PERMISSION_GROUPS).reduce((acc, group) => acc + Object.keys(group).length, 0)} permissions granted
-                                                {editingPermissions[admin.id] && (
-                                                    <span className="ml-2 text-orange-600 font-medium">• Unsaved changes</span>
-                                                )}
-                                            </p>
+                                                    {/* Permission Summary */}
+                                                    <div className="mt-4 pt-4 border-t border-gray-200">
+                                                        <p className="text-xs text-gray-500">
+                                                            {admin.permissions?.length || 0} of {Object.values(PERMISSION_GROUPS).reduce((acc, group) => acc + Object.keys(group).length, 0)} permissions granted
+                                                            {editingPermissions[admin.id] && (
+                                                                <span className="ml-2 text-orange-600 font-medium">• Unsaved changes</span>
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
 
                             {adminUsers.filter(admin => !admin.is_super_admin).length === 0 && (
                                 <div className="text-center py-8 text-gray-500">

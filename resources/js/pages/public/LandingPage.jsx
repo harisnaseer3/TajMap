@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     XMarkIcon,
     PauseIcon,
@@ -31,6 +31,165 @@ export default function LandingPage() {
     const [currentImageIndex, setCurrentImageIndex] = useState(1);
     const [showingSecondImage, setShowingSecondImage] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
+    const [loadingProgress, setLoadingProgress] = useState(0);
+    const [imagesReady, setImagesReady] = useState(false);
+    const [firstImageReady, setFirstImageReady] = useState(false);
+
+    // Preload both images and track combined loading progress
+    const preloadImages = (url1, url2) => {
+        setLoadingProgress(0);
+        setImagesReady(false);
+        setFirstImageReady(false);
+        setImageLoaded(false);
+        setImage2Loaded(false);
+
+        let image1Progress = 0;
+        let image2Progress = 0;
+        let image1Complete = false;
+        let image2Complete = false;
+        let image1BlobUrl = null;
+        let image2BlobUrl = null;
+        const hasSecondImage = !!url2;
+
+        const calculateCombinedProgress = () => {
+            // Combined progress: average of both images
+            if (hasSecondImage) {
+                return (image1Progress + image2Progress) / 2;
+            }
+            return image1Progress;
+        };
+
+        const updateProgress = () => {
+            const combinedProgress = calculateCombinedProgress();
+            setLoadingProgress(Math.min(100, Math.round(combinedProgress)));
+
+            // Show first image as soon as it's ready
+            if (image1Complete && !firstImageReady) {
+                // Use blob URL if available, otherwise original URL is already set
+                if (image1BlobUrl) {
+                    setPopupImageUrl(image1BlobUrl);
+                }
+                // Always show first image, even if XHR failed (will use original URL)
+                setFirstImageReady(true);
+                setImageLoaded(true);
+            }
+
+            // Check if both images are ready (hide preloader)
+            if (image1Complete && (image2Complete || !hasSecondImage)) {
+                setLoadingProgress(100);
+                // Update second image URL to blob URL if available
+                if (image2BlobUrl) {
+                    setPopupImage2Url(image2BlobUrl);
+                }
+                // Small delay to show 100% before hiding preloader
+                setTimeout(() => {
+                    setImagesReady(true);
+                    if (hasSecondImage) {
+                        setImage2Loaded(true);
+                    }
+                }, 200);
+            }
+        };
+
+        // Load first image with progress tracking
+        const xhr1 = new XMLHttpRequest();
+        xhr1.open('GET', url1, true);
+        xhr1.responseType = 'blob';
+
+        xhr1.onprogress = (e) => {
+            if (e.lengthComputable && e.total > 0) {
+                image1Progress = (e.loaded / e.total) * 100;
+                updateProgress();
+            }
+        };
+
+        xhr1.onload = () => {
+            if (xhr1.status === 200) {
+                image1BlobUrl = URL.createObjectURL(xhr1.response);
+                image1Progress = 100;
+                image1Complete = true;
+                updateProgress();
+            } else {
+                console.error('Failed to load first popup image');
+                image1Progress = 100;
+                image1Complete = true;
+                updateProgress();
+            }
+        };
+
+        xhr1.onerror = () => {
+            console.warn('XHR failed for first image, falling back to Image loading');
+            // Fallback to regular Image loading if XHR fails (e.g., CORS issues)
+            const img1 = new Image();
+            img1.onload = () => {
+                image1Progress = 100;
+                image1Complete = true;
+                updateProgress();
+            };
+            img1.onerror = () => {
+                console.error('Failed to load first popup image');
+                image1Progress = 100;
+                image1Complete = true;
+                updateProgress();
+            };
+            img1.src = url1;
+        };
+
+        xhr1.send();
+
+        // Load second image (if exists) with progress tracking
+        if (hasSecondImage) {
+            const xhr2 = new XMLHttpRequest();
+            xhr2.open('GET', url2, true);
+            xhr2.responseType = 'blob';
+
+            xhr2.onprogress = (e) => {
+                if (e.lengthComputable && e.total > 0) {
+                    image2Progress = (e.loaded / e.total) * 100;
+                    updateProgress();
+                }
+            };
+
+            xhr2.onload = () => {
+                if (xhr2.status === 200) {
+                    image2BlobUrl = URL.createObjectURL(xhr2.response);
+                    image2Progress = 100;
+                    image2Complete = true;
+                    updateProgress();
+                } else {
+                    console.error('Failed to load second popup image');
+                    image2Progress = 100;
+                    image2Complete = true;
+                    updateProgress();
+                }
+            };
+
+            xhr2.onerror = () => {
+                console.warn('XHR failed for second image, falling back to Image loading');
+                // Fallback to regular Image loading if XHR fails (e.g., CORS issues)
+                const img2 = new Image();
+                img2.onload = () => {
+                    image2Progress = 100;
+                    image2Complete = true;
+                    updateProgress();
+                };
+                img2.onerror = () => {
+                    console.error('Failed to load second popup image');
+                    image2Progress = 100;
+                    image2Complete = true;
+                    updateProgress();
+                };
+                img2.src = url2;
+            };
+
+            xhr2.send();
+        } else {
+            // If no second image, mark it as complete
+            image2Progress = 100;
+            image2Complete = true;
+            updateProgress();
+        }
+    };
 
     // Fetch popup settings on component mount
     useEffect(() => {
@@ -50,6 +209,9 @@ export default function LandingPage() {
                     setPopupImage2Url(popupImage2Url || '');
                     setPopupEnabled(true);
 
+                    // Preload both images and track progress
+                    preloadImages(popupImageUrl, popupImage2Url || '');
+
                     // Show popup immediately
                     setTimeout(() => {
                         setShowPopup(true);
@@ -63,25 +225,9 @@ export default function LandingPage() {
         fetchPopupSettings();
     }, []);
 
-    // Preload second image when first image loads
-    useEffect(() => {
-        if (imageLoaded && popupImage2Url && !image2Loaded) {
-            // Preload second image in background
-            const img = new Image();
-            img.onload = () => {
-                setImage2Loaded(true);
-            };
-            img.onerror = () => {
-                console.error('Failed to preload second popup image');
-                setImage2Loaded(true); // Still mark as loaded to continue
-            };
-            img.src = popupImage2Url;
-        }
-    }, [imageLoaded, popupImage2Url, image2Loaded]);
-
     // Handle transition from first image to second image
     useEffect(() => {
-        if (imageLoaded && popupImage2Url && !showingSecondImage) {
+        if (imagesReady && imageLoaded && popupImage2Url && !showingSecondImage) {
             // Wait 6 seconds (when first image stops at second-last tween)
             const transitionTimer = setTimeout(() => {
                 setShowingSecondImage(true);
@@ -89,9 +235,20 @@ export default function LandingPage() {
 
             return () => clearTimeout(transitionTimer);
         }
-    }, [imageLoaded, popupImage2Url, showingSecondImage]);
+    }, [imagesReady, imageLoaded, popupImage2Url, showingSecondImage]);
 
-    const handleClosePopup = () => {
+    // Auto-close popup 8 seconds after second image is shown
+    useEffect(() => {
+        if (showingSecondImage && popupImage2Url && image2Loaded) {
+            const autoCloseTimer = setTimeout(() => {
+                handleClosePopup();
+            }, 3000); // 8 seconds after second image is displayed
+
+            return () => clearTimeout(autoCloseTimer);
+        }
+    }, [showingSecondImage, popupImage2Url, image2Loaded, handleClosePopup]);
+
+    const handleClosePopup = useCallback(() => {
         setPopupClosing(true);
         setTimeout(() => {
             setShowPopup(false);
@@ -100,8 +257,18 @@ export default function LandingPage() {
             setImage2Loaded(false);
             setShowingSecondImage(false);
             setIsPaused(false);
+            setLoadingProgress(0);
+            setImagesReady(false);
+            setFirstImageReady(false);
+            // Cleanup blob URLs if they exist
+            if (popupImageUrl && popupImageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(popupImageUrl);
+            }
+            if (popupImage2Url && popupImage2Url.startsWith('blob:')) {
+                URL.revokeObjectURL(popupImage2Url);
+            }
         }, 300);
-    };
+    }, [popupImageUrl, popupImage2Url]);
 
     const togglePause = () => {
         setIsPaused(!isPaused);
@@ -396,32 +563,67 @@ export default function LandingPage() {
 
                         {/* Animated Images */}
                         <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-100">
-                            {!imageLoaded && !showingSecondImage && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
-                                    <div className="flex flex-col items-center gap-3">
-                                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-blue-600"></div>
-                                        <p className="text-gray-600 text-base font-medium">Loading image...</p>
+                            {/* First Image - show as soon as it's ready, start animation */}
+                            {firstImageReady && (
+                                <img
+                                    src={popupImageUrl}
+                                    alt="Welcome"
+                                    className={`absolute inset-0 w-full h-full object-cover popup-image-animation`}
+                                    style={{
+                                        transformOrigin: 'top left',
+                                        zIndex: 1,
+                                        animationPlayState: isPaused ? 'paused' : 'running'
+                                    }}
+                                />
+                            )}
+
+                            {/* Percentage Preloader - overlay on top until both images ready */}
+                            {!imagesReady && (
+                                <div className="absolute inset-0 flex items-center justify-center z-20 bg-black bg-opacity-40 backdrop-blur-sm transition-opacity">
+                                    <div className="flex flex-col items-center gap-4">
+                                        {/* Circular Progress */}
+                                        <div className="relative w-32 h-32">
+                                            <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                                                {/* Background Circle */}
+                                                <circle
+                                                    cx="60"
+                                                    cy="60"
+                                                    r="54"
+                                                    stroke="currentColor"
+                                                    strokeWidth="8"
+                                                    fill="none"
+                                                    className="text-white opacity-30"
+                                                />
+                                                {/* Progress Circle */}
+                                                <circle
+                                                    cx="60"
+                                                    cy="60"
+                                                    r="54"
+                                                    stroke="currentColor"
+                                                    strokeWidth="8"
+                                                    fill="none"
+                                                    strokeDasharray={`${2 * Math.PI * 54}`}
+                                                    strokeDashoffset={`${2 * Math.PI * 54 * (1 - loadingProgress / 100)}`}
+                                                    strokeLinecap="round"
+                                                    className="text-white transition-all duration-300 ease-out"
+                                                />
+                                            </svg>
+                                            {/* Percentage Text */}
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <span className="text-2xl font-bold text-white drop-shadow-lg">
+                                                    {Math.round(loadingProgress)}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <p className="text-white text-base font-medium drop-shadow-lg">
+                                            Loading...
+                                        </p>
                                     </div>
                                 </div>
                             )}
 
-                            {/* First Image - stays frozen at second-last tween */}
-                            <img
-                                src={popupImageUrl}
-                                alt="Welcome"
-                                className={`absolute inset-0 w-full h-full object-cover ${
-                                    imageLoaded ? 'popup-image-animation' : 'opacity-0'
-                                }`}
-                                style={{
-                                    transformOrigin: 'top left',
-                                    zIndex: 1,
-                                    animationPlayState: isPaused ? 'paused' : 'running'
-                                }}
-                                onLoad={() => setImageLoaded(true)}
-                            />
-
                             {/* Second Image - plays on top of frozen first image */}
-                            {popupImage2Url && showingSecondImage && image2Loaded && (
+                            {imagesReady && popupImage2Url && showingSecondImage && image2Loaded && (
                                 <img
                                     src={popupImage2Url}
                                     alt="Welcome 2"
@@ -432,7 +634,6 @@ export default function LandingPage() {
                                         animationPlayState: isPaused ? 'paused' : 'running'
                                     }}
                                     onClick={handleClosePopup}
-                                    onAnimationEnd={handleClosePopup}
                                 />
                             )}
                         </div>

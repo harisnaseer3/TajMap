@@ -88154,6 +88154,10 @@ function AdminSettings() {
     _useState32 = _slicedToArray(_useState31, 2),
     editingPermissions = _useState32[0],
     setEditingPermissions = _useState32[1];
+  var _useState33 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
+    _useState34 = _slicedToArray(_useState33, 2),
+    expandedUserPermissions = _useState34[0],
+    setExpandedUserPermissions = _useState34[1];
 
   // Check authorization and load data
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
@@ -88670,6 +88674,13 @@ function AdminSettings() {
       return _ref7.apply(this, arguments);
     };
   }();
+
+  // Toggle user permissions section
+  var toggleUserPermissions = function toggleUserPermissions(userId) {
+    setExpandedUserPermissions(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, userId, !prev[userId]));
+    });
+  };
   var handleSaveAll = /*#__PURE__*/function () {
     var _ref8 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
       var settingsToUpdate, _error$response2, _t8;
@@ -88988,23 +88999,52 @@ function AdminSettings() {
     return !admin.is_super_admin;
   }) // Don't show super admins
   .map(function (admin) {
-    var _admin$permissions;
+    var _expandedUserPermissi, _admin$permissions, _admin$permissions2;
+    var isExpanded = (_expandedUserPermissi = expandedUserPermissions[admin.id]) !== null && _expandedUserPermissi !== void 0 ? _expandedUserPermissi : false;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       key: admin.id,
-      className: "border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
+      className: "border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      onClick: function onClick() {
+        return toggleUserPermissions(admin.id);
+      },
+      className: "w-full p-5 flex items-center justify-between hover:bg-gray-50 transition text-left"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "flex items-center justify-between mb-4"
+      className: "flex items-center gap-3 flex-1"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "flex items-center gap-3"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg"
-    }, admin.name.charAt(0).toUpperCase()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+      className: "h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+    }, admin.name.charAt(0).toUpperCase()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
       className: "font-semibold text-gray-900 text-lg"
     }, admin.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-sm text-gray-600"
-    }, admin.email))), editingPermissions[admin.id] && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-      onClick: function onClick() {
-        return handleSavePermissions(admin.id);
+    }, admin.email))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex items-center gap-3"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-right"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "text-xs text-gray-500"
+    }, ((_admin$permissions = admin.permissions) === null || _admin$permissions === void 0 ? void 0 : _admin$permissions.length) || 0, " of ", Object.values(_store_authStore__WEBPACK_IMPORTED_MODULE_3__.PERMISSION_GROUPS).reduce(function (acc, group) {
+      return acc + Object.keys(group).length;
+    }, 0), " permissions")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+      className: "w-5 h-5 text-gray-500 transition-transform flex-shrink-0 ".concat(isExpanded ? 'rotate-180' : ''),
+      fill: "none",
+      stroke: "currentColor",
+      viewBox: "0 0 24 24"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      strokeWidth: 2,
+      d: "M19 9l-7 7-7-7"
+    })))), isExpanded && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "px-5 pb-5 space-y-4 border-t border-gray-200 pt-4"
+    }, editingPermissions[admin.id] && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "mb-4 flex justify-end"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      onClick: function onClick(e) {
+        e.stopPropagation();
+        handleSavePermissions(admin.id);
       },
       className: "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
@@ -89099,11 +89139,11 @@ function AdminSettings() {
       className: "mt-4 pt-4 border-t border-gray-200"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-xs text-gray-500"
-    }, ((_admin$permissions = admin.permissions) === null || _admin$permissions === void 0 ? void 0 : _admin$permissions.length) || 0, " of ", Object.values(_store_authStore__WEBPACK_IMPORTED_MODULE_3__.PERMISSION_GROUPS).reduce(function (acc, group) {
+    }, ((_admin$permissions2 = admin.permissions) === null || _admin$permissions2 === void 0 ? void 0 : _admin$permissions2.length) || 0, " of ", Object.values(_store_authStore__WEBPACK_IMPORTED_MODULE_3__.PERMISSION_GROUPS).reduce(function (acc, group) {
       return acc + Object.keys(group).length;
     }, 0), " permissions granted", editingPermissions[admin.id] && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       className: "ml-2 text-orange-600 font-medium"
-    }, "\u2022 Unsaved changes"))));
+    }, "\u2022 Unsaved changes")))));
   }), adminUsers.filter(function (admin) {
     return !admin.is_super_admin;
   }).length === 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -92343,6 +92383,163 @@ function LandingPage() {
     _useState26 = _slicedToArray(_useState25, 2),
     isPaused = _useState26[0],
     setIsPaused = _useState26[1];
+  var _useState27 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(0),
+    _useState28 = _slicedToArray(_useState27, 2),
+    loadingProgress = _useState28[0],
+    setLoadingProgress = _useState28[1];
+  var _useState29 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+    _useState30 = _slicedToArray(_useState29, 2),
+    imagesReady = _useState30[0],
+    setImagesReady = _useState30[1];
+  var _useState31 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+    _useState32 = _slicedToArray(_useState31, 2),
+    firstImageReady = _useState32[0],
+    setFirstImageReady = _useState32[1];
+
+  // Preload both images and track combined loading progress
+  var preloadImages = function preloadImages(url1, url2) {
+    setLoadingProgress(0);
+    setImagesReady(false);
+    setFirstImageReady(false);
+    setImageLoaded(false);
+    setImage2Loaded(false);
+    var image1Progress = 0;
+    var image2Progress = 0;
+    var image1Complete = false;
+    var image2Complete = false;
+    var image1BlobUrl = null;
+    var image2BlobUrl = null;
+    var hasSecondImage = !!url2;
+    var calculateCombinedProgress = function calculateCombinedProgress() {
+      // Combined progress: average of both images
+      if (hasSecondImage) {
+        return (image1Progress + image2Progress) / 2;
+      }
+      return image1Progress;
+    };
+    var updateProgress = function updateProgress() {
+      var combinedProgress = calculateCombinedProgress();
+      setLoadingProgress(Math.min(100, Math.round(combinedProgress)));
+
+      // Show first image as soon as it's ready
+      if (image1Complete && !firstImageReady) {
+        // Use blob URL if available, otherwise original URL is already set
+        if (image1BlobUrl) {
+          setPopupImageUrl(image1BlobUrl);
+        }
+        // Always show first image, even if XHR failed (will use original URL)
+        setFirstImageReady(true);
+        setImageLoaded(true);
+      }
+
+      // Check if both images are ready (hide preloader)
+      if (image1Complete && (image2Complete || !hasSecondImage)) {
+        setLoadingProgress(100);
+        // Update second image URL to blob URL if available
+        if (image2BlobUrl) {
+          setPopupImage2Url(image2BlobUrl);
+        }
+        // Small delay to show 100% before hiding preloader
+        setTimeout(function () {
+          setImagesReady(true);
+          if (hasSecondImage) {
+            setImage2Loaded(true);
+          }
+        }, 200);
+      }
+    };
+
+    // Load first image with progress tracking
+    var xhr1 = new XMLHttpRequest();
+    xhr1.open('GET', url1, true);
+    xhr1.responseType = 'blob';
+    xhr1.onprogress = function (e) {
+      if (e.lengthComputable && e.total > 0) {
+        image1Progress = e.loaded / e.total * 100;
+        updateProgress();
+      }
+    };
+    xhr1.onload = function () {
+      if (xhr1.status === 200) {
+        image1BlobUrl = URL.createObjectURL(xhr1.response);
+        image1Progress = 100;
+        image1Complete = true;
+        updateProgress();
+      } else {
+        console.error('Failed to load first popup image');
+        image1Progress = 100;
+        image1Complete = true;
+        updateProgress();
+      }
+    };
+    xhr1.onerror = function () {
+      console.warn('XHR failed for first image, falling back to Image loading');
+      // Fallback to regular Image loading if XHR fails (e.g., CORS issues)
+      var img1 = new Image();
+      img1.onload = function () {
+        image1Progress = 100;
+        image1Complete = true;
+        updateProgress();
+      };
+      img1.onerror = function () {
+        console.error('Failed to load first popup image');
+        image1Progress = 100;
+        image1Complete = true;
+        updateProgress();
+      };
+      img1.src = url1;
+    };
+    xhr1.send();
+
+    // Load second image (if exists) with progress tracking
+    if (hasSecondImage) {
+      var xhr2 = new XMLHttpRequest();
+      xhr2.open('GET', url2, true);
+      xhr2.responseType = 'blob';
+      xhr2.onprogress = function (e) {
+        if (e.lengthComputable && e.total > 0) {
+          image2Progress = e.loaded / e.total * 100;
+          updateProgress();
+        }
+      };
+      xhr2.onload = function () {
+        if (xhr2.status === 200) {
+          image2BlobUrl = URL.createObjectURL(xhr2.response);
+          image2Progress = 100;
+          image2Complete = true;
+          updateProgress();
+        } else {
+          console.error('Failed to load second popup image');
+          image2Progress = 100;
+          image2Complete = true;
+          updateProgress();
+        }
+      };
+      xhr2.onerror = function () {
+        console.warn('XHR failed for second image, falling back to Image loading');
+        // Fallback to regular Image loading if XHR fails (e.g., CORS issues)
+        var img2 = new Image();
+        img2.onload = function () {
+          image2Progress = 100;
+          image2Complete = true;
+          updateProgress();
+        };
+        img2.onerror = function () {
+          console.error('Failed to load second popup image');
+          image2Progress = 100;
+          image2Complete = true;
+          updateProgress();
+        };
+        img2.src = url2;
+      };
+      xhr2.send();
+    } else {
+      // If no second image, mark it as complete
+      image2Progress = 100;
+      image2Complete = true;
+      updateProgress();
+    }
+  };
 
   // Fetch popup settings on component mount
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
@@ -92365,6 +92562,9 @@ function LandingPage() {
                 setPopupImageUrl(_popupImageUrl);
                 setPopupImage2Url(_popupImage2Url || '');
                 setPopupEnabled(true);
+
+                // Preload both images and track progress
+                preloadImages(_popupImageUrl, _popupImage2Url || '');
 
                 // Show popup immediately
                 setTimeout(function () {
@@ -92389,25 +92589,9 @@ function LandingPage() {
     fetchPopupSettings();
   }, []);
 
-  // Preload second image when first image loads
-  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
-    if (imageLoaded && popupImage2Url && !image2Loaded) {
-      // Preload second image in background
-      var img = new Image();
-      img.onload = function () {
-        setImage2Loaded(true);
-      };
-      img.onerror = function () {
-        console.error('Failed to preload second popup image');
-        setImage2Loaded(true); // Still mark as loaded to continue
-      };
-      img.src = popupImage2Url;
-    }
-  }, [imageLoaded, popupImage2Url, image2Loaded]);
-
   // Handle transition from first image to second image
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
-    if (imageLoaded && popupImage2Url && !showingSecondImage) {
+    if (imagesReady && imageLoaded && popupImage2Url && !showingSecondImage) {
       // Wait 6 seconds (when first image stops at second-last tween)
       var transitionTimer = setTimeout(function () {
         setShowingSecondImage(true);
@@ -92417,8 +92601,21 @@ function LandingPage() {
         return clearTimeout(transitionTimer);
       };
     }
-  }, [imageLoaded, popupImage2Url, showingSecondImage]);
-  var handleClosePopup = function handleClosePopup() {
+  }, [imagesReady, imageLoaded, popupImage2Url, showingSecondImage]);
+
+  // Auto-close popup 8 seconds after second image is shown
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+    if (showingSecondImage && popupImage2Url && image2Loaded) {
+      var autoCloseTimer = setTimeout(function () {
+        handleClosePopup();
+      }, 3000); // 8 seconds after second image is displayed
+
+      return function () {
+        return clearTimeout(autoCloseTimer);
+      };
+    }
+  }, [showingSecondImage, popupImage2Url, image2Loaded, handleClosePopup]);
+  var handleClosePopup = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(function () {
     setPopupClosing(true);
     setTimeout(function () {
       setShowPopup(false);
@@ -92427,8 +92624,18 @@ function LandingPage() {
       setImage2Loaded(false);
       setShowingSecondImage(false);
       setIsPaused(false);
+      setLoadingProgress(0);
+      setImagesReady(false);
+      setFirstImageReady(false);
+      // Cleanup blob URLs if they exist
+      if (popupImageUrl && popupImageUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(popupImageUrl);
+      }
+      if (popupImage2Url && popupImage2Url.startsWith('blob:')) {
+        URL.revokeObjectURL(popupImage2Url);
+      }
     }, 300);
-  };
+  }, [popupImageUrl, popupImage2Url]);
   var togglePause = function togglePause() {
     setIsPaused(!isPaused);
   };
@@ -92693,27 +92900,50 @@ function LandingPage() {
     className: "w-6 h-6 text-white"
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
     className: "relative w-full aspect-[16/9] overflow-hidden bg-gray-100"
-  }, !imageLoaded && !showingSecondImage && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
-    className: "absolute inset-0 flex items-center justify-center bg-gray-100 z-20"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
-    className: "flex flex-col items-center gap-3"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
-    className: "animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-blue-600"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
-    className: "text-gray-600 text-base font-medium"
-  }, "Loading image..."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("img", {
+  }, firstImageReady && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("img", {
     src: popupImageUrl,
     alt: "Welcome",
-    className: "absolute inset-0 w-full h-full object-cover ".concat(imageLoaded ? 'popup-image-animation' : 'opacity-0'),
+    className: "absolute inset-0 w-full h-full object-cover popup-image-animation",
     style: {
       transformOrigin: 'top left',
       zIndex: 1,
       animationPlayState: isPaused ? 'paused' : 'running'
-    },
-    onLoad: function onLoad() {
-      return setImageLoaded(true);
     }
-  }), popupImage2Url && showingSecondImage && image2Loaded && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("img", {
+  }), !imagesReady && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+    className: "absolute inset-0 flex items-center justify-center z-20 bg-black bg-opacity-40 backdrop-blur-sm transition-opacity"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+    className: "flex flex-col items-center gap-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+    className: "relative w-32 h-32"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("svg", {
+    className: "w-32 h-32 transform -rotate-90",
+    viewBox: "0 0 120 120"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("circle", {
+    cx: "60",
+    cy: "60",
+    r: "54",
+    stroke: "currentColor",
+    strokeWidth: "8",
+    fill: "none",
+    className: "text-white opacity-30"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("circle", {
+    cx: "60",
+    cy: "60",
+    r: "54",
+    stroke: "currentColor",
+    strokeWidth: "8",
+    fill: "none",
+    strokeDasharray: "".concat(2 * Math.PI * 54),
+    strokeDashoffset: "".concat(2 * Math.PI * 54 * (1 - loadingProgress / 100)),
+    strokeLinecap: "round",
+    className: "text-white transition-all duration-300 ease-out"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+    className: "absolute inset-0 flex items-center justify-center"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("span", {
+    className: "text-2xl font-bold text-white drop-shadow-lg"
+  }, Math.round(loadingProgress), "%"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
+    className: "text-white text-base font-medium drop-shadow-lg"
+  }, "Loading..."))), imagesReady && popupImage2Url && showingSecondImage && image2Loaded && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("img", {
     src: popupImage2Url,
     alt: "Welcome 2",
     className: "absolute inset-0 w-full h-full object-cover cursor-pointer popup-image-2-animation",
@@ -92722,8 +92952,7 @@ function LandingPage() {
       zIndex: 2,
       animationPlayState: isPaused ? 'paused' : 'running'
     },
-    onClick: handleClosePopup,
-    onAnimationEnd: handleClosePopup
+    onClick: handleClosePopup
   })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("footer", {
     className: "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 py-16 px-4 sm:px-6 lg:px-8"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
