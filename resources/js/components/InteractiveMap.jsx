@@ -170,7 +170,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     };
 
     const handleZoomOut = () => {
-        setZoom(prev => Math.max(prev - 0.25, 0.5));
+        setZoom(prev => Math.max(prev - 0.25, 1.0));
     };
 
     const handleResetZoom = () => {
@@ -211,7 +211,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     const handleWheel = (e) => {
         e.preventDefault();
         const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        setZoom(prev => Math.max(0.5, Math.min(3, prev + delta)));
+        setZoom(prev => Math.max(1.0, Math.min(3, prev + delta)));
     };
 
     if (loading) {
@@ -281,7 +281,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                     </button>
                     <button
                         onClick={handleZoomOut}
-                        disabled={zoom <= 0.5}
+                        disabled={zoom <= 1.0}
                         className="bg-white hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed rounded-lg p-2 shadow-lg transition-all"
                         title="Zoom Out"
                     >

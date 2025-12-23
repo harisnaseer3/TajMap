@@ -539,7 +539,7 @@ export default function AdminMapEditor() {
     };
 
     const handleZoomOut = () => {
-        setZoom(Math.max(zoom - 0.25, 0.25));
+        setZoom(Math.max(zoom - 0.25, 1.0));
     };
 
     const handleResetView = () => {
@@ -550,7 +550,7 @@ export default function AdminMapEditor() {
     const handleWheel = (e) => {
         e.preventDefault();
         const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        setZoom(prev => Math.max(0.25, Math.min(5, prev + delta)));
+        setZoom(prev => Math.max(1.0, Math.min(5, prev + delta)));
     };
 
     const convertCoordinates = (coords) => {
@@ -1042,7 +1042,7 @@ export default function AdminMapEditor() {
                                 </button>
                                 <button
                                     onClick={handleZoomOut}
-                                    disabled={zoom <= 0.25}
+                                    disabled={zoom <= 1.0}
                                     className="bg-white hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed rounded-lg p-2 shadow-lg transition-all"
                                     title="Zoom Out"
                                 >

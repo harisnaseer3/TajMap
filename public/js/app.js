@@ -83058,7 +83058,7 @@ function InteractiveMap(_ref) {
   };
   var handleZoomOut = function handleZoomOut() {
     setZoom(function (prev) {
-      return Math.max(prev - 0.25, 0.5);
+      return Math.max(prev - 0.25, 1.0);
     });
   };
   var handleResetZoom = function handleResetZoom() {
@@ -83103,7 +83103,7 @@ function InteractiveMap(_ref) {
     e.preventDefault();
     var delta = e.deltaY > 0 ? -0.1 : 0.1;
     setZoom(function (prev) {
-      return Math.max(0.5, Math.min(3, prev + delta));
+      return Math.max(1.0, Math.min(3, prev + delta));
     });
   };
   if (loading) {
@@ -83197,7 +83197,7 @@ function InteractiveMap(_ref) {
     className: "w-6 h-6 text-gray-700"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: handleZoomOut,
-    disabled: zoom <= 0.5,
+    disabled: zoom <= 1.0,
     className: "bg-white hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed rounded-lg p-2 shadow-lg transition-all",
     title: "Zoom Out"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -86068,7 +86068,7 @@ function AdminMapEditor() {
     setZoom(Math.min(zoom + 0.25, 5));
   };
   var handleZoomOut = function handleZoomOut() {
-    setZoom(Math.max(zoom - 0.25, 0.25));
+    setZoom(Math.max(zoom - 0.25, 1.0));
   };
   var handleResetView = function handleResetView() {
     setZoom(1);
@@ -86081,7 +86081,7 @@ function AdminMapEditor() {
     e.preventDefault();
     var delta = e.deltaY > 0 ? -0.1 : 0.1;
     setZoom(function (prev) {
-      return Math.max(0.25, Math.min(5, prev + delta));
+      return Math.max(1.0, Math.min(5, prev + delta));
     });
   };
   var convertCoordinates = function convertCoordinates(coords) {
@@ -86564,7 +86564,7 @@ function AdminMapEditor() {
     className: "w-6 h-6 text-gray-700"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: handleZoomOut,
-    disabled: zoom <= 0.25,
+    disabled: zoom <= 1.0,
     className: "bg-white hover:bg-gray-100 disabled:bg-gray-200 disabled:cursor-not-allowed rounded-lg p-2 shadow-lg transition-all",
     title: "Zoom Out"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_heroicons_react_24_outline__WEBPACK_IMPORTED_MODULE_4__["default"], {
