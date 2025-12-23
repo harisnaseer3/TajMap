@@ -56,6 +56,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Frontend URL
+    |--------------------------------------------------------------------------
+    |
+    | This value is used when generating links that should point to the
+    | frontend SPA (React app). In production, set this to your public
+    | frontend domain (for example: https://www.booking.tajpk.com).
+    |
+    | If not set, it falls back to APP_URL.
+    |
+    */
+
+    'frontend_url' => env('FRONTEND_URL', env('APP_FRONTEND_URL', env('APP_URL', 'http://localhost'))),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
