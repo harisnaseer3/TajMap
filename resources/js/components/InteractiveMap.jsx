@@ -19,6 +19,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
 
     const containerRef = useRef(null);
     const imageRef = useRef(null);
+    const zoomRef = useRef(1); // Track zoom to prevent accidental resets
 
     // Serialize filters to prevent unnecessary re-renders from object reference changes
     const filtersKey = useMemo(() => JSON.stringify(filters), [
@@ -54,6 +55,11 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, [baseImage]);
+
+    // Keep zoomRef in sync with zoom state
+    useEffect(() => {
+        zoomRef.current = zoom;
+    }, [zoom]);
 
     const fetchMapData = async () => {
         try {
@@ -145,7 +151,17 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
         }
     };
 
-    const handlePlotClick = (plot) => {
+    const handlePlotClick = (plot, e) => {
+        // Prevent event bubbling that might interfere with zoom
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        // Ensure zoom state remains unchanged when selecting a plot
+        // Restore zoom from ref if it was somehow reset
+        if (zoom !== zoomRef.current) {
+            setZoom(zoomRef.current);
+        }
         setSelectedPlot(plot);
         if (onPlotClick) {
             onPlotClick(plot);
@@ -166,15 +182,24 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
     };
 
     const handleZoomIn = () => {
-        setZoom(prev => Math.min(prev + 0.25, 3));
+        setZoom(prev => {
+            const newZoom = Math.min(prev + 0.25, 3);
+            zoomRef.current = newZoom;
+            return newZoom;
+        });
     };
 
     const handleZoomOut = () => {
-        setZoom(prev => Math.max(prev - 0.25, 1.0));
+        setZoom(prev => {
+            const newZoom = Math.max(prev - 0.25, 1.0);
+            zoomRef.current = newZoom;
+            return newZoom;
+        });
     };
 
     const handleResetZoom = () => {
         setZoom(1);
+        zoomRef.current = 1;
         setPan({ x: 0, y: 0 });
     };
 
@@ -210,8 +235,28 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
 
     const handleWheel = (e) => {
         e.preventDefault();
+        if (!containerRef.current) return;
+
+        // Get mouse position relative to the container
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
+
+        // Calculate the point in image coordinates (before zoom change)
+        const imageX = (mouseX - pan.x) / zoom;
+        const imageY = (mouseY - pan.y) / zoom;
+
+        // Calculate new zoom level
         const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        setZoom(prev => Math.max(1.0, Math.min(3, prev + delta)));
+        const newZoom = Math.max(1.0, Math.min(3, zoom + delta));
+
+        // Adjust pan offset so the point under the mouse stays in the same screen position
+        const newPanX = mouseX - imageX * newZoom;
+        const newPanY = mouseY - imageY * newZoom;
+
+        setZoom(newZoom);
+        zoomRef.current = newZoom;
+        setPan({ x: newPanX, y: newPanY });
     };
 
     if (loading) {
@@ -339,7 +384,7 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                                         stroke={getStatusBorderColor(plot.status)}
                                         strokeWidth="2"
                                         className="pointer-events-auto cursor-pointer transition-all"
-                                        onClick={() => handlePlotClick(plot)}
+                                        onClick={(e) => handlePlotClick(plot, e)}
                                         onMouseEnter={() => setHoveredPlot(plot)}
                                         onMouseLeave={() => setHoveredPlot(null)}
                                     />

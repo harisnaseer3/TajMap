@@ -49,6 +49,7 @@ export default function AdminMapEditor() {
 
     const containerRef = useRef(null);
     const imageRef = useRef(null);
+    const transformedDivRef = useRef(null);
     const fileInputRef = useRef(null);
     const svgRef = useRef(null);
     const plotItemRefs = useRef({});
@@ -162,11 +163,35 @@ export default function AdminMapEditor() {
 
     const handleImageClick = (e) => {
         if (!isDrawing && !isCreatingNewPlot) return;
+        if (!containerRef.current || !transformedDivRef.current || !dimensions.width || !dimensions.height) return;
 
-        const rect = imageRef.current.getBoundingClientRect();
-        // rect.width already includes zoom, so don't multiply by zoom
-        const x = (e.clientX - rect.left - panOffset.x) / rect.width;
-        const y = (e.clientY - rect.top - panOffset.y) / rect.height;
+        // Get container and transformed div positions
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const transformedRect = transformedDivRef.current.getBoundingClientRect();
+        
+        // Get mouse position relative to container
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
+        
+        // Get the center of the container
+        const containerCenterX = containerRect.width / 2;
+        const containerCenterY = containerRect.height / 2;
+        
+        // Calculate offset from container center
+        const offsetX = mouseX - containerCenterX;
+        const offsetY = mouseY - containerCenterY;
+        
+        // Account for zoom and pan to get position in image space (relative to image center)
+        const imageXFromCenter = (offsetX - panOffset.x) / zoom;
+        const imageYFromCenter = (offsetY - panOffset.y) / zoom;
+        
+        // Convert from center-relative to top-left-relative, then normalize
+        const imageX = imageXFromCenter + (dimensions.width / 2);
+        const imageY = imageYFromCenter + (dimensions.height / 2);
+        
+        // Convert to normalized coordinates (0-1) based on original image dimensions
+        const x = imageX / dimensions.width;
+        const y = imageY / dimensions.height;
 
         if (currentTool === 'polygon') {
             const newPoints = [...currentPoints, { x, y }];
@@ -197,12 +222,22 @@ export default function AdminMapEditor() {
     };
 
     const handleMouseDown = (e) => {
-        const rect = imageRef.current.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        if (!containerRef.current) return;
+        
+        // Get mouse position relative to the container (not the transformed image)
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
 
-        // Enable drag-to-pan when zoomed in (even when drawing/creating)
-        if (zoom > 1 && e.button === 0) {
+        // Enable drag-to-pan when no plot is selected (before selecting a plot)
+        if (!selectedPlot && !isDrawing && !isCreatingNewPlot && e.button === 0) {
+            setIsPanning(true);
+            setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+            return; // Don't process other interactions while panning
+        }
+
+        // Only enable drag-to-pan when zoomed in AND the pan tool is selected (after plot is selected)
+        if (zoom > 1 && e.button === 0 && currentTool === 'pan' && !isDrawing && !isCreatingNewPlot) {
             setIsPanning(true);
             setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
             return; // Don't process other interactions while panning
@@ -221,19 +256,39 @@ export default function AdminMapEditor() {
                 setIsDraggingPoint(true);
             }
         } else if (currentTool === 'rectangle' && !rectangleStart) {
-            // rect.width already includes zoom, so don't multiply by zoom
-            const x = (mouseX - panOffset.x) / rect.width;
-            const y = (mouseY - panOffset.y) / rect.height;
+            if (!containerRef.current || !dimensions.width || !dimensions.height) return;
+            
+            // Get container center
+            const containerRect = containerRef.current.getBoundingClientRect();
+            const containerCenterX = containerRect.width / 2;
+            const containerCenterY = containerRect.height / 2;
+            
+            // Calculate offset from container center
+            const offsetX = mouseX - containerCenterX;
+            const offsetY = mouseY - containerCenterY;
+            
+            // Account for zoom and pan to get position in image space (relative to image center)
+            const imageXFromCenter = (offsetX - panOffset.x) / zoom;
+            const imageYFromCenter = (offsetY - panOffset.y) / zoom;
+            
+            // Convert from center-relative to top-left-relative, then normalize
+            const imageX = imageXFromCenter + (dimensions.width / 2);
+            const imageY = imageYFromCenter + (dimensions.height / 2);
+            
+            // Convert to normalized coordinates (0-1) based on original image dimensions
+            const x = imageX / dimensions.width;
+            const y = imageY / dimensions.height;
             setRectangleStart({ x, y });
         }
     };
 
     const handleMouseMove = (e) => {
-        if (!imageRef.current) return;
+        if (!containerRef.current || !dimensions.width || !dimensions.height) return;
 
-        const rect = imageRef.current.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        // Get mouse position relative to the container
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
 
         // Handle panning when zoomed in
         if (isPanning) {
@@ -246,9 +301,25 @@ export default function AdminMapEditor() {
 
         if (!isDrawing && !isCreatingNewPlot) return;
 
-        // Update current mouse position for preview - rect.width already includes zoom
-        const x = (mouseX - panOffset.x) / rect.width;
-        const y = (mouseY - panOffset.y) / rect.height;
+        // Get container center
+        const containerCenterX = containerRect.width / 2;
+        const containerCenterY = containerRect.height / 2;
+        
+        // Calculate offset from container center
+        const offsetX = mouseX - containerCenterX;
+        const offsetY = mouseY - containerCenterY;
+        
+        // Account for zoom and pan to get position in image space (relative to image center)
+        const imageXFromCenter = (offsetX - panOffset.x) / zoom;
+        const imageYFromCenter = (offsetY - panOffset.y) / zoom;
+        
+        // Convert from center-relative to top-left-relative, then normalize
+        const imageX = imageXFromCenter + (dimensions.width / 2);
+        const imageY = imageYFromCenter + (dimensions.height / 2);
+        
+        // Convert to normalized coordinates (0-1) based on original image dimensions
+        const x = imageX / dimensions.width;
+        const y = imageY / dimensions.height;
         setCurrentMousePos({ x, y });
 
         if (isDraggingPoint && currentTool === 'edit' && selectedPointIndex !== null) {
@@ -286,22 +357,22 @@ export default function AdminMapEditor() {
     };
 
     const findNearestPoint = (mouseX, mouseY) => {
-        if (!imageRef.current) return -1;
-        const rect = imageRef.current.getBoundingClientRect();
-        const threshold = 10; // pixels
+        if (!dimensions.width || !dimensions.height) return -1;
+        const threshold = 10 / zoom; // Adjust threshold based on zoom level
 
         const convertedPoints = convertCoordinates(currentPoints);
 
         for (let i = 0; i < convertedPoints.length; i++) {
             const point = convertedPoints[i];
-            const pointX = point.x + panOffset.x;
-            const pointY = point.y + panOffset.y;
+            // Apply zoom and pan to get screen coordinates
+            const pointX = (point.x * zoom) + panOffset.x;
+            const pointY = (point.y * zoom) + panOffset.y;
 
             const distance = Math.sqrt(
                 Math.pow(mouseX - pointX, 2) + Math.pow(mouseY - pointY, 2)
             );
 
-            if (distance < threshold) {
+            if (distance < threshold * zoom) {
                 return i;
             }
         }
@@ -328,9 +399,12 @@ export default function AdminMapEditor() {
         setCurrentPoints(points);
         setHistory([points]);
         setHistoryIndex(0);
-        setCurrentTool('polygon');
-        setZoom(1);
-        setPanOffset({ x: 0, y: 0 });
+        // Default to 'edit' tool when selecting an existing plot (more intuitive)
+        // User can still change to polygon/rectangle if they want to redraw
+        if (currentTool === 'pan') {
+            setCurrentTool('edit');
+        }
+        // Don't reset zoom/pan when selecting a plot - preserve user's view
         setRectangleStart(null);
         setRectangleEnd(null);
         setCurrentMousePos(null);
@@ -549,8 +623,27 @@ export default function AdminMapEditor() {
 
     const handleWheel = (e) => {
         e.preventDefault();
+        if (!containerRef.current || !imageRef.current) return;
+
+        // Get mouse position relative to the container
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
+
+        // Calculate the point in image coordinates (before zoom change)
+        const imageX = (mouseX - panOffset.x) / zoom;
+        const imageY = (mouseY - panOffset.y) / zoom;
+
+        // Calculate new zoom level
         const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        setZoom(prev => Math.max(1.0, Math.min(5, prev + delta)));
+        const newZoom = Math.max(1.0, Math.min(5, zoom + delta));
+
+        // Adjust pan offset so the point under the mouse stays in the same screen position
+        const newPanX = mouseX - imageX * newZoom;
+        const newPanY = mouseY - imageY * newZoom;
+
+        setZoom(newZoom);
+        setPanOffset({ x: newPanX, y: newPanY });
     };
 
     const convertCoordinates = (coords) => {
@@ -638,6 +731,12 @@ export default function AdminMapEditor() {
     }
 
     const getCursorStyle = () => {
+        // When no plot is selected, show grab cursor for panning
+        if (!selectedPlot && !isDrawing && !isCreatingNewPlot) {
+            if (isPanning) return 'grabbing';
+            return 'grab';
+        }
+
         // When zoomed in, always show grab cursor for panning
         if (zoom > 1 && isPanning) return 'grabbing';
         if (zoom > 1) return 'grab';
@@ -1061,6 +1160,7 @@ export default function AdminMapEditor() {
                             </div>
 
                             <div
+                                ref={transformedDivRef}
                                 className="relative inline-block"
                                 style={{
                                     transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`,
