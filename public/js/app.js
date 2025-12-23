@@ -86002,32 +86002,46 @@ function AdminMapEditor() {
             return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminCreate(plotData);
           case 2:
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Plot created successfully');
-            setShowPlotDataModal(false);
+            // Refresh plots list first
+            _context3.n = 3;
+            return fetchPlots();
+          case 3:
+            // Reset all drawing state after fetch completes
             setIsCreatingNewPlot(false);
+            setIsDrawing(false);
             setCurrentPoints([]);
+            setSelectedPlot(null);
             setHistory([]);
             setHistoryIndex(-1);
+            setRectangleStart(null);
+            setRectangleEnd(null);
+            setCurrentMousePos(null);
+            setSelectedPointIndex(null);
+            setIsDraggingPoint(false);
+            setShowPlotDataModal(false);
+            // Reset tool to default
+            setCurrentTool('polygon');
+            // Reset zoom and pan
             setZoom(1);
             setPanOffset({
               x: 0,
               y: 0
             });
-            fetchPlots();
-            _context3.n = 4;
+            _context3.n = 5;
             break;
-          case 3:
-            _context3.p = 3;
+          case 4:
+            _context3.p = 4;
             _t4 = _context3.v;
             console.error('Error creating plot:', _t4);
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Failed to create plot');
-          case 4:
-            _context3.p = 4;
-            setIsSavingPlot(false);
-            return _context3.f(4);
           case 5:
+            _context3.p = 5;
+            setIsSavingPlot(false);
+            return _context3.f(5);
+          case 6:
             return _context3.a(2);
         }
-      }, _callee3, null, [[1, 3, 4, 5]]);
+      }, _callee3, null, [[1, 4, 5, 6]]);
     }));
     return function handleSaveNewPlot(_x2) {
       return _ref3.apply(this, arguments);
@@ -86066,23 +86080,36 @@ function AdminMapEditor() {
             return _services_api__WEBPACK_IMPORTED_MODULE_1__.plotService.adminUpdate(selectedPlot.id, updateData);
           case 2:
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].success('Coordinates saved successfully');
+            // Refresh plots list first
+            _context4.n = 3;
+            return fetchPlots();
+          case 3:
+            // Reset all drawing state after fetch completes
             setIsDrawing(false);
+            setIsCreatingNewPlot(false);
             setCurrentPoints([]);
             setSelectedPlot(null);
             setHistory([]);
             setHistoryIndex(-1);
-            fetchPlots();
-            _context4.n = 4;
+            setRectangleStart(null);
+            setRectangleEnd(null);
+            setCurrentMousePos(null);
+            setSelectedPointIndex(null);
+            setIsDraggingPoint(false);
+            setShowPlotDataModal(false);
+            // Reset tool to default
+            setCurrentTool('polygon');
+            _context4.n = 5;
             break;
-          case 3:
-            _context4.p = 3;
+          case 4:
+            _context4.p = 4;
             _t5 = _context4.v;
             console.error('Error saving coordinates:', _t5);
             react_hot_toast__WEBPACK_IMPORTED_MODULE_2__["default"].error('Failed to save coordinates');
-          case 4:
+          case 5:
             return _context4.a(2);
         }
-      }, _callee4, null, [[1, 3]]);
+      }, _callee4, null, [[1, 4]]);
     }));
     return function handleSaveCoordinates() {
       return _ref4.apply(this, arguments);

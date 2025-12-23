@@ -475,14 +475,26 @@ export default function AdminMapEditor() {
             await plotService.adminCreate(plotData);
 
             toast.success('Plot created successfully');
-            setShowPlotDataModal(false);
+            // Refresh plots list first
+            await fetchPlots();
+            // Reset all drawing state after fetch completes
             setIsCreatingNewPlot(false);
+            setIsDrawing(false);
             setCurrentPoints([]);
+            setSelectedPlot(null);
             setHistory([]);
             setHistoryIndex(-1);
+            setRectangleStart(null);
+            setRectangleEnd(null);
+            setCurrentMousePos(null);
+            setSelectedPointIndex(null);
+            setIsDraggingPoint(false);
+            setShowPlotDataModal(false);
+            // Reset tool to default
+            setCurrentTool('polygon');
+            // Reset zoom and pan
             setZoom(1);
             setPanOffset({ x: 0, y: 0 });
-            fetchPlots();
         } catch (error) {
             console.error('Error creating plot:', error);
             toast.error('Failed to create plot');
@@ -519,12 +531,23 @@ export default function AdminMapEditor() {
             await plotService.adminUpdate(selectedPlot.id, updateData);
 
             toast.success('Coordinates saved successfully');
+            // Refresh plots list first
+            await fetchPlots();
+            // Reset all drawing state after fetch completes
             setIsDrawing(false);
+            setIsCreatingNewPlot(false);
             setCurrentPoints([]);
             setSelectedPlot(null);
             setHistory([]);
             setHistoryIndex(-1);
-            fetchPlots();
+            setRectangleStart(null);
+            setRectangleEnd(null);
+            setCurrentMousePos(null);
+            setSelectedPointIndex(null);
+            setIsDraggingPoint(false);
+            setShowPlotDataModal(false);
+            // Reset tool to default
+            setCurrentTool('polygon');
         } catch (error) {
             console.error('Error saving coordinates:', error);
             toast.error('Failed to save coordinates');
