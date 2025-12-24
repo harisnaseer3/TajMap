@@ -85681,40 +85681,33 @@ function AdminMapEditor() {
     var containerRect = containerRef.current.getBoundingClientRect();
     var transformedRect = transformedDivRef.current.getBoundingClientRect();
 
-    // Get mouse position relative to container
-    var mouseX = e.clientX - containerRect.left;
-    var mouseY = e.clientY - containerRect.top;
+    // Get mouse position relative to the transformed div (accounts for transform)
+    var mouseX = e.clientX - transformedRect.left;
+    var mouseY = e.clientY - transformedRect.top;
 
-    // Get the center of the container
-    var containerCenterX = containerRect.width / 2;
-    var containerCenterY = containerRect.height / 2;
+    // The transformed div's dimensions (after scale transform)
+    var transformedWidth = transformedRect.width;
+    var transformedHeight = transformedRect.height;
 
-    // Calculate offset from container center
-    var offsetX = mouseX - containerCenterX;
-    var offsetY = mouseY - containerCenterY;
+    // Convert to normalized coordinates (0-1) based on transformed div dimensions
+    // Since the transform maintains aspect ratio, this directly maps to image coordinates
+    var x = mouseX / transformedWidth;
+    var y = mouseY / transformedHeight;
 
-    // Account for zoom and pan to get position in image space (relative to image center)
-    var imageXFromCenter = (offsetX - panOffset.x) / zoom;
-    var imageYFromCenter = (offsetY - panOffset.y) / zoom;
-
-    // Convert from center-relative to top-left-relative, then normalize
-    var imageX = imageXFromCenter + dimensions.width / 2;
-    var imageY = imageYFromCenter + dimensions.height / 2;
-
-    // Convert to normalized coordinates (0-1) based on original image dimensions
-    var x = imageX / dimensions.width;
-    var y = imageY / dimensions.height;
+    // Clamp coordinates to valid range
+    var clampedX = Math.max(0, Math.min(1, x));
+    var clampedY = Math.max(0, Math.min(1, y));
     if (currentTool === 'polygon') {
       var newPoints = [].concat(_toConsumableArray(currentPoints), [{
-        x: x,
-        y: y
+        x: clampedX,
+        y: clampedY
       }]);
       setCurrentPoints(newPoints);
       addToHistory(newPoints);
     } else if (currentTool === 'rectangle' && !rectangleStart) {
       setRectangleStart({
-        x: x,
-        y: y
+        x: clampedX,
+        y: clampedY
       });
     }
   };
@@ -85771,35 +85764,31 @@ function AdminMapEditor() {
         y: mouseY - panOffset.y
       });
     } else if (currentTool === 'edit') {
-      // Check if clicking on a point
-      var clickedPointIndex = findNearestPoint(mouseX, mouseY);
+      // Check if clicking on a point - use transformed div coordinates
+      if (!transformedDivRef.current || !dimensions.width || !dimensions.height) return;
+      var transformedRect = transformedDivRef.current.getBoundingClientRect();
+      var transformedMouseX = e.clientX - transformedRect.left;
+      var transformedMouseY = e.clientY - transformedRect.top;
+      var clickedPointIndex = findNearestPoint(transformedMouseX, transformedMouseY, transformedRect);
       if (clickedPointIndex !== -1) {
         setSelectedPointIndex(clickedPointIndex);
         setIsDraggingPoint(true);
       }
     } else if (currentTool === 'rectangle' && !rectangleStart) {
-      if (!containerRef.current || !dimensions.width || !dimensions.height) return;
+      if (!transformedDivRef.current || !dimensions.width || !dimensions.height) return;
 
-      // Get container center
-      var _containerRect = containerRef.current.getBoundingClientRect();
-      var containerCenterX = _containerRect.width / 2;
-      var containerCenterY = _containerRect.height / 2;
+      // Get transformed div's bounding rect
+      var _transformedRect = transformedDivRef.current.getBoundingClientRect();
 
-      // Calculate offset from container center
-      var offsetX = mouseX - containerCenterX;
-      var offsetY = mouseY - containerCenterY;
+      // Get mouse position relative to transformed div
+      var rectMouseX = e.clientX - _transformedRect.left;
+      var rectMouseY = e.clientY - _transformedRect.top;
 
-      // Account for zoom and pan to get position in image space (relative to image center)
-      var imageXFromCenter = (offsetX - panOffset.x) / zoom;
-      var imageYFromCenter = (offsetY - panOffset.y) / zoom;
-
-      // Convert from center-relative to top-left-relative, then normalize
-      var imageX = imageXFromCenter + dimensions.width / 2;
-      var imageY = imageYFromCenter + dimensions.height / 2;
-
-      // Convert to normalized coordinates (0-1) based on original image dimensions
-      var x = imageX / dimensions.width;
-      var y = imageY / dimensions.height;
+      // Convert to normalized coordinates
+      var transformedWidth = _transformedRect.width;
+      var transformedHeight = _transformedRect.height;
+      var x = Math.max(0, Math.min(1, rectMouseX / transformedWidth));
+      var y = Math.max(0, Math.min(1, rectMouseY / transformedHeight));
       setRectangleStart({
         x: x,
         y: y
@@ -85807,12 +85796,14 @@ function AdminMapEditor() {
     }
   };
   var handleMouseMove = function handleMouseMove(e) {
-    if (!containerRef.current || !dimensions.width || !dimensions.height) return;
+    if (!containerRef.current || !transformedDivRef.current || !dimensions.width || !dimensions.height) return;
 
-    // Get mouse position relative to the container
-    var containerRect = containerRef.current.getBoundingClientRect();
-    var mouseX = e.clientX - containerRect.left;
-    var mouseY = e.clientY - containerRect.top;
+    // Get transformed div's bounding rect
+    var transformedRect = transformedDivRef.current.getBoundingClientRect();
+
+    // Get mouse position relative to transformed div
+    var mouseX = e.clientX - transformedRect.left;
+    var mouseY = e.clientY - transformedRect.top;
 
     // Handle panning when zoomed in
     if (isPanning) {
@@ -85824,25 +85815,11 @@ function AdminMapEditor() {
     }
     if (!isDrawing && !isCreatingNewPlot) return;
 
-    // Get container center
-    var containerCenterX = containerRect.width / 2;
-    var containerCenterY = containerRect.height / 2;
-
-    // Calculate offset from container center
-    var offsetX = mouseX - containerCenterX;
-    var offsetY = mouseY - containerCenterY;
-
-    // Account for zoom and pan to get position in image space (relative to image center)
-    var imageXFromCenter = (offsetX - panOffset.x) / zoom;
-    var imageYFromCenter = (offsetY - panOffset.y) / zoom;
-
-    // Convert from center-relative to top-left-relative, then normalize
-    var imageX = imageXFromCenter + dimensions.width / 2;
-    var imageY = imageYFromCenter + dimensions.height / 2;
-
-    // Convert to normalized coordinates (0-1) based on original image dimensions
-    var x = imageX / dimensions.width;
-    var y = imageY / dimensions.height;
+    // Convert to normalized coordinates based on transformed div dimensions
+    var transformedWidth = transformedRect.width;
+    var transformedHeight = transformedRect.height;
+    var x = Math.max(0, Math.min(1, mouseX / transformedWidth));
+    var y = Math.max(0, Math.min(1, mouseY / transformedHeight));
     setCurrentMousePos({
       x: x,
       y: y
@@ -85885,18 +85862,24 @@ function AdminMapEditor() {
       setRectangleEnd(null);
     }
   };
-  var findNearestPoint = function findNearestPoint(mouseX, mouseY) {
-    if (!dimensions.width || !dimensions.height) return -1;
-    var threshold = 10 / zoom; // Adjust threshold based on zoom level
+  var findNearestPoint = function findNearestPoint(mouseX, mouseY, transformedRect) {
+    if (!dimensions.width || !dimensions.height || !transformedRect) return -1;
 
-    var convertedPoints = convertCoordinates(currentPoints);
-    for (var i = 0; i < convertedPoints.length; i++) {
-      var point = convertedPoints[i];
-      // Apply zoom and pan to get screen coordinates
-      var pointX = point.x * zoom + panOffset.x;
-      var pointY = point.y * zoom + panOffset.y;
-      var distance = Math.sqrt(Math.pow(mouseX - pointX, 2) + Math.pow(mouseY - pointY, 2));
-      if (distance < threshold * zoom) {
+    // Convert mouse position to normalized coordinates (0-1)
+    var transformedWidth = transformedRect.width;
+    var transformedHeight = transformedRect.height;
+    var normalizedMouseX = mouseX / transformedWidth;
+    var normalizedMouseY = mouseY / transformedHeight;
+
+    // Threshold in normalized coordinates (scaled by zoom for better accuracy)
+    var threshold = 0.02 / zoom; // ~2% of image size, adjusted by zoom
+
+    for (var i = 0; i < currentPoints.length; i++) {
+      var point = currentPoints[i];
+
+      // Calculate distance in normalized coordinate space
+      var distance = Math.sqrt(Math.pow(normalizedMouseX - point.x, 2) + Math.pow(normalizedMouseY - point.y, 2));
+      if (distance < threshold) {
         return i;
       }
     }
