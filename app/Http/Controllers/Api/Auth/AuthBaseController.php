@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -108,31 +109,55 @@ class AuthBaseController extends BaseController
      */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        // Attempt to reset the user's password
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                    'password_reset_required' => false,
-                ])->save();
+        try {
+            // Attempt to reset the user's password using the 'users' broker
+            $status = Password::broker('users')->reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function ($user, $password) {
+                    $user->forceFill([
+                        'password' => Hash::make($password),
+                        'password_reset_required' => false,
+                    ])->save();
 
-                // Revoke all existing tokens for security
-                $user->tokens()->delete();
+                    // Revoke all existing tokens for security
+                    $user->tokens()->delete();
+                }
+            );
+
+            // Check the status and return appropriate response
+            if ($status === Password::PASSWORD_RESET) {
+                return response()->json([
+                    'message' => 'Your password has been reset successfully. Please login with your new password.',
+                ]);
             }
-        );
 
-        // Check the status and return appropriate response
-        if ($status === Password::PASSWORD_RESET) {
-            return response()->json([
-                'message' => 'Your password has been reset successfully. Please login with your new password.',
+            // Handle invalid or expired token
+            $errorMessage = 'Unable to reset password. Please try again or request a new reset link.';
+            if ($status === Password::INVALID_TOKEN) {
+                $errorMessage = 'This password reset token is invalid or has expired.';
+            } elseif ($status === Password::INVALID_USER) {
+                $errorMessage = 'We can\'t find a user with that email address.';
+            } elseif ($status === Password::RESET_THROTTLED) {
+                $errorMessage = 'Please wait before retrying.';
+            }
+
+            throw ValidationException::withMessages([
+                'email' => [$errorMessage],
+            ]);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Password reset error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'email' => $request->email,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            throw ValidationException::withMessages([
+                'email' => ['An error occurred while resetting your password. Please try again or contact support.'],
             ]);
         }
-
-        // Handle invalid or expired token
-        throw ValidationException::withMessages([
-            'email' => [__($status)],
-        ]);
     }
 
     /**

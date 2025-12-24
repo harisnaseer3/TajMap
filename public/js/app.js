@@ -88324,6 +88324,10 @@ function AdminSettings() {
     _useState32 = _slicedToArray(_useState31, 2),
     editingPermissions = _useState32[0],
     setEditingPermissions = _useState32[1];
+  var _useState33 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
+    _useState34 = _slicedToArray(_useState33, 2),
+    expandedUserPermissions = _useState34[0],
+    setExpandedUserPermissions = _useState34[1];
 
   // Check authorization and load data
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
@@ -88840,8 +88844,20 @@ function AdminSettings() {
       return _ref7.apply(this, arguments);
     };
   }();
+
+  // Toggle user permissions section (accordion - only one open at a time)
+  var toggleUserPermissions = function toggleUserPermissions(userId) {
+    setExpandedUserPermissions(function (prev) {
+      // If clicking on the currently expanded user, close it
+      if (prev[userId]) {
+        return {};
+      }
+      // Otherwise, close all and open only the clicked user
+      return _defineProperty({}, userId, true);
+    });
+  };
   var handleSaveAll = /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+    var _ref9 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
       var settingsToUpdate, _error$response2, _t8;
       return _regenerator().w(function (_context8) {
         while (1) switch (_context8.p = _context8.n) {
@@ -88889,7 +88905,7 @@ function AdminSettings() {
       }, _callee8, null, [[0, 3, 4, 5]]);
     }));
     return function handleSaveAll() {
-      return _ref8.apply(this, arguments);
+      return _ref9.apply(this, arguments);
     };
   }();
   var getSettingUsage = function getSettingUsage(key) {
@@ -89158,23 +89174,52 @@ function AdminSettings() {
     return !admin.is_super_admin;
   }) // Don't show super admins
   .map(function (admin) {
-    var _admin$permissions;
+    var _expandedUserPermissi, _admin$permissions, _admin$permissions2;
+    var isExpanded = (_expandedUserPermissi = expandedUserPermissions[admin.id]) !== null && _expandedUserPermissi !== void 0 ? _expandedUserPermissi : false;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       key: admin.id,
-      className: "border border-gray-200 rounded-lg p-5 hover:shadow-md transition"
+      className: "border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      onClick: function onClick() {
+        return toggleUserPermissions(admin.id);
+      },
+      className: "w-full p-5 flex items-center justify-between hover:bg-gray-50 transition text-left"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "flex items-center justify-between mb-4"
+      className: "flex items-center gap-3 flex-1"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "flex items-center gap-3"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg"
-    }, admin.name.charAt(0).toUpperCase()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
+      className: "h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+    }, admin.name.charAt(0).toUpperCase()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", {
       className: "font-semibold text-gray-900 text-lg"
     }, admin.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-sm text-gray-600"
-    }, admin.email))), editingPermissions[admin.id] && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-      onClick: function onClick() {
-        return handleSavePermissions(admin.id);
+    }, admin.email))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "flex items-center gap-3"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "text-right"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "text-xs text-gray-500"
+    }, ((_admin$permissions = admin.permissions) === null || _admin$permissions === void 0 ? void 0 : _admin$permissions.length) || 0, " of ", Object.values(_store_authStore__WEBPACK_IMPORTED_MODULE_3__.PERMISSION_GROUPS).reduce(function (acc, group) {
+      return acc + Object.keys(group).length;
+    }, 0), " permissions")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
+      className: "w-5 h-5 text-gray-500 transition-transform flex-shrink-0 ".concat(isExpanded ? 'rotate-180' : ''),
+      fill: "none",
+      stroke: "currentColor",
+      viewBox: "0 0 24 24"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("path", {
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      strokeWidth: 2,
+      d: "M19 9l-7 7-7-7"
+    })))), isExpanded && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "px-5 pb-5 space-y-4 border-t border-gray-200 pt-4"
+    }, editingPermissions[admin.id] && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "mb-4 flex justify-end"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+      onClick: function onClick(e) {
+        e.stopPropagation();
+        handleSavePermissions(admin.id);
       },
       className: "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("svg", {
@@ -89187,10 +89232,10 @@ function AdminSettings() {
       clipRule: "evenodd"
     })), "Save Changes")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "space-y-4"
-    }, Object.entries(_store_authStore__WEBPACK_IMPORTED_MODULE_3__.PERMISSION_GROUPS).map(function (_ref9) {
-      var _ref0 = _slicedToArray(_ref9, 2),
-        groupName = _ref0[0],
-        groupPermissions = _ref0[1];
+    }, Object.entries(_store_authStore__WEBPACK_IMPORTED_MODULE_3__.PERMISSION_GROUPS).map(function (_ref0) {
+      var _ref1 = _slicedToArray(_ref0, 2),
+        groupName = _ref1[0],
+        groupPermissions = _ref1[1];
       var groupIcons = {
         'Plots': '🗺️',
         'Leads': '👥',
@@ -89238,10 +89283,10 @@ function AdminSettings() {
         className: "text-xs px-3 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
       }, hasAllGroupPermissions ? 'Deselect All' : 'Select All')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
         className: "grid grid-cols-2 md:grid-cols-3 gap-2"
-      }, Object.entries(groupPermissions).map(function (_ref1) {
-        var _ref10 = _slicedToArray(_ref1, 2),
-          permission = _ref10[0],
-          label = _ref10[1];
+      }, Object.entries(groupPermissions).map(function (_ref10) {
+        var _ref11 = _slicedToArray(_ref10, 2),
+          permission = _ref11[0],
+          label = _ref11[1];
         var hasPermission = (admin.permissions || []).includes(permission);
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
           key: permission,
@@ -89269,11 +89314,11 @@ function AdminSettings() {
       className: "mt-4 pt-4 border-t border-gray-200"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
       className: "text-xs text-gray-500"
-    }, ((_admin$permissions = admin.permissions) === null || _admin$permissions === void 0 ? void 0 : _admin$permissions.length) || 0, " of ", Object.values(_store_authStore__WEBPACK_IMPORTED_MODULE_3__.PERMISSION_GROUPS).reduce(function (acc, group) {
+    }, ((_admin$permissions2 = admin.permissions) === null || _admin$permissions2 === void 0 ? void 0 : _admin$permissions2.length) || 0, " of ", Object.values(_store_authStore__WEBPACK_IMPORTED_MODULE_3__.PERMISSION_GROUPS).reduce(function (acc, group) {
       return acc + Object.keys(group).length;
     }, 0), " permissions granted", editingPermissions[admin.id] && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       className: "ml-2 text-orange-600 font-medium"
-    }, "\u2022 Unsaved changes"))));
+    }, "\u2022 Unsaved changes")))));
   }), adminUsers.filter(function (admin) {
     return !admin.is_super_admin;
   }).length === 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -89735,11 +89780,11 @@ function AdminSettings() {
     className: "text-gray-500"
   }, "No settings found. Settings will appear here once configured.")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "space-y-3"
-  }, Object.entries(settingsByGroup).map(function (_ref15) {
+  }, Object.entries(settingsByGroup).map(function (_ref16) {
     var _expandedGroups$group;
-    var _ref16 = _slicedToArray(_ref15, 2),
-      group = _ref16[0],
-      subsections = _ref16[1];
+    var _ref17 = _slicedToArray(_ref16, 2),
+      group = _ref17[0],
+      subsections = _ref17[1];
     var isExpanded = (_expandedGroups$group = expandedGroups[group]) !== null && _expandedGroups$group !== void 0 ? _expandedGroups$group : false;
     var totalSettings = Object.values(subsections).reduce(function (sum, settings) {
       return sum + settings.length;
@@ -89774,10 +89819,10 @@ function AdminSettings() {
       d: "M19 9l-7 7-7-7"
     }))), isExpanded && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "border-t border-gray-200 bg-gray-50"
-    }, Object.entries(subsections).map(function (_ref17, subsectionIndex) {
-      var _ref18 = _slicedToArray(_ref17, 2),
-        subsection = _ref18[0],
-        subsectionSettings = _ref18[1];
+    }, Object.entries(subsections).map(function (_ref18, subsectionIndex) {
+      var _ref19 = _slicedToArray(_ref18, 2),
+        subsection = _ref19[0],
+        subsectionSettings = _ref19[1];
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
         key: subsection,
         className: subsectionIndex !== 0 ? 'border-t border-gray-200' : ''
@@ -92287,59 +92332,139 @@ function ResetPasswordPage() {
     _useState4 = _slicedToArray(_useState3, 2),
     loading = _useState4[0],
     setLoading = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    showManualEntry = _useState6[0],
+    setShowManualEntry = _useState6[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var _searchParams$get, _searchParams$get2;
     // Extract token and email from URL parameters
-    var token = searchParams.get('token');
-    var email = searchParams.get('email');
-    if (!token || !email) {
-      react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Invalid password reset link.');
-      navigate('/login');
-      return;
-    }
-    setFormData(function (prev) {
-      return _objectSpread(_objectSpread({}, prev), {}, {
-        token: token,
-        email: email
+    var token = (_searchParams$get = searchParams.get('token')) === null || _searchParams$get === void 0 ? void 0 : _searchParams$get.trim();
+    var email = (_searchParams$get2 = searchParams.get('email')) === null || _searchParams$get2 === void 0 ? void 0 : _searchParams$get2.trim();
+    if (token && email) {
+      // Warn if token seems too short (Laravel tokens are typically 64 characters)
+      if (token.length < 20) {
+        console.warn('Token seems unusually short. Expected ~64 characters, got:', token.length);
+        react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Invalid reset token. The token appears to be incomplete.');
+        setShowManualEntry(true);
+        return;
+      }
+      setFormData(function (prev) {
+        return _objectSpread(_objectSpread({}, prev), {}, {
+          token: token,
+          email: email
+        });
       });
-    });
-  }, [searchParams, navigate]);
+    } else {
+      // No URL parameters, show manual entry form
+      setShowManualEntry(true);
+    }
+  }, [searchParams]);
   var handleSubmit = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
-      var response, _t;
+      var trimmedToken, submitData, response, _error$response, _error$response2, _error$response3, _error$response4, errors, _t;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
             e.preventDefault();
-            if (!(formData.password !== formData.password_confirmation)) {
+
+            // Validate password length
+            if (!(formData.password.length < 8)) {
               _context.n = 1;
+              break;
+            }
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Password must be at least 8 characters long.');
+            return _context.a(2);
+          case 1:
+            if (!(formData.password !== formData.password_confirmation)) {
+              _context.n = 2;
               break;
             }
             react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Passwords do not match.');
             return _context.a(2);
-          case 1:
-            setLoading(true);
-            _context.p = 2;
-            _context.n = 3;
-            return _services_api__WEBPACK_IMPORTED_MODULE_2__.authService.resetPassword(formData);
+          case 2:
+            // Validate token
+            trimmedToken = formData.token.trim();
+            if (trimmedToken) {
+              _context.n = 3;
+              break;
+            }
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Reset token is required.');
+            return _context.a(2);
           case 3:
+            if (!(trimmedToken.length < 10)) {
+              _context.n = 4;
+              break;
+            }
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Reset token appears to be too short. Please check and try again.');
+            return _context.a(2);
+          case 4:
+            if (!(!formData.email || !formData.email.trim())) {
+              _context.n = 5;
+              break;
+            }
+            react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Email address is required.');
+            return _context.a(2);
+          case 5:
+            setLoading(true);
+            _context.p = 6;
+            // Ensure token and email are trimmed before sending
+            submitData = {
+              token: formData.token.trim(),
+              email: formData.email.trim(),
+              password: formData.password,
+              password_confirmation: formData.password_confirmation
+            };
+            console.log('Submitting password reset with data:', {
+              email: submitData.email,
+              tokenLength: submitData.token.length,
+              hasPassword: !!submitData.password,
+              hasPasswordConfirmation: !!submitData.password_confirmation
+            });
+            _context.n = 7;
+            return _services_api__WEBPACK_IMPORTED_MODULE_2__.authService.resetPassword(submitData);
+          case 7:
             response = _context.v;
             react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].success(response.message || 'Password reset successful!');
             navigate('/login');
-            _context.n = 5;
+            _context.n = 9;
             break;
-          case 4:
-            _context.p = 4;
+          case 8:
+            _context.p = 8;
             _t = _context.v;
             console.error('Reset password error:', _t);
-            // Error already handled by axios interceptor
-          case 5:
-            _context.p = 5;
+            console.error('Error response:', (_error$response = _t.response) === null || _error$response === void 0 ? void 0 : _error$response.data);
+            console.error('Error status:', (_error$response2 = _t.response) === null || _error$response2 === void 0 ? void 0 : _error$response2.status);
+
+            // Show specific error messages if axios interceptor didn't handle it
+            if ((_error$response3 = _t.response) !== null && _error$response3 !== void 0 && (_error$response3 = _error$response3.data) !== null && _error$response3 !== void 0 && _error$response3.errors) {
+              errors = _t.response.data.errors;
+              Object.entries(errors).forEach(function (_ref2) {
+                var _ref3 = _slicedToArray(_ref2, 2),
+                  field = _ref3[0],
+                  messages = _ref3[1];
+                if (Array.isArray(messages)) {
+                  messages.forEach(function (msg) {
+                    return react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error("".concat(field, ": ").concat(msg));
+                  });
+                } else if (typeof messages === 'string') {
+                  react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error("".concat(field, ": ").concat(messages));
+                }
+              });
+            } else if ((_error$response4 = _t.response) !== null && _error$response4 !== void 0 && (_error$response4 = _error$response4.data) !== null && _error$response4 !== void 0 && _error$response4.message) {
+              react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error(_t.response.data.message);
+            } else if (!_t.response) {
+              // Network error or no response
+              react_hot_toast__WEBPACK_IMPORTED_MODULE_3__["default"].error('Network error. Please check your connection and try again.');
+            }
+          case 9:
+            _context.p = 9;
             setLoading(false);
-            return _context.f(5);
-          case 6:
+            return _context.f(9);
+          case 10:
             return _context.a(2);
         }
-      }, _callee, null, [[2, 4, 5, 6]]);
+      }, _callee, null, [[6, 8, 9, 10]]);
     }));
     return function handleSubmit(_x) {
       return _ref.apply(this, arguments);
@@ -92356,7 +92481,39 @@ function ResetPasswordPage() {
   }, "Enter your new password below."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
     onSubmit: handleSubmit,
     className: "space-y-4"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+  }, showManualEntry && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-sm font-medium text-gray-700 mb-1"
+  }, "Reset Token ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "text-red-500"
+  }, "*")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    value: formData.token,
+    onChange: function onChange(e) {
+      return setFormData(_objectSpread(_objectSpread({}, formData), {}, {
+        token: e.target.value
+      }));
+    },
+    className: "w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm",
+    placeholder: "Paste your reset token here (e.g., 1g25xHVcUG8w3Mfr3MsTYkcTEscvCbhJhwRnVTGcXlkNljHi66T4aR9ECxQ...)",
+    required: true
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", {
+    className: "mt-1 text-xs text-gray-500"
+  }, "Enter the reset token provided by your administrator")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
+    className: "block text-sm font-medium text-gray-700 mb-1"
+  }, "Email Address ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "text-red-500"
+  }, "*")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "email",
+    value: formData.email,
+    onChange: function onChange(e) {
+      return setFormData(_objectSpread(_objectSpread({}, formData), {}, {
+        email: e.target.value
+      }));
+    },
+    className: "w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+    placeholder: "Enter your email address",
+    required: true
+  }))), !showManualEntry && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     className: "block text-sm font-medium text-gray-700 mb-1"
   }, "Email"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "email",
@@ -92396,11 +92553,21 @@ function ResetPasswordPage() {
     disabled: loading,
     className: "w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
   }, loading ? 'Resetting...' : 'Reset Password')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "mt-6 text-center"
+    className: "mt-6 space-y-3"
+  }, !showManualEntry && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-center"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    type: "button",
+    onClick: function onClick() {
+      return setShowManualEntry(true);
+    },
+    className: "text-sm text-blue-600 hover:underline"
+  }, "Enter token manually instead")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "text-center"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.Link, {
     to: "/login",
     className: "text-blue-600 hover:underline"
-  }, "Back to Login"))));
+  }, "Back to Login")))));
 }
 
 /***/ }),
