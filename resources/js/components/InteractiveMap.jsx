@@ -388,20 +388,6 @@ export default function InteractiveMap({ onPlotClick, filters = {} }) {
                                         onMouseEnter={() => setHoveredPlot(plot)}
                                         onMouseLeave={() => setHoveredPlot(null)}
                                     />
-
-                                    {/* Plot Number Label */}
-                                    {plot.coordinates.length > 0 && (
-                                        <text
-                                            x={plot.coordinates.reduce((sum, c) => sum + c.x, 0) / plot.coordinates.length * dimensions.width}
-                                            y={plot.coordinates.reduce((sum, c) => sum + c.y, 0) / plot.coordinates.length * dimensions.height}
-                                            textAnchor="middle"
-                                            dominantBaseline="middle"
-                                            className="pointer-events-none text-xs font-bold fill-gray-800"
-                                            style={{ fontSize: '12px' }}
-                                        >
-                                            {plot.plot_number}
-                                        </text>
-                                    )}
                                 </g>
                             ))}
                         </svg>

@@ -83296,20 +83296,7 @@ function InteractiveMap(_ref) {
       onMouseLeave: function onMouseLeave() {
         return setHoveredPlot(null);
       }
-    }), plot.coordinates.length > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("text", {
-      x: plot.coordinates.reduce(function (sum, c) {
-        return sum + c.x;
-      }, 0) / plot.coordinates.length * dimensions.width,
-      y: plot.coordinates.reduce(function (sum, c) {
-        return sum + c.y;
-      }, 0) / plot.coordinates.length * dimensions.height,
-      textAnchor: "middle",
-      dominantBaseline: "middle",
-      className: "pointer-events-none text-xs font-bold fill-gray-800",
-      style: {
-        fontSize: '12px'
-      }
-    }, plot.plot_number));
+    }));
   }))), hoveredPlot && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "absolute z-10 bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg text-sm pointer-events-none",
     style: {
